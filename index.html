@@ -14,11 +14,8 @@
         </div>
 
         <div id="printableArea">
-    <!-- Header untuk print -->
-    <div class="print-header">
-        <img src="https://github.com/didasar91/PSI-Score-Calculator/blob/main/header.jpg" alt="Murni Teguh Memorial Hospital" class="header-image">
-    </div>
-
+            <!-- Header untuk print dengan CSS background -->
+            <div class="print-header" style="background-image: url('https://github.com/didasar91/PSI-Score-Calculator/blob/main/header.jpg'); background-size: contain; background-repeat: no-repeat; background-position: center top; height: 80px; width: 100%;"></div>
 
             <h2 class="form-title">Pneumonia Severity Index</h2>
 
@@ -294,14 +291,14 @@
             <!-- DPJP -->
             <div class="dpjp-section">
                 <p>Diketahui oleh,</p>
-                <input type="text" id="namaDPJP" placeholder="Nama DPJP (contoh: dr. A, Sp.PD - KHOM)" class="dpjp-input">
+                <input type="text" id="namaDPJP" placeholder="Nama DPJP (contoh: dr. SUSANTO SALIM, Sp.PD - KHOM)" class="dpjp-input">
                 <div class="dpjp-name" id="dpjpDisplay"></div>
             </div>
         </div>
 
         <!-- Buttons -->
         <div class="button-container screen-only">
-            <button onclick="window.print()" class="btn btn-primary">Print / Save PDF</button>
+            <button onclick="printAndDownload()" class="btn btn-primary">Print / Save PDF</button>
             <button onclick="resetForm()" class="btn btn-secondary">Reset</button>
         </div>
     </div>
