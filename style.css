@@ -421,14 +421,14 @@ h1 {
     }
 
     .total-label {
-        font-size: 9px;
+        font-size: 12px;
         font-weight: bold;
         min-width: 45mm;
         flex-shrink: 0;
     }
 
     .total-value {
-        font-size: 9px;
+        font-size: 12px;
         flex: 1;
     }
 
@@ -489,19 +489,26 @@ h1 {
 
     /* DPJP SECTION */
     .dpjp-section {
-        margin: 3mm 0;
-        font-size: 12px;
-        page-break-inside: avoid;
+        margin-top: 30px;
+        text-align: right; /* Pindahkan teks ke kanan */
+        float: right;      /* Memaksa blok ke sisi kanan */
+         width: 250px;      /* Memberi lebar area tanda tangan */
+        font-size: 14px;
     }
 
     .dpjp-section p {
-        margin: 0 0 1mm 0;
+        margin: 0 0 10px 0;
         font-weight: bold;
+        text-align: center; /* Teks "Diketahui oleh" di tengah blok kanan */
     }
 
     .dpjp-name {
-        margin-top: 8mm;
-        font-size: 14px;
+        margin-top: 60px; /* Ruang untuk tanda tangan */
+        font-weight: bold;
+        text-align: center; /* Nama dokter di tengah blok kanan */
+        border-bottom: 1px solid #000; /* Garis bawah tanda tangan */
+        display: inline-block;
+        min-width: 200px;
     }
 
     .dpjp-input {
