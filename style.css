@@ -355,6 +355,7 @@ h1 {
         grid-template-columns: 1fr 1fr;
         gap: 3mm;
         margin: 2mm 0;
+        width: 50%;
         page-break-inside: avoid;
     }
 
@@ -424,14 +425,14 @@ h1 {
 
     /* Tables Wrapper */
     .tables-wrapper {
-        width: 50%;
+        width: 100%;
         margin: 2mm 0;
     }
 
     /* SCORING TABLES */
     .scoring-table {
         margin: 1.5mm 0;
-        width: 50%;
+        width: 100%;
         page-break-inside: avoid;
         font-size: 9px;
         border-collapse: collapse;
