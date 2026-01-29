@@ -355,7 +355,7 @@ h1 {
         grid-template-columns: 1fr 1fr;
         gap: 3mm;
         margin: 2mm 0;
-        width: 50%;
+        width: 40%;
         page-break-inside: avoid;
     }
 
