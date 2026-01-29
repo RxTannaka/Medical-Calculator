@@ -10,19 +10,39 @@ document.getElementById('tanggalLahir').addEventListener('change', function() {
     }
     
     document.getElementById('umur').value = age;
-    updateDisplay();
-    calculateTotal();
-});
+    // Format tanggal ke dd/mm/yyyy
+function formatTanggal(dateString) {
+    if (!dateString) return '-';
+    
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+}
 
 // Update display values untuk print
 function updateDisplay() {
     document.getElementById('displayNama').textContent = document.getElementById('nama').value || '-';
-    document.getElementById('displayTanggalLahir').textContent = document.getElementById('tanggalLahir').value || '-';
+    document.getElementById('displayTanggalLahir').textContent = formatTanggal(document.getElementById('tanggalLahir').value);
     document.getElementById('displayUmur').textContent = (document.getElementById('umur').value || '-') + (document.getElementById('umur').value ? ' Tahun' : '');
     document.getElementById('displayNoMR').textContent = document.getElementById('noMR').value || '-';
-    document.getElementById('displayTanggalAssessment').textContent = document.getElementById('tanggalAssessment').value || '-';
+    document.getElementById('displayTanggalAssessment').textContent = formatTanggal(document.getElementById('tanggalAssessment').value);
     document.getElementById('displayJenisKelamin').textContent = document.getElementById('jenisKelamin').value || '-';
 }
+
+// Calculate age from date of birth
+document.getElementById('tanggalLahir').addEventListener('change', function() {
+    const dob = new Date(this.value);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+    
+    document.getElementById('umur').value = age;
+    updateDisplay();
+    calculateTotal();
+});
 
 // Update display ketika input berubah
 document.getElementById('nama').addEventListener('input', updateDisplay);
