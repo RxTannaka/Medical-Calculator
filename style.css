@@ -41,9 +41,16 @@ h1 {
     font-weight: bold;
 }
 
+/* Patient Info + Total Score - Side by Side */
+.patient-total-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
 /* Patient Info - Simple Inline Format */
 .patient-info {
-    margin-bottom: 20px;
     border: 1px solid #ddd;
     padding: 15px;
     background-color: #f9f9f9;
@@ -59,8 +66,9 @@ h1 {
 
 .label {
     font-weight: bold;
-    min-width: 140px;
+    min-width: 120px;
     flex-shrink: 0;
+    font-size: 12px;
 }
 
 .separator {
@@ -71,6 +79,7 @@ h1 {
 .value {
     flex: 1;
     text-align: left;
+    font-size: 12px;
 }
 
 /* Input Form Tersembunyi di Screen */
@@ -101,6 +110,35 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 13px;
+}
+
+/* Total Section - Right Column */
+.total-section {
+    border: 2px solid #4CAF50;
+    padding: 15px;
+    background-color: #e8f5e9;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.total-line {
+    display: flex;
+    margin-bottom: 8px;
+    gap: 10px;
+    align-items: center;
+}
+
+.total-label {
+    font-weight: bold;
+    min-width: 100px;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.total-value {
+    text-align: left;
+    flex: 1;
+    font-size: 12px;
 }
 
 /* Scoring Table */
@@ -147,33 +185,6 @@ h1 {
     height: 16px;
     cursor: pointer;
     flex-shrink: 0;
-}
-
-/* Total Section - Inline Format */
-.total-section {
-    margin: 15px 0;
-    padding: 15px;
-    background-color: #e8f5e9;
-    border: 2px solid #4CAF50;
-    border-radius: 4px;
-    font-size: 13px;
-}
-
-.total-line {
-    display: flex;
-    margin-bottom: 6px;
-    gap: 10px;
-}
-
-.total-label {
-    font-weight: bold;
-    min-width: 140px;
-    flex-shrink: 0;
-}
-
-.total-value {
-    text-align: left;
-    flex: 1;
 }
 
 /* DPJP Section */
@@ -313,103 +324,110 @@ h1 {
     }
 
     .form-title {
-        margin: 3mm 0 2mm 0;
-        padding: 0 8mm;
-        font-size: 14px;
+        margin: 2mm 0 2mm 8mm;
+        padding: 0;
+        font-size: 13px;
         page-break-after: avoid;
         text-align: center;
     }
 
-    .patient-info {
+    .patient-total-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3mm;
         margin: 2mm 8mm;
-        padding: 3mm 5mm;
         page-break-inside: avoid;
-        font-size: 10px;
+    }
+
+    .patient-info {
         border: 0.5px solid #ddd;
+        padding: 3mm;
+        font-size: 9px;
+        background-color: #f9f9f9;
     }
 
     .info-line {
-        margin-bottom: 1.5mm;
-        gap: 8px;
+        margin-bottom: 1mm;
+        gap: 5px;
     }
 
     .label {
-        min-width: 50mm;
-        font-size: 10px;
+        min-width: 40mm;
+        font-size: 9px;
     }
 
     .separator {
-        font-size: 10px;
+        font-size: 9px;
     }
 
     .value {
-        font-size: 10px;
+        font-size: 9px;
     }
 
     .input-form {
         display: none !important;
     }
 
-    .scoring-table {
-        margin: 2mm 8mm;
-        page-break-inside: avoid;
-        font-size: 10px;
-    }
-
-    .scoring-table th,
-    .scoring-table td {
-        padding: 1.5mm 2mm;
-        border: 0.5px solid #999;
-        font-size: 10px;
-        line-height: 1.2;
-    }
-
-    .scoring-table th {
-        padding: 2mm;
-        font-size: 10px;
-    }
-
-    .checkbox-label {
-        line-height: 1.2;
-    }
-
-    .checkbox-label input[type="checkbox"] {
-        width: 3mm;
-        height: 3mm;
-        margin-right: 1.5mm;
-    }
-
-    .score-col {
-        width: 12mm;
-        font-size: 10px;
-    }
-
     .total-section {
-        margin: 2mm 8mm;
-        padding: 3mm;
-        page-break-inside: avoid;
-        font-size: 11px;
         border: 1px solid #4CAF50;
+        padding: 3mm;
+        background-color: #e8f5e9;
+        border-radius: 2px;
+        font-size: 9px;
     }
 
     .total-line {
         margin-bottom: 1.5mm;
-        font-size: 11px;
-        gap: 5mm;
+        font-size: 9px;
+        gap: 3mm;
     }
 
     .total-label {
-        font-size: 10px;
-        min-width: 35mm;
+        font-size: 9px;
+        min-width: 30mm;
     }
 
     .total-value {
-        font-size: 10px;
+        font-size: 9px;
+    }
+
+    .scoring-table {
+        margin: 1.5mm 8mm;
+        page-break-inside: avoid;
+        font-size: 9px;
+    }
+
+    .scoring-table th,
+    .scoring-table td {
+        padding: 1mm 1.5mm;
+        border: 0.5px solid #999;
+        font-size: 9px;
+        line-height: 1.1;
+    }
+
+    .scoring-table th {
+        padding: 1.5mm;
+        font-size: 9px;
+    }
+
+    .checkbox-label {
+        line-height: 1.1;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 2.5mm;
+        height: 2.5mm;
+        margin-right: 1.5mm;
+    }
+
+    .score-col {
+        width: 10mm;
+        font-size: 9px;
     }
 
     .dpjp-section {
-        margin: 4mm 8mm;
-        font-size: 10px;
+        margin: 3mm 8mm;
+        font-size: 9px;
         page-break-inside: avoid;
     }
 
@@ -419,7 +437,7 @@ h1 {
 
     .dpjp-name {
         margin-top: 8mm;
-        font-size: 10px;
+        font-size: 9px;
     }
 
     .dpjp-input {
@@ -434,7 +452,7 @@ h1 {
         background: transparent;
         font-weight: normal;
         color: black;
-        font-size: 10px;
+        font-size: 9px;
     }
 
     input[type="checkbox"] {
@@ -443,9 +461,13 @@ h1 {
     }
 }
 
-
 /* Responsive */
 @media (max-width: 768px) {
+    .patient-total-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
     .input-form {
         grid-template-columns: 1fr;
     }
