@@ -277,7 +277,7 @@ h1 {
 
     .container {
         box-shadow: none;
-        padding: 10mm 8mm;
+        padding: 0;
         max-width: 100%;
         margin: 0;
     }
@@ -288,8 +288,9 @@ h1 {
 
     .print-header {
         display: block !important;
-        margin: 0 0 2mm 0;
+        margin: 0;
         padding: 0;
+        width: 100%;
         page-break-after: avoid;
     }
 
@@ -297,8 +298,10 @@ h1 {
         width: 100%;
         height: auto;
         display: block;
-        max-height: 28mm;
+        max-height: none;
         object-fit: contain;
+        margin: 0;
+        padding: 0;
     }
 
     h1 {
@@ -310,13 +313,15 @@ h1 {
     }
 
     .form-title {
-        margin: 2mm 0;
-        font-size: 13px;
+        margin: 3mm 0 2mm 0;
+        padding: 0 8mm;
+        font-size: 14px;
         page-break-after: avoid;
+        text-align: center;
     }
 
     .patient-info {
-        margin-bottom: 3mm;
+        margin: 2mm 8mm;
         padding: 3mm 5mm;
         page-break-inside: avoid;
         font-size: 10px;
@@ -346,7 +351,7 @@ h1 {
     }
 
     .scoring-table {
-        margin-bottom: 2mm;
+        margin: 2mm 8mm;
         page-break-inside: avoid;
         font-size: 10px;
     }
@@ -380,10 +385,11 @@ h1 {
     }
 
     .total-section {
-        margin: 3mm 0;
+        margin: 2mm 8mm;
         padding: 3mm;
         page-break-inside: avoid;
         font-size: 11px;
+        border: 1px solid #4CAF50;
     }
 
     .total-line {
@@ -402,7 +408,7 @@ h1 {
     }
 
     .dpjp-section {
-        margin-top: 4mm;
+        margin: 4mm 8mm;
         font-size: 10px;
         page-break-inside: avoid;
     }
@@ -436,6 +442,7 @@ h1 {
         appearance: checkbox;
     }
 }
+
 
 /* Responsive */
 @media (max-width: 768px) {
