@@ -40,7 +40,7 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
     .container { width: 100%; padding: 0; box-shadow: none; border: none; background: #ffffff !important; max-width: 100%; margin: 0; }
     .screen-only { display: none !important; }
     
-    .header-image { max-width: 80%; display: block; margin: 0 auto; }
+    .header-image { max-width: 90%; display: block; margin: 0 auto; }
     
    /* Hide Content Based on Mode */
     body.mode-psi #calc-natrium-content, body.mode-psi #natrium-output-box { display: none !important; }
