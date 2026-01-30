@@ -28,6 +28,10 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
 .score-col { width: 60px; text-align: center !important; font-weight: bold; background-color: #fffde7 !important; }
 .highlight-natrium { background-color: #e3f2fd !important; font-weight: bold; }
 
+/* DPJP */
+.dpjp-section { margin-top: 20px; text-align: right; }
+.dpjp-name { margin-top: 40px; font-weight: bold; border-bottom: 1px solid #000; display: inline-block; min-width: 200px; text-align: center; }
+
 .input-form { 
     display: grid; 
     /* Mengatur input menjadi 3 kolom sejajar agar lebih ringkas */
@@ -74,10 +78,6 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
         grid-template-columns: 1fr;
     }
 }
-
-/* DPJP */
-.dpjp-section { margin-top: 20px; text-align: right; }
-.dpjp-name { margin-top: 40px; font-weight: bold; border-bottom: 1px solid #000; display: inline-block; min-width: 200px; text-align: center; }
 
 /* PRINT STYLES */
 @media print {
