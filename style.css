@@ -34,24 +34,24 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
 
 /* PRINT STYLES */
 @media print {
-    @page { size: A4; margin: 8mm; }
-    
-    html, body { background: #ffffff !important; padding: 0; margin: 0; }
-    .container { width: 100%; padding: 0; box-shadow: none; border: none; background: #ffffff !important; max-width: 100%; margin: 0; }
-    .screen-only { display: none !important; }
-    
-    .header-image { max-width: 80%; display: block; margin: 0 auto; }
-    
-    /* Memaksa Warna Muncul Saat Print */
-    .psi-box { background-color: #f1f8e9 !important; border: 2px solid #4CAF50 !important; }
-    .natrium-box { background-color: #e3f2fd !important; border: 2px solid #2196F3 !important; }
-    
-    .scoring-table thead { background-color: #4CAF50 !important; color: white !important; }
-    .section-head { background-color: #eeeeee !important; }
-    .score-col { background-color: #fffde7 !important; border: 1px solid #ccc !important; }
-    .highlight-natrium { background-color: #e3f2fd !important; }
+    /* Memaksa latar belakang tabel tetap berwarna saat dicetak */
+    .total-section {
+        background-color: #e8f5e9 !important; /* Hijau muda */
+        border: 2px solid #4CAF50 !important;
+    }
 
-    /* Hide Content Based on Mode */
-    body.mode-psi #calc-natrium-content, body.mode-psi #natrium-output-box { display: none !important; }
-    body.mode-natrium #calc-psi-content, body.mode-natrium #psi-output-box { display: none !important; }
+    .scoring-table thead {
+        background-color: #4CAF50 !important; /* Hijau header */
+        color: white !important;
+    }
+
+    .section-head {
+        background-color: #eee !important; /* Abu-abu header sub-tabel */
+    }
+
+    /* Penyesuaian untuk mode Natrium jika ada */
+    .natrium-box {
+        background-color: #e3f2fd !important; /* Biru muda */
+        border: 2px solid #2196F3 !important;
+    }
 }
