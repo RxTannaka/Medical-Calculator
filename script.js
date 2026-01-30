@@ -6,13 +6,16 @@ function showCalculator(mode) {
     const isPsi = (mode === 'psi');
     document.getElementById('calc-psi-content').style.display = isPsi ? 'block' : 'none';
     document.getElementById('calc-natrium-content').style.display = !isPsi ? 'block' : 'none';
-    document.querySelector('.psi-only-result').style.display = isPsi ? 'block' : 'none';
-    document.querySelector('.natrium-only-result').style.display = !isPsi ? 'block' : 'none';
+    
+    // Summary Visibility
+    document.querySelector('.natrium-summary-line').style.display = !isPsi ? 'block' : 'none';
+    document.querySelector('.psi-summary-line').style.display = isPsi ? 'block' : 'none';
+    
     document.getElementById('btn-psi').classList.toggle('active', isPsi);
     document.getElementById('btn-natrium').classList.toggle('active', !isPsi);
 }
 
-// Data Binding
+// Data Binding & Listeners
 document.getElementById('nama').addEventListener('input', e => document.getElementById('displayNama').textContent = e.target.value || '-');
 document.getElementById('noMR').addEventListener('input', e => document.getElementById('displayNoMR').textContent = e.target.value || '-');
 document.getElementById('inputDPJP').addEventListener('input', e => document.getElementById('displayDPJP').textContent = e.target.value || '');
@@ -27,7 +30,6 @@ document.getElementById('jk').addEventListener('change', updateStats);
 function updateStats() {
     const tgl = document.getElementById('tglLahir').value;
     if(!tgl) return;
-    
     const dob = new Date(tgl);
     const today = new Date();
     let age = today.getFullYear() - dob.getFullYear();
@@ -37,14 +39,12 @@ function updateStats() {
     document.getElementById('displayTglLahir').textContent = tgl;
     document.getElementById('displayUmur').textContent = age + " Tahun";
     const jk = document.getElementById('jk').value;
-    
     document.getElementById('scoreUsia').textContent = (jk === 'P') ? Math.max(0, age - 10) : age;
     
     calculatePSI();
     calculateNatrium();
 }
 
-// Checklist PSI
 document.querySelectorAll('.psi-check').forEach(box => {
     box.addEventListener('change', () => {
         const id = box.dataset.id;
@@ -60,6 +60,7 @@ function calculatePSI() {
     document.querySelectorAll('.psi-check').forEach(c => { if(c.checked) total += parseInt(c.dataset.score); });
     document.getElementById('totalScore').textContent = total;
     
+    [cite_start]// Klasifikasi Risiko [cite: 49]
     let kelas = "I", mort = "0.1%";
     if(total > 130) { kelas = "V"; mort = "29.2%"; }
     else if(total >= 91) { kelas = "IV"; mort = "8.2%"; }
@@ -70,15 +71,13 @@ function calculatePSI() {
     document.getElementById('mortalityRate').textContent = mort;
 }
 
-// Formula Adrogué-Madias
 function calculateNatrium() {
     const bb = parseFloat(document.getElementById('bb').value);
     const naSerum = parseFloat(document.getElementById('naSerum').value);
     const naInfus = parseFloat(document.getElementById('naInfus').value);
     const target = parseFloat(document.getElementById('targetNa').value) || 8;
     const jk = document.getElementById('jk').value;
-    const ageText = document.getElementById('displayUmur').textContent;
-    const age = parseInt(ageText) || 30;
+    const age = parseInt(document.getElementById('displayUmur').textContent) || 30;
 
     if(!bb || !naSerum || !jk) return;
 
@@ -88,8 +87,6 @@ function calculateNatrium() {
     const tbw = bb * factor;
     const deltaPerLiter = (naInfus - naSerum) / (tbw + 1);
     const totalVolumeMl = (target / deltaPerLiter) * 1000;
-    
-    // PEMBULATAN KE ATAS UNTUK BOTOL
     const botolCount = Math.ceil(totalVolumeMl / 500); 
     const speed = totalVolumeMl / 24;
 
@@ -99,29 +96,27 @@ function calculateNatrium() {
     document.getElementById('txtTBW').textContent = tbw.toFixed(1);
     document.getElementById('txtDelta').textContent = deltaPerLiter.toFixed(2);
     document.getElementById('txtTotalVol').textContent = Math.round(totalVolumeMl) + " mL";
-    document.getElementById('txtBotolDisplay').textContent = botolCount + " Botol " + namaCairan;
+    
+    // Output Format: X Botol Cairan 500 mL
+    const botolText = botolCount + " Botol " + namaCairan + " 500 mL";
+    document.getElementById('txtBotolDisplay').textContent = botolText;
     document.getElementById('txtKecepatan').textContent = speed.toFixed(1) + " mL/jam";
     
     document.getElementById('displayDelta').textContent = deltaPerLiter.toFixed(2);
     document.getElementById('displayBotol').textContent = botolCount;
 }
 
-// VALIDASI INPUT SEBELUM PRINT
 function printAndDownload() {
     const nama = document.getElementById('nama').value;
     const noMR = document.getElementById('noMR').value;
-    const tglLahir = document.getElementById('tglLahir').value;
-    const jk = document.getElementById('jk').value;
-    const bb = document.getElementById('bb').value;
     const dpjp = document.getElementById('inputDPJP').value;
 
-    if (!nama || !noMR || !tglLahir || !jk || !bb || !dpjp) {
-        alert("Mohon lengkapi semua data pasien (termasuk Berat Badan) dan Nama DPJP.");
+    if (!nama || !noMR || !dpjp) {
+        alert("Lengkapi Data Pasien dan Nama DPJP.");
         return;
     }
-
-    if (noMR.length !== 10 || isNaN(noMR)) {
-        alert("Nomor Medical Record harus berupa 10 digit angka.");
+    if (noMR.length !== 10) {
+        alert("No. MR wajib 10 digit.");
         return;
     }
 
