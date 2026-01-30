@@ -42,7 +42,16 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
     
     .header-image { max-width: 90%; display: block; margin: 0 auto; }
     
-   /* Hide Content Based on Mode */
+    /* Memaksa Warna Muncul Saat Print */
+    .psi-box { background-color: #f1f8e9 !important; border: 2px solid #4CAF50 !important; }
+    .natrium-box { background-color: #e3f2fd !important; border: 2px solid #2196F3 !important; }
+    
+    .scoring-table thead { background-color: #4CAF50 !important; color: white !important; }
+    .section-head { background-color: #eeeeee !important; }
+    .score-col { background-color: #fffde7 !important; border: 1px solid #ccc !important; }
+    .highlight-natrium { background-color: #e3f2fd !important; }
+
+    /* Hide Content Based on Mode */
     body.mode-psi #calc-natrium-content, body.mode-psi #natrium-output-box { display: none !important; }
     body.mode-natrium #calc-psi-content, body.mode-natrium #psi-output-box { display: none !important; }
 }
