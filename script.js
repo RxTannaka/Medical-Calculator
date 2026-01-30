@@ -15,7 +15,7 @@ function showCalculator(mode) {
     document.getElementById('btn-natrium').classList.toggle('active', !isPsi);
 }
 
-// Data Binding
+// Data Binding Listeners
 document.getElementById('nama').addEventListener('input', e => document.getElementById('displayNama').textContent = e.target.value || '-');
 document.getElementById('noMR').addEventListener('input', e => document.getElementById('displayNoMR').textContent = e.target.value || '-');
 document.getElementById('inputDPJP').addEventListener('input', e => document.getElementById('displayDPJP').textContent = e.target.value || '');
@@ -39,12 +39,15 @@ function updateStats() {
     document.getElementById('displayTglLahir').textContent = tgl;
     document.getElementById('displayUmur').textContent = age + " Tahun";
     const jk = document.getElementById('jk').value;
+    
+    // Skor Usia PSI
     document.getElementById('scoreUsia').textContent = (jk === 'P') ? Math.max(0, age - 10) : age;
     
     calculatePSI();
     calculateNatrium();
 }
 
+// Checklist PSI
 document.querySelectorAll('.psi-check').forEach(box => {
     box.addEventListener('change', () => {
         const id = box.dataset.id;
@@ -65,6 +68,7 @@ function calculatePSI() {
     else if(total >= 91) { kelas = "IV"; mort = "8.2%"; }
     else if(total >= 71) { kelas = "III"; mort = "2.8%"; }
     else if(total > 0) { kelas = "II"; mort = "0.6%"; }
+    
     document.getElementById('kelasRisiko').textContent = kelas;
     document.getElementById('mortalityRate').textContent = mort;
 }
@@ -79,7 +83,7 @@ function calculateNatrium() {
 
     if(!bb || !naSerum || !jk) return;
 
-    let factor = 0.6; // Anak/Pria
+    let factor = 0.6; // TBW Anak & Pria Dewasa
     if (age > 18) {
         if (jk === 'P') factor = (age > 65) ? 0.45 : 0.5;
         else factor = (age > 65) ? 0.5 : 0.6;
@@ -88,7 +92,7 @@ function calculateNatrium() {
     const tbw = bb * factor;
     const deltaPerLiter = (naInfus - naSerum) / (tbw + 1);
     const totalVolumeMl = (target / deltaPerLiter) * 1000;
-    const botolCount = Math.ceil(totalVolumeMl / 500); 
+    const botolCount = Math.ceil(totalVolumeMl / 500); // Pembulatan ke atas
     const speed = totalVolumeMl / 24;
 
     const selectInfus = document.getElementById('naInfus');
@@ -112,5 +116,6 @@ function printAndDownload() {
         alert("Lengkapi Nama, No. MR (10 digit), dan Nama DPJP.");
         return;
     }
+    document.title = nama + " - " + currentMode.toUpperCase();
     window.print();
 }
