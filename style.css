@@ -47,13 +47,11 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
 /* Print Settings */
 @media print {
     @page { size: A4; margin: 10mm; }
-    body { padding: 0; background: white; font-size: 11px; }
-    .container { width: 100%; padding: 0; max-width: 100%; }
+    body { font-size: 11px; }
     .screen-only { display: none !important; }
-    .header-container { display: block !important; margin-bottom: 5px; text-align: center; }
-    .header-image { max-width: 90%; }
-    /* Mode display handling */
-    body.mode-psi #calc-natrium-content { display: none !important; }
-    body.mode-natrium #calc-psi-content { display: none !important; }
-    .scoring-table td { padding: 2px 5px; }
+    .header-image { max-width: 80%; display: block; margin: 0 auto; }
+    
+    /* Aturan Sembunyi Berdasarkan Mode */
+    body.mode-psi #calc-natrium-content, body.mode-psi #natrium-output-box { display: none !important; }
+    body.mode-natrium #calc-psi-content, body.mode-natrium #psi-output-box { display: none !important; }
 }
