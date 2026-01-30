@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Calculator - Murni Teguh Memorial Hospital</title>
+    <title>Kalkulator Medis - Murni Teguh Memorial Hospital</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="mode-psi">
@@ -28,54 +28,54 @@
 
             <div class="total-section">
                 <div class="total-line"><span class="total-label">PSI Score:</span><span id="totalScore">0</span> (<span id="kelasRisiko">-</span>)</div>
+                <div class="psi-summary-line">
+                    <div class="total-line"><span class="total-label">Mortality:</span><span id="mortalityRate">-</span></div>
+                </div>
                 <div class="natrium-summary-line" style="display:none; margin-top: 5px; padding-top: 5px; border-top: 1px solid #ccc;">
                     <div class="total-line"><span class="total-label">Δ Na+ (1L):</span><span id="displayDelta">0</span> mEq/L</div>
                     <div class="total-line"><span class="total-label">Kebutuhan:</span><span id="displayBotol">0</span> Botol</div>
-                </div>
-                <div class="psi-summary-line">
-                    <div class="total-line"><span class="total-label">Mortality:</span><span id="mortalityRate">-</span></div>
                 </div>
             </div>
         </div>
 
         <div class="input-form screen-only">
-            <div class="form-group"><label>Nama Pasien*:</label><input type="text" id="nama" required></div>
-            <div class="form-group"><label>No. MR (10 Digit)*:</label><input type="text" id="noMR" maxlength="10" placeholder="00xxxxxx" required></div>
-            <div class="form-group"><label>Tanggal Lahir*:</label><input type="date" id="tglLahir" required></div>
-            <div class="form-group"><label>Jenis Kelamin*:</label><select id="jk" required><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
-            <div class="form-group"><label>Tgl Assessment*:</label><input type="date" id="tglAsesmen" required></div>
-            <div class="form-group"><label>Berat Badan (kg)*:</label><input type="number" id="bb" required></div>
+            <div class="form-group"><label>Nama Pasien*:</label><input type="text" id="nama"></div>
+            <div class="form-group"><label>No. MR (10 Digit)*:</label><input type="text" id="noMR" maxlength="10"></div>
+            <div class="form-group"><label>Tanggal Lahir*:</label><input type="date" id="tglLahir"></div>
+            <div class="form-group"><label>Jenis Kelamin*:</label><select id="jk"><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
+            <div class="form-group"><label>Tgl Assessment*:</label><input type="date" id="tglAsesmen"></div>
+            <div class="form-group"><label>Berat Badan (kg)*:</label><input type="number" id="bb"></div>
         </div>
 
         <div id="calc-psi-content">
-            [cite_start]<h2 class="form-title">Pneumonia Severity Index Checklist [cite: 28, 80]</h2>
+            <h2 class="form-title">Pneumonia Severity Index Checklist</h2>
             <div class="psi-tables">
                 <table class="scoring-table">
-                    [cite_start]<thead><tr><th>Kriteria Penilaian [cite: 29]</th><th class="score-col">Skor</th></tr></thead>
+                    <thead><tr><th>Kriteria Penilaian</th><th class="score-col">Skor</th></tr></thead>
                     <tbody>
-                        [cite_start]<tr class="section-head"><td colspan="2">Faktor Demografik [cite: 29]</td></tr>
-                        [cite_start]<tr><td>Usia [cite: 29]</td><td class="score-col" id="scoreUsia">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="panti"> Penghuni Panti Werda (+10) [cite: 29]</label></td><td class="score-col" id="scorePanti">0</td></tr>
-                        [cite_start]<tr class="section-head"><td colspan="2">Penyakit Komorbid [cite: 29]</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="30" data-id="keganasan"> Keganasan (+30) [cite: 29]</label></td><td class="score-col" id="scoreKeganasan">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="hati"> Penyakit Hati (+20) [cite: 29]</label></td><td class="score-col" id="scoreHati">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="jantung"> Gagal Jantung Kongestif (+10) [cite: 29]</label></td><td class="score-col" id="scoreJantung">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="serebro"> Penyakit Serebrovaskular (+10) [cite: 29]</label></td><td class="score-col" id="scoreSerebro">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="ginjal"> Penyakit Ginjal (+10) [cite: 29]</label></td><td class="score-col" id="scoreGinjal">0</td></tr>
-                        [cite_start]<tr class="section-head"><td colspan="2">Pemeriksaan Fisis [cite: 29]</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="kesadaran"> Gangguan Kesadaran (+20) [cite: 29]</label></td><td class="score-col" id="scoreKesadaran">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="nafas"> Frekuensi Nafas > 30x/menit (+20) [cite: 29]</label></td><td class="score-col" id="scoreNafas">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="sistolik"> Tekanan Darah Sistolik < 90 mmHg (+20) [cite: 32]</label></td><td class="score-col" id="scoreSistolik">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="15" data-id="suhu"> Suhu < 35°C atau > 40°C (+15) [cite: 32]</label></td><td class="score-col" id="scoreSuhu">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="nadi"> Frekuensi Nadi > 125x/menit (+10) [cite: 32]</label></td><td class="score-col" id="scoreNadi">0</td></tr>
-                        [cite_start]<tr class="section-head"><td colspan="2">Hasil Laboratorium [cite: 32]</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="30" data-id="ph"> pH Arteri < 7.35 (+30) [cite: 32]</label></td><td class="score-col" id="scorePh">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="ureum"> Ureum > 64.2 mg/dL (+20) [cite: 32]</label></td><td class="score-col" id="scoreUreum">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="natrium"> Natrium < 130 mEq/L (+20) [cite: 32]</label></td><td class="score-col" id="scoreNatriumCheck">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="glukosa"> Glukosa > 250 mg/dL (+10) [cite: 32]</label></td><td class="score-col" id="scoreGlukosa">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="hematokrit"> Hematokrit < 30% (+10) [cite: 32]</label></td><td class="score-col" id="scoreHematokrit">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="pao2"> PaO2 < 60 mmHg (+10) [cite: 32]</label></td><td class="score-col" id="scorePao2">0</td></tr>
-                        [cite_start]<tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="efusi"> Efusi Pleura (+10) [cite: 32]</label></td><td class="score-col" id="scoreEfusi">0</td></tr>
+                        <tr class="section-head"><td colspan="2">Faktor Demografik</td></tr>
+                        <tr><td>Usia</td><td class="score-col" id="scoreUsia">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="panti"> Penghuni Panti Werda (+10)</label></td><td class="score-col" id="scorePanti">0</td></tr>
+                        <tr class="section-head"><td colspan="2">Penyakit Komorbid</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="30" data-id="keganasan"> Keganasan (+30)</label></td><td class="score-col" id="scoreKeganasan">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="hati"> Penyakit Hati (+20)</label></td><td class="score-col" id="scoreHati">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="jantung"> Gagal Jantung Kongestif (+10)</label></td><td class="score-col" id="scoreJantung">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="serebro"> Penyakit Serebrovaskular (+10)</label></td><td class="score-col" id="scoreSerebro">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="ginjal"> Penyakit Ginjal (+10)</label></td><td class="score-col" id="scoreGinjal">0</td></tr>
+                        <tr class="section-head"><td colspan="2">Pemeriksaan Fisis</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="kesadaran"> Gangguan Kesadaran (+20)</label></td><td class="score-col" id="scoreKesadaran">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="nafas"> Frekuensi Nafas > 30x/menit (+20)</label></td><td class="score-col" id="scoreNafas">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="sistolik"> Tekanan Darah Sistolik < 90 mmHg (+20)</label></td><td class="score-col" id="scoreSistolik">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="15" data-id="suhu"> Suhu < 35°C atau > 40°C (+15)</label></td><td class="score-col" id="scoreSuhu">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="nadi"> Frekuensi Nadi > 125x/menit (+10)</label></td><td class="score-col" id="scoreNadi">0</td></tr>
+                        <tr class="section-head"><td colspan="2">Hasil Laboratorium</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="30" data-id="ph"> pH Arteri < 7.35 (+30)</label></td><td class="score-col" id="scorePh">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="ureum"> Ureum > 64.2 mg/dL (+20)</label></td><td class="score-col" id="scoreUreum">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="20" data-id="natriumCheck"> Natrium < 130 mEq/L (+20)</label></td><td class="score-col" id="scoreNatriumCheck">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="glukosa"> Glukosa > 250 mg/dL (+10)</label></td><td class="score-col" id="scoreGlukosa">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="hematokrit"> Hematokrit < 30% (+10)</label></td><td class="score-col" id="scoreHematokrit">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="pao2"> PaO2 < 60 mmHg (+10)</label></td><td class="score-col" id="scorePao2">0</td></tr>
+                        <tr><td><label class="checkbox-label"><input type="checkbox" class="psi-check" data-score="10" data-id="efusi"> Efusi Pleura (+10)</label></td><td class="score-col" id="scoreEfusi">0</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -105,13 +105,13 @@
                         <tr style="background:#fffde7;"><td>Kecepatan Pemberian Infus</td><td><span id="txtKecepatan">0</span> mL/jam</td></tr>
                     </tbody>
                 </table>
-                <p class="disclaimer">*Botol dibulatkan ke atas. Kecepatan dihitung untuk durasi 24 jam.</p>
+                <p class="disclaimer">*Catatan: Pembulatan botol dilakukan ke atas.</p>
             </div>
         </div>
 
         <div class="dpjp-section">
             <p>Diketahui oleh,</p>
-            <input type="text" id="inputDPJP" placeholder="Nama DPJP*" class="screen-only dpjp-input" required>
+            <input type="text" id="inputDPJP" placeholder="Nama Dokter Penanggung Jawab" class="screen-only dpjp-input">
             <div id="displayDPJP" class="dpjp-name"></div>
         </div>
 
