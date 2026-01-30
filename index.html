@@ -32,7 +32,7 @@
                 <div class="total-line"><span class="total-label">Mortality:</span><span id="mortalityRate">-</span></div>
             </div>
             
-            <div id="natrium-output-box" class="total-section" style="display:none; border-color: #2196F3; background: #e3f2fd;">
+            <div id="natrium-output-box" class="total-section" style="display:none; border-color: #000;">
                 <div class="total-line"><span class="total-label">Δ Na+ (1L):</span><span id="displayDelta">0</span> mEq/L</div>
                 <div class="total-line"><span class="total-label">Kebutuhan:</span><span id="displayBotol">0 Botol</span></div>
             </div>
@@ -98,11 +98,11 @@
                 <table class="scoring-table">
                     <thead><tr><th>Parameter Koreksi</th><th>Hasil Perhitungan</th></tr></thead>
                     <tbody>
-                        <tr><td>Total Body Water (TBW)</td><td><span id="txtTBW">0</span> L</td></tr>
-                        <tr><td>Δ Na+ Serum per 1 Liter Cairan</td><td><span id="txtDelta">0</span> mEq/L</td></tr>
-                        <tr><td>Total Volume Cairan Dibutuhkan</td><td><span id="txtTotalVol">0</span> mL</td></tr>
-                        <tr style="background:#e3f2fd; font-weight:bold;"><td>Kebutuhan Botol Sediaan (500 mL)</td><td><span id="txtBotolDisplay">0 Botol</span></td></tr>
-                        <tr style="background:#fffde7;"><td>Kecepatan Pemberian Infus</td><td><span id="txtKecepatan">0</span> mL/jam</td></tr>
+                        <tr><td>Total Body Water (TBW)</td><td><span id="txtTBW">0</span></td></tr>
+                        <tr><td>Δ Na+ Serum per 1 Liter Cairan</td><td><span id="txtDelta">0</span></td></tr>
+                        <tr><td>Total Volume Cairan Dibutuhkan</td><td><span id="txtTotalVol">0</span></td></tr>
+                        <tr style="background:#f9f9f9; font-weight:bold;"><td>Kebutuhan Botol Sediaan (500 mL)</td><td><span id="txtBotolDisplay">0 Botol</span></td></tr>
+                        <tr style="background:#f9f9f9;"><td>Kecepatan Pemberian Infus</td><td><span id="txtKecepatan">0</span></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -110,7 +110,7 @@
 
         <div class="dpjp-section">
             <p>Diketahui oleh,</p>
-            <input type="text" id="inputDPJP" placeholder="Nama Dokter" class="screen-only dpjp-input">
+            <input type="text" id="inputDPJP" placeholder="Nama Dokter*" class="screen-only dpjp-input">
             <div id="displayDPJP" class="dpjp-name"></div>
         </div>
 
