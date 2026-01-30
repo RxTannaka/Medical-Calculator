@@ -48,11 +48,12 @@ body { font-family: 'Arial', sans-serif; line-height: 1.2; padding: 10px; backgr
 @media print {
     @page { size: A4; margin: 10mm; }
     body { padding: 0; background: white; font-size: 11px; }
-    .container { width: 100%; padding: 0; box-shadow: none; border-radius: 0; max-width: 100%; }
+    .container { width: 100%; padding: 0; max-width: 100%; }
     .screen-only { display: none !important; }
-    .header-container { margin-bottom: 5px; display: block !important; }
-    .header-image { max-width: 100%; width: 100%; }
-    body.mode-psi #calc-natrium-content, body.mode-psi .natrium-only-result { display: none !important; }
-    body.mode-natrium #calc-psi-content, body.mode-natrium .psi-only-result { display: none !important; }
-    .scoring-table td { padding: 2px 6px; }
+    .header-container { display: block !important; margin-bottom: 5px; text-align: center; }
+    .header-image { max-width: 90%; }
+    /* Mode display handling */
+    body.mode-psi #calc-natrium-content { display: none !important; }
+    body.mode-natrium #calc-psi-content { display: none !important; }
+    .scoring-table td { padding: 2px 5px; }
 }
