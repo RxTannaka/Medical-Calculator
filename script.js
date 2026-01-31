@@ -60,6 +60,7 @@ function updateStats() {
     
     calculatePSI();
     calculateNatrium();
+    calculateKalium();
 }
 
 document.querySelectorAll('.psi-check').forEach(box => {
@@ -172,57 +173,51 @@ function calculateKalium() {
     const bb = parseFloat(document.getElementById('bb').value);
     const kSerum = parseFloat(document.getElementById('kSerum').value);
     const kTarget = parseFloat(document.getElementById('kTarget').value) || 3.0;
-    const akses = document.getElementById('aksesVena').value;
     const container = document.getElementById('kalium-instructions');
 
-    if (!bb || isNaN(kSerum)) return;
+    if (!bb || isNaN(kSerum)) {
+        // Reset tampilan kanan atas jika BB kosong
+        document.getElementById('displayKebutuhanK').textContent = "0";
+        return;
+    }
 
-    // Ringkasan di box atas
-    let klas = (kSerum < 2.5) ? "Berat" : (kSerum < 3.0) ? "Sedang" : (kSerum < 3.5) ? "Ringan" : "Normal";
+    // 1. Hitung Kebutuhan mEq
+    const kebutuhan = 0.3 * bb * (kTarget - kSerum);
+    
+    // Update Ringkasan Kanan Atas
+    document.getElementById('displayKebutuhanK').textContent = kebutuhan > 0 ? kebutuhan.toFixed(1) : "0";
     document.getElementById('displayKaliumSerum').textContent = kSerum;
+    
+    let klas = (kSerum < 2.5) ? "Berat" : (kSerum < 3.0) ? "Sedang" : (kSerum < 3.5) ? "Ringan" : "Normal";
     document.getElementById('displayKlasifikasiK').textContent = klas;
 
-    const kebutuhan = 0.3 * bb * (kTarget - kSerum);
-    const botolSediaan = Math.ceil(kebutuhan / 25); // Sediaan 25 mEq/25 mL
-
-    let rows = "";
     if (kSerum >= kTarget) {
-        rows = `<tr><td colspan="2" style="text-align:center; color:green; font-weight:bold;">Kadar Kalium sudah mencapai target.</td></tr>`;
-    } else if (kSerum >= 3.0 && kSerum < 3.5) {
-        // Hipokalemia Ringan (Oral)
-        rows += `<tr><td>Kalium Serum</td><td>${kSerum.toFixed(2)} mEq/L</td></tr>`;
-        rows += `<tr><td>Target</td><td>${kTarget.toFixed(1)} mEq/L</td></tr>`;
-        rows += `<tr><td>Terapi</td><td><strong>KCl Oral (KSR) 20 mEq 3-4 kali sehari</strong></td></tr>`;
-        rows += `<tr><td>Catatan</td><td>Edukasi diet tinggi kalium.</td></tr>`;
-    } else {
-        // Hipokalemia Sedang-Berat (Intravena)
-        let pelarutVol = 0;
-        let sediaanVol = kebutuhan; // Karena 1 mEq = 1 mL (25/25)
-        
-        if (akses === 'sentral') {
-            // Standar PPK: 25 mEq dalam 100 mL NaCl 0.9%
-            pelarutVol = (kebutuhan / 25) * 100;
-        } else {
-            // Standar PPK: Maks 20 mEq dalam 500 mL NaCl 0.9%
-            pelarutVol = (kebutuhan / 20) * 500;
-        }
-
-        const totalVol = pelarutVol + sediaanVol;
-        const speed = (totalVol / 24).toFixed(1);
-
-        rows += `<tr><td>Kalium Serum</td><td>${kSerum.toFixed(2)} mEq/L</td></tr>`;
-        rows += `<tr><td>Target Koreksi</td><td>${kTarget.toFixed(1)} mEq/L</td></tr>`;
-        rows += `<tr><td>Dosis Total KCl</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong></td></tr>`;
-        rows += `<tr><td>Sediaan RS</td><td>${botolSediaan} Botol (25 mEq / 25 mL)</td></tr>`;
-        
-        // BARIS BARU: CAIRAN CAMPURAN
-        rows += `<tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pelarutVol.toFixed(0)} mL NaCl 0.9%</strong></td></tr>`;
-        rows += `<tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${totalVol.toFixed(0)} mL</strong></td></tr>`;
-        
-        rows += `<tr><td>Akses Vena</td><td>${akses === 'sentral' ? 'Vena Sentral' : 'Vena Perifer Besar'}</td></tr>`;
-        rows += `<tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${speed} mL/jam</strong></td></tr>`;
-        rows += `<tr><td>Monitoring</td><td>EKG Kontinu & Cek K+ ulang setelah koreksi selesai.</td></tr>`;
+        container.innerHTML = `<tr><td colspan="2" style="text-align:center; color:green;">Kadar Kalium sudah mencapai target.</td></tr>`;
+        return;
     }
+
+    // 2. Hitung Sediaan (Pembulatan ke Atas)
+    const jumlahBotol = Math.ceil(kebutuhan / 25);
+    
+    // 3. Logika Pelarut (Konstan 500ml per botol sesuai instruksi dr. Eric)
+    const pelarutVol = jumlahBotol * 500; 
+    const obatVol = jumlahBotol * 25; // 1 botol = 25ml
+    const totalCampuran = pelarutVol + obatVol;
+    
+    // 4. Kecepatan Infus (Durasi 24 jam)
+    const speed = (totalCampuran / 24).toFixed(1);
+
+    let rows = `
+        <tr><td>Kalium Serum</td><td>${kSerum.toFixed(2)} mEq/L</td></tr>
+        <tr><td>Target Koreksi</td><td>${kTarget.toFixed(1)} mEq/L</td></tr>
+        <tr><td>Dosis Total</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong></td></tr>
+        <tr><td>Sediaan RS</td><td><strong>${jumlahBotol} Botol</strong> (25 mEq/25 mL)</td></tr>
+        <tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pelarutVol} mL NaCl 0.9%</strong></td></tr>
+        <tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${totalCampuran} mL</strong></td></tr>
+        <tr><td>Kecepatan Infus</td><td><strong>${speed} mL/jam</strong></td></tr>
+        <tr><td>Catatan</td><td>Berikan via Vena Perifer Besar. Observasi nyeri/flebitis.</td></tr>
+    `;
+    
     container.innerHTML = rows;
 }
 
