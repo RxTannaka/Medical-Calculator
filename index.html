@@ -30,21 +30,26 @@
             <div id="psi-output-box" class="output-box green-box">
                 <div class="output-title">PSI Score</div>
                 <div class="output-value" id="totalScore">0</div>
-                <div class="output-label">Kelas Risiko: <span id="kelasRisiko">-</span></div>
+                <div class="output-label">Kelas: <span id="kelasRisiko">-</span></div>
+                <div class="output-label" style="font-size: 11px;">Mortality: <span id="mortalityRate">-</span></div>
             </div>
 
             <div id="natrium-output-box" class="output-box green-box">
-                <div class="output-title">Target Na+</div>
-                <div class="output-value"><span id="displayNaTarget">0</span> <small>mEq/L</small></div>
-                <div class="output-label">Delta: <span id="displayDeltaTotal">0</span></div>
+                <div class="output-title">Delta Na+</div>
+                <div class="output-value"><span id="displayDeltaTotal">0</span> <small>mEq</small></div>
+                <div class="output-label">
+                    <span id="displayNaAwal">0</span> &rarr; <span id="displayNaTarget">0</span>
+                </div>
             </div>
 
             <div id="kalium-output-box" class="output-box green-box">
                 <div class="output-title">Kebutuhan KCl</div>
                 <div class="output-value"><span id="displayKebutuhanK">0</span> <small>mEq</small></div>
-                <div class="output-label">Status: <span id="displayStatusK">-</span></div>
+                <div class="output-label">
+                    <span id="displayKaliumSerum">0</span> &rarr; <span id="displayKTarget">0</span>
+                </div>
+                <div class="output-label" style="font-size: 11px;">Delta: <span id="displayDeltaK">0</span></div>
             </div>
-        </div>
 
         <div class="input-form screen-only">
             <div class="form-group"><label>Nama Pasien*:</label><input type="text" id="nama"></div>
