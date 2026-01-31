@@ -3,68 +3,65 @@ let currentMode = 'psi';
 function showCalculator(mode) {
     currentMode = mode;
     document.body.className = 'mode-' + mode;
-    const isPsi = (mode === 'psi');
-    const isNatrium = (mode === 'natrium');
-    const isKalium = (mode === 'kalium');
-    document.getElementById('calc-psi-content').style.display = 'none';
-    document.getElementById('calc-natrium-content').style.display = 'none';
-    document.getElementById('calc-kalium-content').style.display = 'none';
-    document.getElementById('psi-output-box').style.display = 'none';
-    document.getElementById('natrium-output-box').style.display = 'none';
-    document.getElementById('kalium-output-box').style.display = 'none';
     
-    if(isPsi) {
-        document.getElementById('calc-psi-content').style.display = 'block';
-        document.getElementById('psi-output-box').style.display = 'block';
-    } else if(isNatrium) {
-        document.getElementById('calc-natrium-content').style.display = 'block';
-        document.getElementById('natrium-output-box').style.display = 'block';
-    } else if(isKalium) {
-        document.getElementById('calc-kalium-content').style.display = 'block';
-        document.getElementById('kalium-output-box').style.display = 'block';
-    }
-    document.getElementById('btn-psi').classList.toggle('active', isPsi);
-    document.getElementById('btn-natrium').classList.toggle('active', isNatrium);
-    document.getElementById('btn-kalium').classList.toggle('active', isKalium);
+    // Sembunyikan semua content & output
+    ['psi', 'natrium', 'kalium'].forEach(m => {
+        document.getElementById(`calc-${m}-content`).style.display = 'none';
+        document.getElementById(`${m}-output-box`).style.display = 'none';
+        document.getElementById(`btn-${m}`).classList.remove('active');
+    });
+
+    // Tampilkan yang aktif
+    document.getElementById(`calc-${mode}-content`).style.display = 'block';
+    document.getElementById(`${mode}-output-box`).style.display = 'block';
+    document.getElementById(`btn-${mode}`).classList.add('active');
+
+    // Refresh hitungan saat pindah tab
+    updateStats();
 }
 
-// Data Binding
-document.getElementById('nama').addEventListener('input', e => document.getElementById('displayNama').textContent = e.target.value || '-');
-document.getElementById('noMR').addEventListener('input', e => document.getElementById('displayNoMR').textContent = e.target.value || '-');
-document.getElementById('inputDPJP').addEventListener('input', e => document.getElementById('displayDPJP').textContent = e.target.value || '');
-document.getElementById('tglAsesmen').addEventListener('change', e => document.getElementById('displayTglAsesmen').textContent = e.target.value || '-');
-document.getElementById('tglLahir').addEventListener('change', updateStats);
-document.getElementById('jk').addEventListener('change', updateStats);
+// Tambahkan Event Listeners ke semua input agar menghitung OTOMATIS
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = [
+        'nama', 'noMR', 'inputDPJP', 'tglAsesmen', 'tglLahir', 'jk', 'bb',
+        'naSerum', 'naTarget', 'naKecepatan', 'naCairan',
+        'kSerum', 'kTarget', 'aksesVena'
+    ];
 
-['bb', 'naSerum', 'naTarget', 'naKecepatan', 'naInfus', 'kSerum', 'kTarget', 'aksesVena'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('input', () => {calculateNatrium() ; calculateKalium() ;
-    if (id === 'aksesVena') {
-            el.addEventListener('change', () => {
-                calculateNatrium();
-                calculateKalium();
-            });
-    }
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            // Gunakan 'input' untuk kolom angka/teks, 'change' untuk dropdown/tanggal
+            const eventType = (el.tagName === 'SELECT' || el.type === 'date') ? 'change' : 'input';
+            el.addEventListener(eventType, updateStats);
+        }
     });
 });
 
 function updateStats() {
+    // 1. Sinkronisasi Data Pasien ke Box Kanan
+    document.getElementById('displayNama').textContent = document.getElementById('nama').value || '-';
+    document.getElementById('displayNoMR').textContent = document.getElementById('noMR').value || '-';
+    document.getElementById('displayDPJP').textContent = document.getElementById('inputDPJP').value || '';
+    document.getElementById('displayTglAsesmen').textContent = document.getElementById('tglAsesmen').value || '-';
+    
+    // 2. Hitung Umur
     const tgl = document.getElementById('tglLahir').value;
-    if(!tgl) return;
-    const dob = new Date(tgl);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
-    
-    document.getElementById('displayTglLahir').textContent = tgl;
-    document.getElementById('displayUmur').textContent = age + " Tahun";
-    const jk = document.getElementById('jk').value;
-    
-    // Perbaikan Skor Usia PSI
-    const scoreUsia = (jk === 'P') ? Math.max(0, age - 10) : age;
-    document.getElementById('scoreUsia').textContent = scoreUsia;
-    
+    if (tgl) {
+        const dob = new Date(tgl);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age--;
+        document.getElementById('displayTglLahir').textContent = tgl;
+        document.getElementById('displayUmur').textContent = age + " Tahun";
+        
+        // Skor Usia PSI
+        const jk = document.getElementById('jk').value;
+        const scoreUsia = (jk === 'P') ? Math.max(0, age - 10) : age;
+        document.getElementById('scoreUsia').textContent = scoreUsia;
+    }
+
+    // 3. Jalankan semua kalkulator
     calculatePSI();
     calculateNatrium();
     calculateKalium();
@@ -185,6 +182,7 @@ function calculateKalium() {
 
     if (!bb || isNaN(kSerum)) {
         document.getElementById('displayKebutuhanK').textContent = "0";
+        if(container) container.innerHTML = "";
         return;
     }
 
@@ -193,7 +191,7 @@ function calculateKalium() {
     document.getElementById('displayKaliumSerum').textContent = kSerum.toFixed(2);
     
     if (kSerum >= kTarget) {
-        container.innerHTML = `<tr><td colspan="2" style="text-align:center; color:green;">Kadar Kalium sudah mencapai target.</td></tr>`;
+        container.innerHTML = `<tr><td colspan="2" style="text-align:center; color:green; font-weight:bold;">Kadar Kalium sudah mencapai target.</td></tr>`;
         return;
     }
 
@@ -207,37 +205,26 @@ function calculateKalium() {
     `;
 
     if (akses === 'sentral') {
-        // Opsi 1: 100 mL per botol
-        const pelarut1 = jumlahBotol * 100;
-        const total1 = pelarut1 + obatVol;
-        const speed1 = (total1 / 24).toFixed(1);
-
-        // Opsi 2: 500 mL per botol
-        const pelarut2 = jumlahBotol * 500;
-        const total2 = pelarut2 + obatVol;
-        const speed2 = (total2 / 24).toFixed(1);
+        const p1 = jumlahBotol * 100; const t1 = p1 + obatVol; const s1 = (t1 / 24).toFixed(1);
+        const p2 = jumlahBotol * 500; const t2 = p2 + obatVol; const s2 = (t2 / 24).toFixed(1);
 
         rows += `
             <tr style="background:#e3f2fd;"><td colspan="2" style="font-weight:bold; text-align:center;">Opsi Akses Vena Sentral</td></tr>
-            <tr><td><strong>Opsi A (Pekat)</strong></td><td>Pelarut: ${pelarut1} mL NaCl<br>Total: ${total1} mL<br>Kecepatan: <strong>${speed1} mL/jam</strong></td></tr>
-            <tr><td><strong>Opsi B (Encer)</strong></td><td>Pelarut: ${pelarut2} mL NaCl<br>Total: ${total2} mL<br>Kecepatan: <strong>${speed2} mL/jam</strong></td></tr>
+            <tr><td><strong>Opsi A (Pekat)</strong></td><td>Pelarut: ${p1} mL NaCl<br>Total: ${t1} mL<br>Kecepatan: <strong>${s1} mL/jam</strong></td></tr>
+            <tr><td><strong>Opsi B (Encer)</strong></td><td>Pelarut: ${p2} mL NaCl<br>Total: ${t2} mL<br>Kecepatan: <strong>${s2} mL/jam</strong></td></tr>
         `;
     } else {
-        // Vena Perifer (Hanya opsi 500 mL sesuai instruksi sebelumnya)
-        const pelarutP = jumlahBotol * 500;
-        const totalP = pelarutP + obatVol;
-        const speedP = (totalP / 24).toFixed(1);
-
+        const pP = jumlahBotol * 500; const tP = pP + obatVol; const sP = (tP / 24).toFixed(1);
         rows += `
             <tr><td>Akses Vena</td><td>Vena Perifer Besar</td></tr>
-            <tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pelarutP} mL NaCl 0.9%</strong></td></tr>
-            <tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${totalP} mL</strong></td></tr>
-            <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${speedP} mL/jam</strong></td></tr>
+            <tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pP} mL NaCl 0.9%</strong></td></tr>
+            <tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${tP} mL</strong></td></tr>
+            <tr style="background-color: #e3f2fd !important; font-weight: bold;"><td>Kecepatan Infus</td><td><strong>${sP} mL/jam</strong></td></tr>
         `;
     }
-    
     container.innerHTML = rows;
-}
+} 
+
 function printAndDownload() {
     const nama = document.getElementById('nama').value;
     const noMR = document.getElementById('noMR').value;
