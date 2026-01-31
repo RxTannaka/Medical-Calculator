@@ -1,173 +1,76 @@
 /* --- RESET & BASIC --- */
-* {
-    box-sizing: border-box;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    font-size: 13px;
-    background-color: #f0f2f5;
-    margin: 0; padding: 20px;
-}
-
-.container {
-    max-width: 850px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+* { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+body { font-family: 'Arial', sans-serif; font-size: 13px; background-color: #f0f2f5; margin: 0; padding: 20px; }
+.container { max-width: 850px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
 .header-container { text-align: center; margin-bottom: 5px; }
 .header-image { max-width: 100%; height: auto; display: block; margin: 0 auto; }
 
-/* --- MENU TABS --- */
+/* MENU TABS */
 .menu-container { display: flex; justify-content: center; gap: 5px; margin-bottom: 20px; }
 .btn-tab { padding: 10px 20px; border: none; background: #ddd; cursor: pointer; border-radius: 5px; font-weight: bold; }
 .btn-tab.active { background: #4CAF50; color: white; }
 
-/* --- DATA PASIEN (Fixed Alignment Bug 1) --- */
-.patient-total-wrapper {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    align-items: stretch;
-}
-
+/* DATA PASIEN */
+.patient-total-wrapper { display: flex; gap: 20px; margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; align-items: stretch; }
 .patient-info { flex: 1; }
-
-/* Grid System untuk meluruskan titik dua (Bug 1 Fix) */
-.info-line {
-    display: grid;
-    grid-template-columns: 140px 10px auto; /* Kolom 1 lebar tetap, Kolom 2 titik dua, Kolom 3 isi */
-    margin-bottom: 5px;
-    border-bottom: 1px dashed #eee;
-    padding-bottom: 2px;
-}
+.info-line { display: grid; grid-template-columns: 140px 10px auto; margin-bottom: 5px; border-bottom: 1px dashed #eee; padding-bottom: 2px; }
 .info-line .label { font-weight: bold; color: #555; }
 
-/* --- OUTPUT BOXES --- */
-.output-box {
-    width: 200px;
-    padding: 15px;
-    border: 2px solid #4CAF50;
-    border-radius: 8px;
-    text-align: center;
-    background: #e8f5e9;
-    display: none; /* Default hidden, JS will toggle */
-    flex-direction: column; justify-content: center;
-}
+/* OUTPUT BOXES */
+.output-box { width: 200px; padding: 15px; border: 2px solid #4CAF50; border-radius: 8px; text-align: center; background: #e8f5e9; display: none; flex-direction: column; justify-content: center; }
 .output-title { font-weight: bold; color: #2E7D32; margin-bottom: 5px; }
 .output-value { font-size: 24px; font-weight: bold; color: #333; }
 
-/* --- INPUT FORMS --- */
-.input-form {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    border: 1px solid #eee;
-    margin-bottom: 20px;
-}
-
+/* INPUT FORMS */
+.input-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 15px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px; }
 .form-group { display: flex; flex-direction: column; }
 .form-group label { font-weight: bold; font-size: 11px; margin-bottom: 3px; }
-.form-group input, .form-group select {
-    padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 100%;
-}
+.form-group input, .form-group select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
 
-/* CHECKBOX PSI GRID */
-.checkbox-grid {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
+/* CHECKBOX GRID */
+.checkbox-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .form-section-title { grid-column: 1 / -1; font-weight: bold; margin-top: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
 
-/* --- TABLES --- */
+/* TABLES */
 .scoring-table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: avoid; }
 .scoring-table th, .scoring-table td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
 .scoring-table th { background-color: #f2f2f2; }
 .highlight-natrium { background-color: #e8f5e9; font-weight: bold; }
 
-/* --- FOOTER --- */
-.footer-section { 
-    display: flex; 
-    justify-content: space-between; /* Tombol Kiri, TTD Kanan */
-    align-items: flex-end; 
-    margin-top: 40px; 
-    page-break-inside: avoid; /* Jangan terpotong saat print */
-}
-
-.dpjp-section { 
-    text-align: center; 
-    min-width: 200px; 
-    /* Pastikan di kanan */
-    margin-left: auto; 
-}
-
-.dpjp-input { margin-top: 5px; width: 100%; padding: 5px; text-align: center;}
-.dpjp-name { 
-    margin-top: 60px; /* Jarak untuk tanda tangan manual */
-    font-weight: bold; 
-    border-bottom: 1px solid #000; 
-    padding-bottom: 5px; 
-    min-height: 20px; 
-}
-
-.button-container { 
-    display: flex; 
-    gap: 10px; 
-}
-
+/* FOOTER */
+.footer-section { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; page-break-inside: avoid; }
+.dpjp-section { text-align: center; min-width: 200px; margin-left: auto; }
+.dpjp-input { margin-top: 5px; width: 100%; padding: 5px; text-align: center; }
+.dpjp-name { margin-top: 60px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px; min-height: 20px; }
 .btn-action { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; color: white; font-weight: bold; }
 .btn-print { background: #2196F3; } 
 .btn-clear { background: #f44336; }
 
-/* --- PRINT RULES (Bug 6 Fix: Strict Mode) --- */
+/* PRINT RULES */
 @media print {
     @page { size: A4; margin: 10mm; }
-    
     body { background: white; padding: 0; }
     .container { width: 100%; max-width: 100%; box-shadow: none; border: none; padding: 0; margin: 0; }
     .screen-only { display: none !important; }
     .patient-total-wrapper { border: 1px solid #000; }
-    .footer-section { justify-content: flex-end; /* Dorong TTD mentok ke kanan */ }
-    .dpjp-section { margin-left: auto !important; /* Pastikan tetap di kanan saat tombol hilang */}
-    /* Strict Visibility Control Based on Body Class */
-    body.mode-psi #calc-natrium-content,
-    body.mode-psi #calc-kalium-content,
-    body.mode-psi #natrium-output-box,
-    body.mode-psi #kalium-output-box { display: none !important; }
+    .footer-section { justify-content: flex-end; }
+    .dpjp-section { margin-left: auto !important; }
 
-    body.mode-natrium #calc-psi-content,
-    body.mode-natrium #calc-kalium-content,
-    body.mode-natrium #psi-output-box,
-    body.mode-natrium #kalium-output-box { display: none !important; }
+    /* Strict Visibility Control */
+    body.mode-psi #calc-natrium-content, body.mode-psi #calc-kalium-content,
+    body.mode-psi #natrium-output-box, body.mode-psi #kalium-output-box { display: none !important; }
+    
+    body.mode-natrium #calc-psi-content, body.mode-natrium #calc-kalium-content,
+    body.mode-natrium #psi-output-box, body.mode-natrium #kalium-output-box { display: none !important; }
+    
+    body.mode-kalium #calc-psi-content, body.mode-kalium #calc-natrium-content,
+    body.mode-kalium #psi-output-box, body.mode-kalium #natrium-output-box { display: none !important; }
 
-    body.mode-kalium #calc-psi-content,
-    body.mode-kalium #calc-natrium-content,
-    body.mode-kalium #psi-output-box,
-    body.mode-kalium #natrium-output-box { display: none !important; }
-
-    /* Force Active Output Box to Show Side-by-Side */
-    #psi-output-box, #natrium-output-box, #kalium-output-box {
-        border: 2px solid #000 !important;
-    }
+    /* Force Active Output Box */
+    #psi-output-box, #natrium-output-box, #kalium-output-box { border: 2px solid #000 !important; }
     body.mode-psi #psi-output-box { display: flex !important; }
     body.mode-natrium #natrium-output-box { display: flex !important; }
     body.mode-kalium #kalium-output-box { display: flex !important; }
-    
     .calc-content { display: block !important; }
-
-    
 }
