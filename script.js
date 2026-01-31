@@ -180,7 +180,7 @@ function calculateKalium() {
     const bb = parseFloat(document.getElementById('bb').value);
     const kSerum = parseFloat(document.getElementById('kSerum').value);
     const kTarget = parseFloat(document.getElementById('kTarget').value) || 3.0;
-    const akses = document.getElementById('aksesVena').value; // Mengambil nilai dari dropdown yang sudah diperbaiki
+    const akses = document.getElementById('aksesVena').value;
     const container = document.getElementById('kalium-instructions');
 
     if (!bb || isNaN(kSerum)) {
@@ -190,40 +190,54 @@ function calculateKalium() {
 
     const kebutuhan = 0.3 * bb * (kTarget - kSerum);
     document.getElementById('displayKebutuhanK').textContent = kebutuhan > 0 ? kebutuhan.toFixed(1) : "0";
-    document.getElementById('displayKaliumSerum').textContent = kSerum;
+    document.getElementById('displayKaliumSerum').textContent = kSerum.toFixed(2);
     
     if (kSerum >= kTarget) {
-        container.innerHTML = `<tr><td colspan="2" style="text-align:center;">Kadar Kalium sudah mencapai target.</td></tr>`;
+        container.innerHTML = `<tr><td colspan="2" style="text-align:center; color:green;">Kadar Kalium sudah mencapai target.</td></tr>`;
         return;
     }
 
     const jumlahBotol = Math.ceil(kebutuhan / 25);
-    
-    // LOGIKA AKSES VENA
-    let pelarutVol, infoAkses;
-    if (akses === 'sentral') {
-        pelarutVol = jumlahBotol * 100; // Sentral lebih pekat: 100ml per botol
-        infoAkses = "Vena Sentral (Dosis pekat)";
-    } else {
-        pelarutVol = jumlahBotol * 500; // Perifer: 500ml per botol (instruksi dr. Eric)
-        infoAkses = "Vena Perifer Besar";
-    }
+    const obatVol = jumlahBotol * 25;
 
-    const obatVol = jumlahBotol * 25; 
-    const totalCampuran = pelarutVol + obatVol;
-    const speed = (totalCampuran / 24).toFixed(1);
-
-    container.innerHTML = `
+    let rows = `
         <tr><td>Kalium Serum Saat Ini</td><td>${kSerum.toFixed(2)} mEq/L</td></tr>
         <tr><td>Target Koreksi</td><td>${kTarget.toFixed(1)} mEq/L</td></tr>
-        <tr><td>Sediaan RS</td><td><strong>${jumlahBotol} Botol</strong> (25 mEq/25 mL)</td></tr>
-        <tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pelarutVol} mL NaCl 0.9%</strong></td></tr>
-        <tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${totalCampuran} mL</strong></td></tr>
-        <tr><td>Akses Vena</td><td>${infoAkses}</td></tr>
-        <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${speed} mL/jam</strong></td></tr>
+        <tr><td>Dosis Total KCl</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong> (${jumlahBotol} Botol)</td></tr>
     `;
-}
 
+    if (akses === 'sentral') {
+        // Opsi 1: 100 mL per botol
+        const pelarut1 = jumlahBotol * 100;
+        const total1 = pelarut1 + obatVol;
+        const speed1 = (total1 / 24).toFixed(1);
+
+        // Opsi 2: 500 mL per botol
+        const pelarut2 = jumlahBotol * 500;
+        const total2 = pelarut2 + obatVol;
+        const speed2 = (total2 / 24).toFixed(1);
+
+        rows += `
+            <tr style="background:#e3f2fd;"><td colspan="2" style="font-weight:bold; text-align:center;">Opsi Akses Vena Sentral</td></tr>
+            <tr><td><strong>Opsi A (Pekat)</strong></td><td>Pelarut: ${pelarut1} mL NaCl<br>Total: ${total1} mL<br>Kecepatan: <strong>${speed1} mL/jam</strong></td></tr>
+            <tr><td><strong>Opsi B (Encer)</strong></td><td>Pelarut: ${pelarut2} mL NaCl<br>Total: ${total2} mL<br>Kecepatan: <strong>${speed2} mL/jam</strong></td></tr>
+        `;
+    } else {
+        // Vena Perifer (Hanya opsi 500 mL sesuai instruksi sebelumnya)
+        const pelarutP = jumlahBotol * 500;
+        const totalP = pelarutP + obatVol;
+        const speedP = (totalP / 24).toFixed(1);
+
+        rows += `
+            <tr><td>Akses Vena</td><td>Vena Perifer Besar</td></tr>
+            <tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pelarutP} mL NaCl 0.9%</strong></td></tr>
+            <tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${totalP} mL</strong></td></tr>
+            <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${speedP} mL/jam</strong></td></tr>
+        `;
+    }
+    
+    container.innerHTML = rows;
+}
 function printAndDownload() {
     const nama = document.getElementById('nama').value;
     const noMR = document.getElementById('noMR').value;
