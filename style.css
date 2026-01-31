@@ -141,7 +141,8 @@ body {
     .container { width: 100%; max-width: 100%; box-shadow: none; border: none; padding: 0; margin: 0; }
     .screen-only { display: none !important; }
     .patient-total-wrapper { border: 1px solid #000; }
-    
+    .footer-section { justify-content: flex-end; /* Dorong TTD mentok ke kanan */ }
+    .dpjp-section { margin-left: auto !important; /* Pastikan tetap di kanan saat tombol hilang */}
     /* Strict Visibility Control Based on Body Class */
     body.mode-psi #calc-natrium-content,
     body.mode-psi #calc-kalium-content,
@@ -168,10 +169,5 @@ body {
     
     .calc-content { display: block !important; }
 
-    .footer-section {
-        justify-content: flex-end; /* Dorong TTD mentok ke kanan */
-    }
-    .dpjp-section {
-        margin-left: auto !important; /* Pastikan tetap di kanan saat tombol hilang */
-    }
+    
 }
