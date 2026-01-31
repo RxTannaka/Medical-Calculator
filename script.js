@@ -36,8 +36,9 @@ document.getElementById('tglAsesmen').addEventListener('change', e => document.g
 document.getElementById('tglLahir').addEventListener('change', updateStats);
 document.getElementById('jk').addEventListener('change', updateStats);
 
-['bb', 'naSerum', 'naTarget', 'naKecepatan', 'naInfus', 'kSerum', 'aksesVena'].forEach(id => {
-    document.getElementById(id).addEventListener('input', () => { calculateNatrium(); calculateKalium();});
+['bb', 'naSerum', 'naTarget', 'naKecepatan', 'naInfus', 'kSerum', 'kTarget', 'aksesVena'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', calculateKalium);
 });
 
 function updateStats() {
@@ -170,12 +171,13 @@ function calculateNatrium() {
 function calculateKalium() {
     const bb = parseFloat(document.getElementById('bb').value);
     const kSerum = parseFloat(document.getElementById('kSerum').value);
+    const kTarget = parseFloat(document.getElementById('kTarget').value) || 3.0;
     const akses = document.getElementById('aksesVena').value;
     const container = document.getElementById('kalium-instructions');
 
     if (!bb || isNaN(kSerum)) return;
 
-    // Klasifikasi 
+    // Klasifikasi Derajat Hipokalemia [cite: 79]
     let klasifikasi = "Normal";
     if (kSerum < 2.5) klasifikasi = "Berat";
     else if (kSerum < 3.0) klasifikasi = "Sedang";
@@ -184,22 +186,33 @@ function calculateKalium() {
     document.getElementById('displayKaliumSerum').textContent = kSerum;
     document.getElementById('displayKlasifikasiK').textContent = klasifikasi;
 
-    // Rumus PPK MTMH 
-    const kebutuhan = 0.3 * bb * (4 - kSerum);
+    // Rumus Koreksi KCl sesuai PPK Hal. 5 
+    const kebutuhan = 0.3 * bb * (kTarget - kSerum);
+    const sediaanMeq = 25; // 25 mEq per botol
+    const botolSediaan = (kebutuhan / sediaanMeq).toFixed(2);
+    
     document.getElementById('displayKebutuhanK').textContent = kebutuhan.toFixed(1);
 
-    // Instruksi berdasarkan PPK [cite: 96, 104]
+    // Instruksi Klinis Berdasarkan PPK [cite: 96, 104]
     let instruksi = "";
     if (kSerum >= 3.0 && kSerum < 3.5) {
-        instruksi = `<tr><td>Terapi Oral</td><td>KCl oral 20 mEq 3-4 kali sehari & edukasi diet kaya kalium.</td></tr>`;
-    } else {
-        const kecPerifer = "Maks 10-20 mEq dalam 500ml NaCl 0.9%";
-        const kecSentral = "25 mEq dalam 100ml NaCl 0.9% (Kecepatan 5-20 mEq/jam)";
         instruksi = `
-            <tr><td>Metode</td><td>Rapid Correction (Intravena)</td></tr>
-            <tr><td>Dosis Total</td><td>${kebutuhan.toFixed(1)} mEq KCl dilarutkan dalam NaCl 0.9%</td></tr>
-            <tr><td>Kecepatan Maks</td><td>${akses === 'perifer' ? kecPerifer : kecSentral}</td></tr>
-            <tr><td>Monitoring</td><td>Observasi ekstravasasi setiap 30 menit & EKG kontinu jika >10 mEq/jam.</td></tr>
+            <tr><td>Klasifikasi</td><td>Hipokalemia Ringan [cite: 79]</td></tr>
+            <tr><td>Terapi Utama</td><td>Pemberian Kalium Oral (KSR/KCl) 20 mEq 3-4 kali sehari </td></tr>
+            <tr><td>Saran Diet</td><td>Edukasi diet kaya kalium (60 mmol/hari) </td></tr>
+        `;
+    } else {
+        const detailAkses = akses === 'perifer' 
+            ? "Vena Besar (Cephalica/Basilica). Konsentrasi maks 25 mEq dalam 500ml NaCl 0.9% " 
+            : "Vena Sentral. 25 mEq dalam 100ml NaCl 0.9% atau 50-100 mEq dalam 500ml NaCl 0.9% ";
+        
+        instruksi = `
+            <tr><td>Metode</td><td>Rapid Correction (Intravena) </td></tr>
+            <tr><td>Dosis Total</td><td>${kebutuhan.toFixed(1)} mEq KCl</td></tr>
+            <tr><td>Sediaan RS</td><td>Kebutuhan: <strong>${botolSediaan} Botol</strong> (Sediaan 25 mEq/25 mL)</td></tr>
+            <tr><td>Kecepatan Maks</td><td>5 - 20 mEq/jam melalui syringe pump </td></tr>
+            <tr><td>Akses Vena</td><td>${detailAkses}</td></tr>
+            <tr><td>Penting</td><td>Wajib Double Check staf farmasi/perawat & monitoring jantung kontinu jika >10 mEq/jam </td></tr>
         `;
     }
     container.innerHTML = instruksi;
