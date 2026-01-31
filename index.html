@@ -86,19 +86,8 @@
             <div class="input-form screen-only">
                 <div class="form-group"><label>Na+ Serum Saat Ini:</label><input type="number" id="naSerum" placeholder="Contoh: 120"></div>
                 <div class="form-group"><label>Na+ Serum Target:</label><input type="number" id="naTarget" placeholder="Contoh: 135"></div>
-                <div class="form-group"><label>Kec. Δ Na+ / 24 Jam:</label>
-                    <select id="naKecepatan">
-                        <option value="1">1 mEq/L</option>
-                        <option value="2">2 mEq/L</option>
-                        <option value="3">3 mEq/L</option>
-                        <option value="4">4 mEq/L</option>
-                        <option value="5">5 mEq/L</option>
-                        <option value="6">6 mEq/L</option>
-                        <option value="7">7 mEq/L</option>
-                        <option value="8" selected>8 mEq/L</option>
-                        <option value="9">9 mEq/L</option>
-                        <option value="10">10 mEq/L</option>
-                    </select>
+                <label>Kec. Δ Na+ / 24 Jam:</label>
+                    <input type="number" id="naKecepatan" max="10" min="1" step="1" value="8" placeholder="Contoh: 8">
                 </div>
                 <div class="form-group"><label>Jenis Cairan Infus:</label>
                     <select id="naInfus">
@@ -109,48 +98,7 @@
             </div>
                 <div id="natrium-tables-container"></div>
             </div>
-
-            <div class="natrium-result-table">
-                <table class="scoring-table">
-                    <thead><tr><th id="header-hari-1">Rencana Koreksi 24 Jam Pertama</th><th>Hasil</th></tr></thead>
-                    <tbody>
-                        <tr><td>TBW Pasien</td><td><span id="txtTBW">-</span></td></tr>
-                        <tr><td>Target Δ Na+ Periode Ini</td><td><span id="txtTargetHarian">-</span></td></tr>
-                        <tr class="highlight-natrium"><td>Kebutuhan Botol (500 mL)</td><td><span id="txtBotolDisplay">0 Botol</span></td></tr>
-                        <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><span id="txtKecepatan">-</td></tr>
-                    </tbody>
-                </table>
-
-                <table class="scoring-table" id="table-hari-2" style="display:none; margin-top: 15px;">
-                    <thead><tr><th style="background:#2196F3 !important;">Rencana Koreksi Hari ke-2</th><th>Hasil</th></tr></thead>
-                    <tbody>
-                        <tr><td>Target Sisa Δ Na+</td><td><span id="txtTargetHarian2">-</span></td></tr>
-                        <tr class="highlight-natrium"><td>Kebutuhan Botol (500 mL)</td><td><span id="txtBotolDisplay2">0 Botol</span></td></tr>
-                        <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><span id="txtKecepatan2">-</td></tr>
-                    </tbody>
-                </table>
-
-                  <table class="scoring-table" id="table-hari-3" style="display:none; margin-top: 15px;">
-                    <thead><tr><th style="background:#f44336 !important;">Rencana Koreksi Hari ke-3</th><th>Hasil</th></tr></thead>
-                    <tbody>
-                        <tr><td>Target Sisa Δ Na+</td><td id="txtTargetHarian3">-</td></tr>
-                        <tr class="highlight-natrium"><td>Kebutuhan Botol (500 mL)</td><td id="txtBotolDisplay3">-</td></tr>
-                        <tr class="highlight-natrium"><td>Kecepatan Infus</td><td id="txtKecepatan3">-</td></tr>
-                    </tbody>
-                </table>
-
-                <table class="scoring-table" id="table-hari-4" style="display:none; margin-top: 15px;">
-                    <thead><tr><th style="background:#9C27B0 !important;">Rencana Koreksi Hari ke-4</th><th>Hasil</th></tr></thead>
-                    <tbody>
-                        <tr><td>Target Sisa Δ Na+</td><td id="txtTargetHarian4">-</td></tr>
-                        <tr class="highlight-natrium"><td>Kebutuhan Botol (500 mL)</td><td id="txtBotolDisplay4">-</td></tr>
-                        <tr class="highlight-natrium"><td>Kecepatan Infus</td><td id="txtKecepatan4">-</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
         
-
         <div class="dpjp-section">
             <p>Diketahui oleh,</p>
             <input type="text" id="inputDPJP" placeholder="Nama Dokter*" class="screen-only dpjp-input">
