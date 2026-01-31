@@ -171,7 +171,7 @@ function calculateNatrium() {
 function calculateKalium() {
     const bb = parseFloat(document.getElementById('bb').value);
     const kSerum = parseFloat(document.getElementById('kSerum').value);
-    const kTarget = parseFloat(document.getElementById('kTarget').value) || 3.0;
+    const kTarget = parseFloat(document.getElementById('kTarget').value) || 3.0; // Default 3.0
     const akses = document.getElementById('aksesVena').value;
     const container = document.getElementById('kalium-instructions');
 
@@ -180,55 +180,60 @@ function calculateKalium() {
         return;
     }
 
-    // Klasifikasi
+    // Update Ringkasan di Box Atas
     let klas = (kSerum < 2.5) ? "Berat" : (kSerum < 3.0) ? "Sedang" : (kSerum < 3.5) ? "Ringan" : "Normal";
     document.getElementById('displayKaliumSerum').textContent = kSerum;
     document.getElementById('displayKlasifikasiK').textContent = klas;
 
-    // Rumus: 0.3 * BB * (Target - Serum)
+    // Rumus Kebutuhan mEq
     const kebutuhan = 0.3 * bb * (kTarget - kSerum);
     document.getElementById('displayKebutuhanK').textContent = kebutuhan.toFixed(1);
 
-    // PEMBULATAN KE ATAS (Ceiling)
-    // Sediaan: 25 mEq / 25 mL
+    // Pembulatan Botol ke ATAS (Ceiling) - Sediaan 25mEq/25mL
     const botolSediaan = Math.ceil(kebutuhan / 25);
 
-    let instruksi = "";
-    if (kSerum >= 3.5) {
-        instruksi = `<tr><td colspan="2" style="text-align:center;">Kadar Kalium Normal / Tidak Memerlukan Koreksi Cepat.</td></tr>`;
-    } else if (kSerum >= 3.0 && kSerum < 3.5) {
-        instruksi = `
-            <tr><td>Klasifikasi</td><td>Hipokalemia Ringan</td></tr>
-            <tr><td>Terapi</td><td>KCl oral 20 mEq (KSR) 3-4 kali sehari.</td></tr>
-            <tr><td>Diet</td><td>Edukasi diet kaya kalium (pisang, jeruk, kentang).</td></tr>
-        `;
+    let rows = "";
+
+    if (kSerum >= kTarget) {
+        rows = `<tr><td colspan="2" style="text-align:center; color:green; font-weight:bold;">Kadar Kalium sudah mencapai atau melebihi target.</td></tr>`;
     } else {
-        // Logika Pengenceran & Kecepatan (24 Jam)
-        let totalVol = 0;
-        let infoAkses = "";
-        
-        if (akses === 'sentral') {
-            // Standar PPK: 25 mEq dlm 100ml NaCl 0.9% (Total 125ml per botol sediaan)
-            totalVol = (kebutuhan / 25) * 125;
-            infoAkses = "Vena Sentral (25 mEq KCl dalam 100 mL NaCl 0.9%)";
+        // Baris Target Kalium (Baru Ditambahkan ke Tabel)
+        rows += `<tr><td>Target Koreksi</td><td><strong>${kTarget.toFixed(1)} mEq/L</strong></td></tr>`;
+
+        if (kSerum >= 3.0 && kSerum < 3.5) {
+            rows += `
+                <tr><td>Klasifikasi</td><td>Hipokalemia Ringan</td></tr>
+                <tr><td>Terapi</td><td>KCl oral 20 mEq (KSR) 3-4 kali sehari.</td></tr>
+                <tr><td>Diet</td><td>Edukasi diet kaya kalium (pisang, jeruk, pepaya).</td></tr>
+            `;
         } else {
-            // Standar PPK: Maks 20 mEq dlm 500ml NaCl 0.9% (Total ~525ml per 20 mEq)
-            totalVol = (kebutuhan / 20) * 520;
-            infoAkses = "Vena Perifer Besar (Maks 20 mEq KCl dalam 500 mL NaCl 0.9%)";
+            // Perhitungan Kecepatan Infus (Standar 24 Jam)
+            let totalVol = 0;
+            let infoAkses = "";
+            
+            if (akses === 'sentral') {
+                // 25 mEq dlm 100ml NaCl 0.9% + 25ml sediaan = 125ml per 25 mEq
+                totalVol = (kebutuhan / 25) * 125;
+                infoAkses = "Vena Sentral (25 mEq KCl dalam 100 mL NaCl 0.9%)";
+            } else {
+                // Maks 20 mEq dlm 500ml NaCl 0.9%
+                totalVol = (kebutuhan / 20) * 520;
+                infoAkses = "Vena Perifer Besar (Maks 20 mEq KCl dalam 500 mL NaCl 0.9%)";
+            }
+
+            const speed = (totalVol / 24).toFixed(1);
+
+            rows += `
+                <tr><td>Klasifikasi</td><td>Hipokalemia ${klas}</td></tr>
+                <tr><td>Dosis Total</td><td>${kebutuhan.toFixed(1)} mEq KCl</td></tr>
+                <tr><td>Sediaan RS</td><td><strong>${botolSediaan} Botol</strong> (Sediaan 25 mEq/25 mL)</td></tr>
+                <tr><td>Akses Vena</td><td>${infoAkses}</td></tr>
+                <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${speed} mL/jam</strong> (untuk durasi 24 jam)</td></tr>
+                <tr><td>Monitoring</td><td>EKG Kontinu jika > 10 mEq/jam. Observasi phlebitis tiap 30 menit.</td></tr>
+            `;
         }
-
-        const speed = (totalVol / 24).toFixed(1);
-
-        instruksi = `
-            <tr><td>Metode</td><td>Rapid Correction (Intravena)</td></tr>
-            <tr><td>Dosis Total</td><td>${kebutuhan.toFixed(1)} mEq KCl</td></tr>
-            <tr><td>Sediaan RS</td><td><strong>${botolSediaan} Botol</strong> (Sediaan 25 mEq/25 mL)</td></tr>
-            <tr><td>Akses Vena</td><td>${infoAkses}</td></tr>
-            <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${speed} mL/jam</strong> (Maintenance 24 jam)</td></tr>
-            <tr><td>Monitoring</td><td>EKG Kontinu jika kecepatan > 10 mEq/jam. Cek Kalium ulang setelah koreksi selesai.</td></tr>
-        `;
     }
-    container.innerHTML = instruksi;
+    container.innerHTML = rows;
 }
 
 function printAndDownload() {
