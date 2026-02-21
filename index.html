@@ -285,9 +285,19 @@
             <!-- KALIUM INPUT GROUP -->
             <div id="input-kalium-group" style="display:none; display:contents;">
                 <div class="form-group"><label>K Serum Awal:</label><input type="number" id="kSerum" step="0.1"></div>
-                <div class="form-group"><label>Target K:</label><input type="number" id="kTarget" step="0.1" value="3.0"></div>
+                <div class="form-group"><label>Target K (mEq/L):</label><input type="number" id="kTarget" step="0.1" value="3.5"></div>
                 <div class="form-group"><label>Akses Vena:</label>
-                    <select id="aksesVena"><option value="perifer">Vena Perifer</option><option value="sentral">Vena Sentral</option></select>
+                    <select id="aksesVena">
+                        <option value="perifer">Vena Perifer</option>
+                        <option value="sentral">Vena Sentral</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Kecepatan Koreksi:</label>
+                    <select id="kecepatanK">
+                        <option value="10">10 mEq/h — Ringan (Perifer)</option>
+                        <option value="20" selected>20 mEq/h — Standar</option>
+                        <option value="40">40 mEq/h — Life-threatening (Sentral)</option>
+                    </select>
                 </div>
             </div>
 
@@ -744,7 +754,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const inputs = ['nama', 'noMR', 'inputDPJP', 'tglAsesmen', 'tglLahir', 'jk', 'bb',
                             'naSerum', 'naTarget', 'naKecepatan', 'naInfus',
-                            'kSerum', 'kTarget', 'aksesVena',
+                            'kSerum', 'kTarget', 'aksesVena', 'kecepatanK',
                             'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
                             'densitasFormula', 'frekEnteral', 'pctEnteral', 'hasilSkrining'];
             inputs.forEach(id => {
@@ -1042,8 +1052,9 @@
         function calculateKalium() {
             const bb = parseFloat(getValue('bb'));
             const kSerum = parseFloat(getValue('kSerum'));
-            const kTarget = parseFloat(getValue('kTarget')) || 3.0;
+            const kTarget = parseFloat(getValue('kTarget')) || 3.5;
             const akses = getValue('aksesVena');
+            const rateEq = parseFloat(getValue('kecepatanK')) || 20;
 
             setText('displayKaliumSerum', kSerum || 0);
             setText('displayKTarget', kTarget);
@@ -1056,31 +1067,75 @@
             const container = document.getElementById('kalium-instructions');
             if (!bb || isNaN(kSerum) || !container) return;
 
-            if (kSerum >= kTarget) { container.innerHTML = `<tr><td colspan="2" style="text-align:center; color:green;">Kadar Normal.</td></tr>`; return; }
+            if (kSerum >= kTarget) {
+                container.innerHTML = `<tr><td colspan="2" style="text-align:center; color:green; font-weight:bold;">Kadar Kalium Normal / Target Tercapai.</td></tr>`;
+                return;
+            }
 
-            const jumlahBotol = Math.ceil(kebutuhan / 25);
-            const obatVol = jumlahBotol * 25;
+            const durasi = Math.round(kebutuhan / rateEq * 10) / 10;
+
             let rows = `
-                <tr><td>Kalium Serum</td><td>${kSerum.toFixed(2)} mEq/L</td></tr>
+                <tr><td>Kalium Serum</td><td>${kSerum.toFixed(1)} mEq/L</td></tr>
                 <tr><td>Target Koreksi</td><td>${kTarget.toFixed(1)} mEq/L</td></tr>
-                <tr><td>Dosis Total</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong> (${jumlahBotol} Botol KCl)</td></tr>
+                <tr><td>Total Kebutuhan KCl</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong></td></tr>
+                <tr><td>Kecepatan Dipilih</td><td><strong>${rateEq} mEq/h</strong></td></tr>
+                <tr class="highlight-natrium"><td>Estimasi Durasi</td><td><strong>~${durasi} jam</strong></td></tr>
             `;
 
+            // Safety warnings
+            const warnings = [];
+            if (akses === 'perifer' && kSerum < 3.0) {
+                warnings.push('⚠️ K &lt;3.0 mEq/L — Pertimbangkan akses vena sentral');
+            }
+            if (akses === 'perifer' && rateEq > 20) {
+                warnings.push('⚠️ Rate &gt;20 mEq/h TIDAK AMAN via vena perifer — Gunakan akses sentral');
+            }
+            if (rateEq >= 40) {
+                warnings.push('⚠️ Life-threatening: Monitoring ECG kontinu wajib. Pantau K setiap 1 jam. Tidak ada infus lain di kateter yang sama.');
+            }
+            if (warnings.length) {
+                rows += warnings.map(w =>
+                    `<tr><td colspan="2" style="background:#fff3e0; color:#e65100; font-weight:bold; padding:7px 10px;">${w}</td></tr>`
+                ).join('');
+            }
+
             if (akses === 'sentral') {
-                const p1 = jumlahBotol * 100; const t1 = p1 + obatVol; const s1 = (t1 / 24).toFixed(1);
-                const p2 = jumlahBotol * 500; const t2 = p2 + obatVol; const s2 = (t2 / 24).toFixed(1);
+                // Standard: 20 mEq KCl in 100 mL NS (200 mEq/L) via syringe pump
+                // Life-threatening: 40 mEq KCl in 100 mL NS (400 mEq/L)
+                const mEqPerSyringe = rateEq >= 40 ? 40 : 20;
+                const volSyringe = 100; // mL
+                const concLabel = rateEq >= 40
+                    ? '40 mEq KCl dalam 100 mL NaCl 0.9% (400 mEq/L)'
+                    : '20 mEq KCl dalam 100 mL NaCl 0.9% (200 mEq/L)';
+                const mlPerH = Math.round(rateEq * volSyringe / mEqPerSyringe);
+                const jamPerSyringe = Math.round(volSyringe / mlPerH * 10) / 10;
+                const nSyringes = Math.ceil(kebutuhan / mEqPerSyringe);
                 rows += `
-                    <tr style="background:#e3f2fd;"><td colspan="2" style="font-weight:bold; text-align:center;">OPSI VENA SENTRAL</td></tr>
-                    <tr><td><strong>Opsi A (Pekat)</strong></td><td>Pelarut: ${p1} mL NaCl<br>Total: ${t1} mL<br>Kecepatan: <strong>${s1} mL/jam</strong></td></tr>
-                    <tr><td><strong>Opsi B (Encer)</strong></td><td>Pelarut: ${p2} mL NaCl<br>Total: ${t2} mL<br>Kecepatan: <strong>${s2} mL/jam</strong></td></tr>
+                    <tr style="background:#e3f2fd;"><td colspan="2" style="font-weight:bold; text-align:center;">VENA SENTRAL — Syringe Pump</td></tr>
+                    <tr><td>Persiapan per Syringe</td><td>${concLabel}</td></tr>
+                    <tr class="highlight-natrium"><td>Kecepatan Pompa</td><td><strong>${mlPerH} mL/jam</strong> (= ${rateEq} mEq/h)</td></tr>
+                    <tr><td>Durasi per Syringe</td><td>~${jamPerSyringe} jam — isi ulang ${nSyringes}× untuk dosis total</td></tr>
+                    <tr><td>Rute</td><td>Vena sentral (diutamakan vena femoralis)</td></tr>
+                    ${rateEq >= 40
+                        ? `<tr style="background:#ffebee;"><td colspan="2" style="color:#b71c1c; font-weight:bold;">Hentikan bila K ≥3.5 mEq/L atau timbul aritmia baru</td></tr>`
+                        : `<tr><td>Monitoring</td><td>Pantau K setiap 2–4 jam</td></tr>`}
                 `;
             } else {
-                const pP = jumlahBotol * 500; const tP = pP + obatVol; const sP = (tP / 24).toFixed(1);
+                // Peripheral: target 40 mEq/L (20 mEq in 500 mL NS)
+                // Max concentration: 60 mEq/L
+                const concPerif = 40; // mEq/L — safe, well below 60 mEq/L limit
+                const mlPerH = Math.round(rateEq * 1000 / concPerif);
+                const volBag = 500; // mL
+                const mEqPerBag = volBag * concPerif / 1000; // 20 mEq
+                const jamPerBag = Math.round(volBag / mlPerH * 10) / 10;
+                const nBags = Math.ceil(kebutuhan / mEqPerBag);
                 rows += `
-                    <tr><td>Akses Vena</td><td>Vena Perifer Besar</td></tr>
-                    <tr style="background:#fff3e0;"><td>Cairan Pelarut</td><td><strong>${pP} mL NaCl 0.9%</strong></td></tr>
-                    <tr style="background:#fff3e0;"><td>Volume Total Campuran</td><td><strong>${tP} mL</strong></td></tr>
-                    <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${sP} mL/jam</strong></td></tr>
+                    <tr style="background:#e8f5e9;"><td colspan="2" style="font-weight:bold; text-align:center;">VENA PERIFER (Vena Perifer Besar)</td></tr>
+                    <tr><td>Persiapan per Botol</td><td>Tambahkan <strong>20 mEq KCl</strong> ke <strong>500 mL NaCl 0.9%</strong><br><small style="color:#666">(= 40 mEq/L — aman untuk perifer, jauh di bawah batas 60 mEq/L)</small></td></tr>
+                    <tr class="highlight-natrium"><td>Kecepatan Infus</td><td><strong>${mlPerH} mL/jam</strong> (= ${rateEq} mEq/h)</td></tr>
+                    <tr><td>Durasi per Botol</td><td>~${jamPerBag} jam — ganti botol (${nBags} botol total)</td></tr>
+                    <tr><td>Monitoring</td><td>Pantau K setiap 4–6 jam. Gunakan NaCl, bukan Dextrose.</td></tr>
+                    <tr style="background:#fff8e1;"><td>Peringatan</td><td>Jangan melebihi <strong>60 mEq/L</strong> pada perifer (risiko nyeri &amp; sklerosis vena)</td></tr>
                 `;
             }
             container.innerHTML = rows;
