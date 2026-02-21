@@ -172,6 +172,22 @@
         .result-pill.berat { background: #ffebee; color: #b71c1c; border-color: #EF9A9A; }
         .btn-apply-skrining { padding: 8px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
         @media print { .modal-overlay { display: none !important; } }
+        /* NRS-2002 */
+        .nrs-section { margin-bottom: 14px; }
+        .nrs-section-title { font-weight: bold; color: #37474f; font-size: 12px; background: #eceff1; padding: 6px 10px; border-radius: 4px; margin-bottom: 8px; border-left: 3px solid #607d8b; }
+        .nrs-option { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-bottom: 3px; border: 1px solid transparent; line-height: 1.5; }
+        .nrs-option:hover { background: #f5f5f5; border-color: #e0e0e0; }
+        .nrs-option input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+        .nrs-prescreen label { display: flex; gap: 8px; font-size: 12px; padding: 6px 10px; cursor: pointer; align-items: flex-start; border-radius: 4px; margin-bottom: 3px; line-height: 1.5; }
+        .nrs-prescreen label:hover { background: #f5f5f5; }
+        .nrs-prescreen input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
+        .nrs-score-box { display: flex; gap: 10px; padding: 12px 16px; background: #eceff1; border-radius: 6px; margin-top: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
+        .nrs-score-item { text-align: center; min-width: 48px; }
+        .nrs-score-num { font-size: 28px; font-weight: bold; color: #37474f; line-height: 1; }
+        .nrs-score-label { font-size: 10px; color: #777; margin-top: 3px; }
+        .nrs-result-box { padding: 10px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; margin-top: 10px; text-align: center; }
+        .nrs-result-box.risk { background: #ffebee; color: #b71c1c; border: 1px solid #EF9A9A; }
+        .nrs-result-box.no-risk { background: #e8f5e9; color: #2E7D32; border: 1px solid #A5D6A7; }
         /* --- CSS END --- */
     </style>
 </head>
@@ -452,7 +468,7 @@
                         <td class="col-jenis">Skrining gizi</td>
                         <td>
                             <div class="screen-only" style="margin-bottom:6px;">
-                                <button onclick="openSkriningModal()" style="padding:5px 12px; background:#37474f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">📋 Buka Klasifikasi PnPK Gizi</button>
+                                <button onclick="openSkriningModal()" style="padding:5px 12px; background:#37474f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">📋 Klasifikasi Malnutrisi</button>
                             </div>
                             <div class="screen-only" style="margin-bottom:4px;">
                                 <select id="hasilSkrining" onchange="updateStats()" style="padding:3px 6px; border:1px solid #ccc; border-radius:3px; font-size:12px; margin-right:5px;">
@@ -596,13 +612,14 @@
     <div id="modal-skrining" class="modal-overlay" onclick="if(event.target===this)closeSkriningModal()">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>📋 Klasifikasi Malnutrisi — PnPK Gizi (Tabel 7)</h3>
+                <h3>Klasifikasi Malnutrisi</h3>
                 <button class="modal-close" onclick="closeSkriningModal()">×</button>
             </div>
             <div class="modal-tabs">
                 <button class="modal-tab active" id="mtab-aspen" onclick="showModalTab('aspen')">6 Kriteria ASPEN</button>
                 <button class="modal-tab" id="mtab-tabel7" onclick="showModalTab('tabel7')">Etiologi</button>
                 <button class="modal-tab" id="mtab-antropo" onclick="showModalTab('antropo')">Antropometri</button>
+                <button class="modal-tab" id="mtab-nrs" onclick="showModalTab('nrs')">NRS-2002</button>
             </div>
 
             <!-- Tab 1: ASPEN 6 Criteria -->
@@ -717,6 +734,55 @@
                 </div>
                 <div style="margin-top:12px; background:#e8f5e9; border-radius:6px; padding:10px; font-size:11px; color:#2E7D32; border:1px solid #A5D6A7;">
                     <strong>Catatan:</strong> BMI diambil otomatis dari input BB dan TB pada form utama. LLA berguna sebagai indikator cadangan protein/lemak, terutama pada pasien yang sulit ditimbang.
+                </div>
+            </div>
+
+            <!-- Tab 4: NRS-2002 -->
+            <div id="modal-body-nrs" class="modal-body" style="display:none;">
+                <p style="font-size:11px; color:#555; margin:0 0 12px 0;">Nutritional Risk Screening 2002 (Kondrup et al.). Skor ≥3 → pasien berisiko malnutrisi → buat rencana nutrisi.</p>
+
+                <!-- Step 1: Pre-screen -->
+                <div class="nrs-section">
+                    <div class="nrs-section-title">Langkah 1 — Skrining Awal (Jika ada 1 jawaban YA → lanjut ke Langkah 2)</div>
+                    <div class="nrs-prescreen">
+                        <label><input type="checkbox" id="nrs_pre1" onchange="calcNRS()"> BMI &lt; 20.5 kg/m²?</label>
+                        <label><input type="checkbox" id="nrs_pre2" onchange="calcNRS()"> Penurunan <strong>berat badan</strong> dalam 3 bulan terakhir?</label>
+                        <label><input type="checkbox" id="nrs_pre3" onchange="calcNRS()"> Penurunan <strong>asupan makan</strong> dalam 1 minggu terakhir?</label>
+                        <label><input type="checkbox" id="nrs_pre4" onchange="calcNRS()"> Pasien dalam kondisi <strong>sakit berat</strong> / dirawat intensif?</label>
+                    </div>
+                    <div id="nrs-prescreen-note" style="font-size:11px; padding:6px 10px; background:#fff8e1; border-radius:4px; border-left:3px solid #FFC107; color:#555;">Jawab pertanyaan di atas terlebih dahulu.</div>
+                </div>
+
+                <!-- Step 2: Final Screening -->
+                <div id="nrs-final-section" style="display:none;">
+                    <div class="nrs-section">
+                        <div class="nrs-section-title">Langkah 2A — Skor Status Nutrisi (pilih salah satu)</div>
+                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="0" checked onchange="calcNRS()"><span><strong>0</strong> — Status gizi normal</span></label>
+                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="1" onchange="calcNRS()"><span><strong>1 Ringan</strong> — BB turun &gt;5% dalam 3 bulan, ATAU asupan 50–75% dari kebutuhan dalam seminggu terakhir</span></label>
+                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="2" onchange="calcNRS()"><span><strong>2 Sedang</strong> — BB turun &gt;5% dalam 2 bulan, ATAU BMI 18.5–20.5 + kondisi umum menurun, ATAU asupan 25–50% dari kebutuhan dalam seminggu terakhir</span></label>
+                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="3" onchange="calcNRS()"><span><strong>3 Berat</strong> — BB turun &gt;5% dalam 1 bulan (&gt;15% dalam 3 bulan), ATAU BMI &lt;18.5 + kondisi umum menurun, ATAU asupan 0–25% dari kebutuhan dalam seminggu terakhir</span></label>
+                    </div>
+                    <div class="nrs-section">
+                        <div class="nrs-section-title">Langkah 2B — Skor Beratnya Penyakit (pilih salah satu)</div>
+                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="0" checked onchange="calcNRS()"><span><strong>0</strong> — Kebutuhan nutrisi normal</span></label>
+                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="1" onchange="calcNRS()"><span><strong>1 Ringan</strong> — Fraktur panggul; penyakit kronik (sirosis, PPOK, hemodialisis kronik, diabetes, keganasan)</span></label>
+                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="2" onchange="calcNRS()"><span><strong>2 Sedang</strong> — Operasi besar abdomen; stroke; pneumonia berat; keganasan hematologi</span></label>
+                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="3" onchange="calcNRS()"><span><strong>3 Berat</strong> — Cedera kepala; transplantasi sumsum tulang; pasien ICU (APACHE &gt;10)</span></label>
+                    </div>
+                    <div class="nrs-section">
+                        <div class="nrs-section-title">Langkah 2C — Koreksi Usia</div>
+                        <div id="nrs-age-info" style="font-size:12px; padding:7px 10px; background:#f5f5f5; border-radius:4px;">Usia &lt;70 tahun: +0 &nbsp;|&nbsp; Usia ≥70 tahun: tambah +1 ke total skor</div>
+                    </div>
+                    <div class="nrs-score-box">
+                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-nutr">0</div><div class="nrs-score-label">Nutrisi</div></div>
+                        <div style="font-size:22px; color:#aaa; align-self:center; padding-bottom:14px;">+</div>
+                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-dis">0</div><div class="nrs-score-label">Penyakit</div></div>
+                        <div style="font-size:22px; color:#aaa; align-self:center; padding-bottom:14px;">+</div>
+                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-age">0</div><div class="nrs-score-label">Usia</div></div>
+                        <div style="font-size:22px; color:#aaa; align-self:center; padding-bottom:14px;">=</div>
+                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-total" style="font-size:38px;">0</div><div class="nrs-score-label">Total Skor</div></div>
+                    </div>
+                    <div id="nrs-result-box" class="nrs-result-box" style="display:none;"></div>
                 </div>
             </div>
 
@@ -1205,6 +1271,7 @@
         };
 
         let currentEtiologi = 'akut';
+        let activeModalTab = 'aspen';
 
         function openSkriningModal() {
             const bb = parseFloat(getValue('bb'));
@@ -1229,7 +1296,8 @@
         }
 
         function showModalTab(tab) {
-            ['aspen','tabel7','antropo'].forEach(t => {
+            activeModalTab = tab;
+            ['aspen','tabel7','antropo','nrs'].forEach(t => {
                 document.getElementById('modal-body-' + t).style.display = (t === tab) ? 'block' : 'none';
                 document.getElementById('mtab-' + t).classList.toggle('active', t === tab);
             });
@@ -1244,6 +1312,7 @@
                     highlightBMIRow(bmi);
                 }
             }
+            if (tab === 'nrs') calcNRS();
         }
 
         function highlightBMIRow(bmi) {
@@ -1351,7 +1420,84 @@
             container.innerHTML = html;
         }
 
+        function calcNRS() {
+            const pre1 = document.getElementById('nrs_pre1')?.checked;
+            const pre2 = document.getElementById('nrs_pre2')?.checked;
+            const pre3 = document.getElementById('nrs_pre3')?.checked;
+            const pre4 = document.getElementById('nrs_pre4')?.checked;
+            const anyPre = pre1 || pre2 || pre3 || pre4;
+            const note = document.getElementById('nrs-prescreen-note');
+            const finalSection = document.getElementById('nrs-final-section');
+            const pill = document.getElementById('modal-result-pill');
+
+            if (!anyPre) {
+                if (note) { note.textContent = 'Semua jawaban TIDAK → Skrining ulang setiap 1 minggu.'; note.style.borderLeftColor = '#A5D6A7'; note.style.background = '#e8f5e9'; }
+                if (finalSection) finalSection.style.display = 'none';
+                if (pill) { pill.className = 'result-pill'; pill.textContent = 'NRS: Pre-screen semua TIDAK'; }
+                return;
+            }
+            if (note) { note.textContent = 'Ada jawaban YA → Lanjutkan ke Langkah 2.'; note.style.borderLeftColor = '#FFB74D'; note.style.background = '#fff8e1'; }
+            if (finalSection) finalSection.style.display = 'block';
+
+            const sNutr = parseInt(document.querySelector('input[name="nrs_nutr"]:checked')?.value || '0');
+            const sDis  = parseInt(document.querySelector('input[name="nrs_dis"]:checked')?.value  || '0');
+            const ageText = document.getElementById('displayUmur')?.innerText || '';
+            const age = parseInt(ageText) || 0;
+            const sAge = age >= 70 ? 1 : 0;
+            const total = sNutr + sDis + sAge;
+
+            const ageInfo = document.getElementById('nrs-age-info');
+            if (ageInfo) ageInfo.textContent = age > 0
+                ? `Usia pasien: ${age} tahun → Koreksi usia: +${sAge}`
+                : 'Usia belum diisi pada form utama (isi Tgl Lahir)';
+
+            document.getElementById('nrs-s-nutr').textContent = sNutr;
+            document.getElementById('nrs-s-dis').textContent  = sDis;
+            document.getElementById('nrs-s-age').textContent  = sAge;
+            document.getElementById('nrs-s-total').textContent = total;
+
+            const resultBox = document.getElementById('nrs-result-box');
+            if (resultBox) {
+                resultBox.style.display = 'block';
+                if (total >= 3) {
+                    resultBox.className = 'nrs-result-box risk';
+                    resultBox.textContent = `Total ${total} ≥ 3 → Pasien BERISIKO MALNUTRISI — buat rencana dukungan nutrisi`;
+                } else {
+                    resultBox.className = 'nrs-result-box no-risk';
+                    resultBox.textContent = `Total ${total} < 3 → Tidak berisiko saat ini — skrining ulang 1 minggu`;
+                }
+            }
+            if (pill) {
+                pill.className = 'result-pill' + (total >= 3 ? ' sedang' : '');
+                pill.textContent = total >= 3
+                    ? `NRS-2002 Skor ${total} — Berisiko Malnutrisi`
+                    : `NRS-2002 Skor ${total} — Tidak Berisiko`;
+            }
+        }
+
         function applySkriningResult() {
+            if (activeModalTab === 'nrs') {
+                // Apply NRS-2002 result
+                const anyPre = ['nrs_pre1','nrs_pre2','nrs_pre3','nrs_pre4'].some(id => document.getElementById(id)?.checked);
+                const sNutr = parseInt(document.querySelector('input[name="nrs_nutr"]:checked')?.value || '0');
+                const sDis  = parseInt(document.querySelector('input[name="nrs_dis"]:checked')?.value  || '0');
+                const age   = parseInt(document.getElementById('displayUmur')?.innerText) || 0;
+                const sAge  = age >= 70 ? 1 : 0;
+                const total = anyPre ? (sNutr + sDis + sAge) : 0;
+                const dropdownVal = (total >= 3)
+                    ? 'NRS-2002 skor \u22653 (Berisiko Malnutrisi)'
+                    : 'NRS-2002 skor <3 (Tidak Berisiko)';
+                const detail = `NRS-2002 Total: ${total} (Nutrisi ${sNutr} + Penyakit ${sDis} + Usia ${sAge}) → ${total >= 3 ? 'Berisiko Malnutrisi' : 'Tidak Berisiko'}`;
+                const sel = document.getElementById('hasilSkrining');
+                if (sel) { for (let opt of sel.options) { if (opt.value === dropdownVal) { sel.value = dropdownVal; break; } } }
+                const ta = document.getElementById('skriningDetail');
+                if (ta) { ta.value = detail; ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+                updateStats();
+                closeSkriningModal();
+                return;
+            }
+
+            // Apply ASPEN result
             const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
             const kritNames = [
                 'Asupan energi tidak adekuat',
