@@ -125,6 +125,53 @@
             .malnutrisi-textarea { min-height: 40px; }
             .malnutrisi-form-table td, .malnutrisi-form-table th { border: 1px solid #000; }
         }
+        /* MODAL SKRINING */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 2000; display: none; overflow-y: auto; padding: 20px 0; }
+        .modal-box { max-width: 760px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 6px 30px rgba(0,0,0,0.35); overflow: hidden; }
+        .modal-header { background: #37474f; color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; font-size: 14px; }
+        .modal-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; line-height: 1; padding: 0; }
+        .modal-tabs { display: flex; border-bottom: 2px solid #ddd; background: #f8f8f8; }
+        .modal-tab { padding: 10px 18px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 12px; color: #777; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .modal-tab.active { color: #37474f; border-bottom-color: #37474f; background: white; }
+        .modal-body { padding: 16px; max-height: 58vh; overflow-y: auto; }
+        .aspen-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .aspen-table th { background: #455a64; color: white; padding: 8px 10px; text-align: center; font-size: 11px; }
+        .aspen-table td { border: 1px solid #ddd; padding: 7px 10px; vertical-align: top; }
+        .aspen-table tr:nth-child(even) td { background: #fafafa; }
+        .aspen-crit { font-weight: bold; font-size: 12px; }
+        .aspen-desc { font-size: 10px; color: #555; margin-top: 2px; line-height: 1.4; }
+        .aspen-radio-group { display: flex; flex-direction: column; gap: 5px; }
+        .aspen-radio-group label { display: flex; align-items: flex-start; gap: 6px; font-size: 11px; cursor: pointer; line-height: 1.4; }
+        .aspen-radio-group label.opt-sedang { color: #e65100; }
+        .aspen-radio-group label.opt-berat { color: #b71c1c; font-weight: bold; }
+        .aspen-count-bar { display: flex; gap: 15px; padding: 10px 14px; background: #eceff1; border-radius: 6px; margin-top: 12px; font-size: 12px; align-items: center; }
+        .count-badge { padding: 4px 14px; border-radius: 12px; font-size: 13px; font-weight: bold; }
+        .count-badge.sedang { background: #fff3e0; color: #e65100; border: 1px solid #FFB74D; }
+        .count-badge.berat { background: #ffebee; color: #b71c1c; border: 1px solid #EF9A9A; }
+        .etiologi-btns { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+        .etiologi-btn { padding: 7px 16px; border: 2px solid #ccc; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; background: white; }
+        .etiologi-btn.selected { border-color: #37474f; background: #37474f; color: white; }
+        .tabel7-grid { border: 1px solid #bbb; border-radius: 6px; overflow: hidden; font-size: 11px; }
+        .t7-row { display: grid; grid-template-columns: 155px 1fr 1fr; border-bottom: 1px solid #ddd; }
+        .t7-row:last-child { border-bottom: none; }
+        .t7-cell { padding: 7px 10px; border-right: 1px solid #ddd; line-height: 1.5; }
+        .t7-cell:last-child { border-right: none; }
+        .t7-header { background: #455a64; color: white; font-weight: bold; text-align: center; font-size: 12px; }
+        .t7-sedang { background: #fff8e1; }
+        .t7-berat { background: #fce4ec; }
+        .t7-label { font-weight: bold; background: #eceff1; font-size: 11px; }
+        .antropo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .antropo-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px; }
+        .antropo-card h4 { margin: 0 0 10px 0; color: #37474f; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+        .klasif-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #eee; }
+        .klasif-row.match { background: #e8f5e9; font-weight: bold; border-radius: 3px; padding: 4px 6px; }
+        .modal-footer { background: #f5f5f5; border-top: 2px solid #ddd; padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .result-pill { padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 14px; background: #eee; border: 2px solid #ccc; min-width: 200px; text-align: center; }
+        .result-pill.sedang { background: #fff3e0; color: #e65100; border-color: #FFB74D; }
+        .result-pill.berat { background: #ffebee; color: #b71c1c; border-color: #EF9A9A; }
+        .btn-apply-skrining { padding: 8px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        @media print { .modal-overlay { display: none !important; } }
         /* --- CSS END --- */
     </style>
 </head>
@@ -381,6 +428,9 @@
                         <td class="col-no">1.</td>
                         <td class="col-jenis">Skrining gizi</td>
                         <td>
+                            <div class="screen-only" style="margin-bottom:6px;">
+                                <button onclick="openSkriningModal()" style="padding:5px 12px; background:#37474f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">📋 Buka Klasifikasi PnPK Gizi</button>
+                            </div>
                             <div class="screen-only" style="margin-bottom:4px;">
                                 <select id="hasilSkrining" onchange="updateStats()" style="padding:3px 6px; border:1px solid #ccc; border-radius:3px; font-size:12px; margin-right:5px;">
                                     <option value="">-- Pilih Hasil Skrining --</option>
@@ -497,14 +547,8 @@
                 </div>
                 <div class="kesimpulan-title">KESIMPULAN:</div>
                 <div class="kesimpulan-options">
-                    <label>
-                        <input type="radio" name="kesimpulan" id="radioSedang" value="MALNUTRISI SEDANG" onchange="updateStats()">
-                        MALNUTRISI SEDANG
-                    </label>
-                    <label>
-                        <input type="radio" name="kesimpulan" id="radioBerat" value="MALNUTRISI BERAT" onchange="updateStats()">
-                        MALNUTRISI BERAT
-                    </label>
+                    <div id="displayKesimpulan" style="font-size:15px; font-weight:bold; color:#999; padding:4px 0; letter-spacing:0.5px;">—</div>
+                    <div style="font-size:10px; color:#aaa; margin-top:2px;">(mengikuti hasil skrining gizi)</div>
                 </div>
             </div>
         </div>
@@ -521,6 +565,144 @@
                 <p class="dpjp-title-malnutrisi">Dokter Spesialis Gizi Klinis,</p>
                 <input type="text" id="inputDPJP" placeholder="Nama Dokter*" class="screen-only dpjp-input">
                 <div id="displayDPJP" class="dpjp-name"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SKRINING GIZI (Tabel 7 PnPK Gizi) -->
+    <div id="modal-skrining" class="modal-overlay" onclick="if(event.target===this)closeSkriningModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>📋 Klasifikasi Malnutrisi — PnPK Gizi (Tabel 7)</h3>
+                <button class="modal-close" onclick="closeSkriningModal()">×</button>
+            </div>
+            <div class="modal-tabs">
+                <button class="modal-tab active" id="mtab-aspen" onclick="showModalTab('aspen')">6 Kriteria ASPEN</button>
+                <button class="modal-tab" id="mtab-tabel7" onclick="showModalTab('tabel7')">Etiologi</button>
+                <button class="modal-tab" id="mtab-antropo" onclick="showModalTab('antropo')">Antropometri</button>
+            </div>
+
+            <!-- Tab 1: ASPEN 6 Criteria -->
+            <div id="modal-body-aspen" class="modal-body">
+                <p style="font-size:11px; color:#555; margin:0 0 10px 0;">Diagnosis malnutrisi ditegakkan bila <strong>≥2 kriteria</strong> terpenuhi (Academy of Nutrition/ASPEN, 2012).</p>
+                <table class="aspen-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">Kriteria Klinis</th>
+                            <th>Pilihan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="aspen-crit">1. Asupan energi tidak adekuat</div><div class="aspen-desc">Asupan kalori &lt; kebutuhan dalam periode tertentu</div></td>
+                            <td><div class="aspen-radio-group">
+                                <label><input type="radio" name="aspen1" value="0" checked> Tidak Ada</label>
+                                <label class="opt-sedang"><input type="radio" name="aspen1" value="sedang" onchange="calcAspen()"> Sedang — &lt;75% &gt;7 hari (akut) / ≥1 bulan (kronik)</label>
+                                <label class="opt-berat"><input type="radio" name="aspen1" value="berat" onchange="calcAspen()"> Berat — ≤50% ≥5 hari (akut) / &lt;75% ≥1 bulan (kronik)</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="aspen-crit">2. Penurunan berat badan</div><div class="aspen-desc">Kehilangan BB signifikan dalam waktu tertentu</div></td>
+                            <td><div class="aspen-radio-group">
+                                <label><input type="radio" name="aspen2" value="0" checked> Tidak Ada</label>
+                                <label class="opt-sedang"><input type="radio" name="aspen2" value="sedang" onchange="calcAspen()"> Sedang — 1–2%/1 mg, 5%/1 bl, 7.5%/3 bl</label>
+                                <label class="opt-berat"><input type="radio" name="aspen2" value="berat" onchange="calcAspen()"> Berat — &gt;2%/1 mg, &gt;5%/1 bl, &gt;7.5%/3 bl</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="aspen-crit">3. Penurunan massa otot</div><div class="aspen-desc">Dinilai klinis: temporal, deltoid, thenar, kuadriseps</div></td>
+                            <td><div class="aspen-radio-group">
+                                <label><input type="radio" name="aspen3" value="0" checked> Tidak Ada</label>
+                                <label class="opt-sedang"><input type="radio" name="aspen3" value="sedang" onchange="calcAspen()"> Sedang — penurunan ringan</label>
+                                <label class="opt-berat"><input type="radio" name="aspen3" value="berat" onchange="calcAspen()"> Berat — penurunan sedang–berat</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="aspen-crit">4. Penurunan lemak subkutan</div><div class="aspen-desc">Kulit atas trisep, pinggang, abdomen</div></td>
+                            <td><div class="aspen-radio-group">
+                                <label><input type="radio" name="aspen4" value="0" checked> Tidak Ada</label>
+                                <label class="opt-sedang"><input type="radio" name="aspen4" value="sedang" onchange="calcAspen()"> Sedang — penurunan ringan</label>
+                                <label class="opt-berat"><input type="radio" name="aspen4" value="berat" onchange="calcAspen()"> Berat — penurunan sedang–berat</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="aspen-crit">5. Akumulasi cairan (edema)</div><div class="aspen-desc">Edema lokalisata atau generalisata terkait malnutrisi</div></td>
+                            <td><div class="aspen-radio-group">
+                                <label><input type="radio" name="aspen5" value="0" checked> Tidak Ada</label>
+                                <label class="opt-sedang"><input type="radio" name="aspen5" value="sedang" onchange="calcAspen()"> Sedang — edema ringan–sedang</label>
+                                <label class="opt-berat"><input type="radio" name="aspen5" value="berat" onchange="calcAspen()"> Berat — edema sedang–berat / anasarka</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="aspen-crit">6. Penurunan status fungsional</div><div class="aspen-desc">Hand grip strength &lt; normal, atau kelelahan signifikan</div></td>
+                            <td><div class="aspen-radio-group">
+                                <label><input type="radio" name="aspen6" value="0" checked> Tidak Ada</label>
+                                <label class="opt-sedang"><input type="radio" name="aspen6" value="sedang" onchange="calcAspen()"> Sedang — penurunan ringan</label>
+                                <label class="opt-berat"><input type="radio" name="aspen6" value="berat" onchange="calcAspen()"> Berat — penurunan berat / imobilisasi</label>
+                            </div></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="aspen-count-bar">
+                    <span>Kriteria terpenuhi:</span>
+                    <span class="count-badge sedang" id="aspen-badge-sedang">0 Sedang</span>
+                    <span class="count-badge berat" id="aspen-badge-berat">0 Berat</span>
+                    <span id="aspen-diagnosis-note" style="color:#888; font-size:11px;">Belum memenuhi syarat diagnosis.</span>
+                </div>
+            </div>
+
+            <!-- Tab 2: Tabel 7 Etiologi -->
+            <div id="modal-body-tabel7" class="modal-body" style="display:none;">
+                <p style="font-size:11px; color:#555; margin:0 0 10px 0;">Pilih etiologi pasien untuk melihat kriteria <strong>Sedang</strong> vs <strong>Berat</strong> berdasarkan Tabel 7 PnPK Gizi.</p>
+                <div class="etiologi-btns">
+                    <button class="etiologi-btn selected" id="etbtn-akut" onclick="selectEtiologi('akut')">🏥 Penyakit Akut / Cedera</button>
+                    <button class="etiologi-btn" id="etbtn-kronik" onclick="selectEtiologi('kronik')">🩺 Penyakit Kronik</button>
+                    <button class="etiologi-btn" id="etbtn-sosial" onclick="selectEtiologi('sosial')">🏘 Sosial / Lingkungan</button>
+                </div>
+                <div class="tabel7-grid" id="tabel7-content"></div>
+            </div>
+
+            <!-- Tab 3: Antropometri -->
+            <div id="modal-body-antropo" class="modal-body" style="display:none;">
+                <div class="antropo-grid">
+                    <div class="antropo-card">
+                        <h4>Indeks Massa Tubuh (IMT / BMI)</h4>
+                        <div style="font-size:12px; margin-bottom:8px;">BB: <span id="modal-bb">-</span> kg &nbsp;|&nbsp; TB: <span id="modal-tb">-</span> cm &nbsp;|&nbsp; BMI: <strong id="modal-bmi">-</strong> kg/m²</div>
+                        <div>
+                            <div class="klasif-row" id="bmi-row-1"><span>Gizi Kurang (Wasted)</span><span>&lt; 17.0</span></div>
+                            <div class="klasif-row" id="bmi-row-2"><span>Gizi Kurang (Underweight)</span><span>17.0–18.4</span></div>
+                            <div class="klasif-row" id="bmi-row-3"><span>Normal</span><span>18.5–24.9</span></div>
+                            <div class="klasif-row" id="bmi-row-4"><span>Overweight</span><span>25.0–29.9</span></div>
+                            <div class="klasif-row" id="bmi-row-5"><span>Obese I</span><span>30.0–34.9</span></div>
+                            <div class="klasif-row" id="bmi-row-6"><span>Obese II</span><span>≥ 35.0</span></div>
+                        </div>
+                    </div>
+                    <div class="antropo-card">
+                        <h4>Lingkar Lengan Atas (LLA)</h4>
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                            <label style="font-size:12px;">LLA:</label>
+                            <input type="number" id="modal-lla" placeholder="cm" step="0.1" style="width:80px; padding:4px; border:1px solid #ccc; border-radius:4px; font-size:12px;" oninput="calcLLA()">
+                            <span style="font-size:12px;">cm</span>
+                        </div>
+                        <div>
+                            <div class="klasif-row" id="lla-row-1"><span>Malnutrisi Berat</span><span>&lt;19.5 cm (L) / &lt;18.5 cm (P)</span></div>
+                            <div class="klasif-row" id="lla-row-2"><span>Malnutrisi Sedang</span><span>19.5–21.5 cm (L) / 18.5–20.5 cm (P)</span></div>
+                            <div class="klasif-row" id="lla-row-3"><span>Normal</span><span>&gt;21.5 cm (L) / &gt;20.5 cm (P)</span></div>
+                        </div>
+                        <div id="lla-result" style="margin-top:8px; font-size:12px; color:#555;"></div>
+                    </div>
+                </div>
+                <div style="margin-top:12px; background:#e8f5e9; border-radius:6px; padding:10px; font-size:11px; color:#2E7D32; border:1px solid #A5D6A7;">
+                    <strong>Catatan:</strong> BMI diambil otomatis dari input BB dan TB pada form utama. LLA berguna sebagai indikator cadangan protein/lemak, terutama pada pasien yang sulit ditimbang.
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div style="flex:1">
+                    <div style="font-size:11px; color:#888; margin-bottom:4px;">Kesimpulan Skrining:</div>
+                    <div class="result-pill" id="modal-result-pill">Belum dinilai</div>
+                </div>
+                <button class="btn-apply-skrining" onclick="applySkriningResult()">✅ Terapkan ke Form</button>
             </div>
         </div>
     </div>
@@ -693,10 +875,20 @@
                 printMonevEl.textContent = monevItems.join(', ');
             }
 
-            // Diagnosis / Kesimpulan
-            const selected = document.querySelector('input[name="kesimpulan"]:checked');
-            const diagnosis = selected ? selected.value : '-';
-            setText('displayDiagnosis', diagnosis === '-' ? '-' : diagnosis.replace('MALNUTRISI ', ''));
+            // Diagnosis / Kesimpulan — auto-derived from hasilSkrining
+            const skriningVal = getValue('hasilSkrining') || '';
+            let diagnosis = '-';
+            if (/Berat/.test(skriningVal) || /Malnutrisi \(<17/.test(skriningVal)) {
+                diagnosis = 'MALNUTRISI BERAT';
+            } else if (/Ringan-Sedang|Sedang|Risiko/.test(skriningVal)) {
+                diagnosis = 'MALNUTRISI SEDANG';
+            }
+            const displayKes = document.getElementById('displayKesimpulan');
+            if (displayKes) {
+                displayKes.textContent = diagnosis === '-' ? '—' : diagnosis;
+                displayKes.style.color = diagnosis === 'MALNUTRISI BERAT' ? '#b71c1c' : (diagnosis === 'MALNUTRISI SEDANG' ? '#e65100' : '#999');
+            }
+            setText('displayDiagnosis', diagnosis);
         }
 
         function autofillEnteral() {
@@ -893,6 +1085,249 @@
             }
             container.innerHTML = rows;
         }
+
+        // ─── MODAL SKRINING GIZI ──────────────────────────────────────────────
+        const TABEL7_DATA = {
+            akut: {
+                label: 'Penyakit Akut / Cedera',
+                sedang: [
+                    ['Asupan Energi', '<75% kebutuhan selama >7 hari'],
+                    ['Penurunan BB', '1–2%/1 minggu; 5%/1 bulan; 7.5%/3 bulan'],
+                    ['Kehilangan Lemak', 'Ringan (mild)'],
+                    ['Kehilangan Otot', 'Ringan (mild)'],
+                    ['Akumulasi Cairan', 'Edema ringan (mild)'],
+                ],
+                berat: [
+                    ['Asupan Energi', '≤50% kebutuhan selama ≥5 hari'],
+                    ['Penurunan BB', '>2%/1 minggu; >5%/1 bulan; >7.5%/3 bulan'],
+                    ['Kehilangan Lemak', 'Sedang (moderate)'],
+                    ['Kehilangan Otot', 'Sedang (moderate)'],
+                    ['Akumulasi Cairan', 'Edema sedang–berat'],
+                ]
+            },
+            kronik: {
+                label: 'Penyakit Kronik',
+                sedang: [
+                    ['Asupan Energi', '<75% kebutuhan selama ≥1 bulan'],
+                    ['Penurunan BB', '5%/1 bulan; 7.5%/3 bulan; 10%/6 bulan; 20%/1 tahun'],
+                    ['Kehilangan Lemak', 'Ringan (mild)'],
+                    ['Kehilangan Otot', 'Ringan (mild)'],
+                    ['Akumulasi Cairan', 'Edema ringan'],
+                ],
+                berat: [
+                    ['Asupan Energi', '≤75% kebutuhan selama ≥1 bulan'],
+                    ['Penurunan BB', '>5%/1 bulan; >7.5%/3 bulan; >10%/6 bulan; >20%/1 tahun'],
+                    ['Kehilangan Lemak', 'Sedang (moderate)'],
+                    ['Kehilangan Otot', 'Berat (severe)'],
+                    ['Akumulasi Cairan', 'Edema berat'],
+                ]
+            },
+            sosial: {
+                label: 'Sosial / Lingkungan',
+                sedang: [
+                    ['Asupan Energi', '<75% kebutuhan selama ≥3 bulan'],
+                    ['Penurunan BB', '5%/1 bulan; 7.5%/3 bulan; 10%/6 bulan; 20%/1 tahun'],
+                    ['Kehilangan Lemak', 'Ringan (mild)'],
+                    ['Kehilangan Otot', 'Ringan (mild)'],
+                    ['Akumulasi Cairan', 'Edema ringan'],
+                ],
+                berat: [
+                    ['Asupan Energi', '≤50% kebutuhan selama >7 hari'],
+                    ['Penurunan BB', '>5%/1 bulan; >7.5%/3 bulan; >10%/6 bulan; >20%/1 tahun'],
+                    ['Kehilangan Lemak', 'Berat (severe)'],
+                    ['Kehilangan Otot', 'Berat (severe)'],
+                    ['Akumulasi Cairan', 'Edema berat / anasarka'],
+                ]
+            }
+        };
+
+        let currentEtiologi = 'akut';
+
+        function openSkriningModal() {
+            const bb = parseFloat(getValue('bb'));
+            const tb = parseFloat(getValue('tb'));
+            document.getElementById('modal-bb').textContent = bb || '-';
+            document.getElementById('modal-tb').textContent = tb || '-';
+            if (bb && tb) {
+                const bmi = bb / Math.pow(tb / 100, 2);
+                document.getElementById('modal-bmi').textContent = bmi.toFixed(1);
+                highlightBMIRow(bmi);
+            } else {
+                document.getElementById('modal-bmi').textContent = '-';
+                document.querySelectorAll('[id^="bmi-row-"]').forEach(r => r.classList.remove('match'));
+            }
+            renderTabel7(currentEtiologi);
+            calcAspen();
+            document.getElementById('modal-skrining').style.display = 'block';
+        }
+
+        function closeSkriningModal() {
+            document.getElementById('modal-skrining').style.display = 'none';
+        }
+
+        function showModalTab(tab) {
+            ['aspen','tabel7','antropo'].forEach(t => {
+                document.getElementById('modal-body-' + t).style.display = (t === tab) ? 'block' : 'none';
+                document.getElementById('mtab-' + t).classList.toggle('active', t === tab);
+            });
+            if (tab === 'antropo') {
+                const bb = parseFloat(getValue('bb'));
+                const tb = parseFloat(getValue('tb'));
+                document.getElementById('modal-bb').textContent = bb || '-';
+                document.getElementById('modal-tb').textContent = tb || '-';
+                if (bb && tb) {
+                    const bmi = bb / Math.pow(tb / 100, 2);
+                    document.getElementById('modal-bmi').textContent = bmi.toFixed(1);
+                    highlightBMIRow(bmi);
+                }
+            }
+        }
+
+        function highlightBMIRow(bmi) {
+            const ranges = [
+                [1, bmi < 17],
+                [2, bmi >= 17 && bmi < 18.5],
+                [3, bmi >= 18.5 && bmi < 25],
+                [4, bmi >= 25 && bmi < 30],
+                [5, bmi >= 30 && bmi < 35],
+                [6, bmi >= 35],
+            ];
+            ranges.forEach(([n, match]) => {
+                const row = document.getElementById('bmi-row-' + n);
+                if (row) row.classList.toggle('match', match);
+            });
+        }
+
+        function calcLLA() {
+            const lla = parseFloat(document.getElementById('modal-lla')?.value);
+            const jk = getValue('jk');
+            const resultEl = document.getElementById('lla-result');
+            document.querySelectorAll('[id^="lla-row-"]').forEach(r => r.classList.remove('match'));
+            if (!lla || !resultEl) return;
+            let klasif = '', rowId = '';
+            if (jk === 'L') {
+                if (lla < 19.5) { klasif = 'Malnutrisi Berat'; rowId = 'lla-row-1'; }
+                else if (lla < 21.5) { klasif = 'Malnutrisi Sedang'; rowId = 'lla-row-2'; }
+                else { klasif = 'Normal'; rowId = 'lla-row-3'; }
+            } else {
+                if (lla < 18.5) { klasif = 'Malnutrisi Berat'; rowId = 'lla-row-1'; }
+                else if (lla < 20.5) { klasif = 'Malnutrisi Sedang'; rowId = 'lla-row-2'; }
+                else { klasif = 'Normal'; rowId = 'lla-row-3'; }
+            }
+            if (rowId) document.getElementById(rowId)?.classList.add('match');
+            resultEl.textContent = 'Klasifikasi LLA: ' + klasif;
+        }
+
+        function calcAspen() {
+            const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
+            let sedang = 0, berat = 0;
+            names.forEach(name => {
+                const val = document.querySelector('input[name="' + name + '"]:checked')?.value || '0';
+                if (val === 'sedang') sedang++;
+                if (val === 'berat') berat++;
+            });
+            const total = sedang + berat;
+            document.getElementById('aspen-badge-sedang').textContent = sedang + ' Sedang';
+            document.getElementById('aspen-badge-berat').textContent = berat + ' Berat';
+            const noteEl = document.getElementById('aspen-diagnosis-note');
+            if (total >= 2) {
+                noteEl.textContent = '✓ Memenuhi syarat diagnosis malnutrisi (' + total + ' dari 6 kriteria).';
+                noteEl.style.color = '#b71c1c';
+            } else {
+                noteEl.textContent = 'Belum memenuhi syarat diagnosis (butuh ≥2 kriteria).';
+                noteEl.style.color = '#888';
+            }
+            updateModalResult();
+        }
+
+        function updateModalResult() {
+            const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
+            let sedang = 0, berat = 0;
+            names.forEach(name => {
+                const val = document.querySelector('input[name="' + name + '"]:checked')?.value || '0';
+                if (val === 'sedang') sedang++;
+                if (val === 'berat') berat++;
+            });
+            const total = sedang + berat;
+            const pill = document.getElementById('modal-result-pill');
+            pill.className = 'result-pill';
+            if (total >= 2 && berat >= 2) {
+                pill.textContent = 'MALNUTRISI BERAT';
+                pill.classList.add('berat');
+            } else if (total >= 2) {
+                pill.textContent = 'MALNUTRISI SEDANG';
+                pill.classList.add('sedang');
+            } else {
+                pill.textContent = 'Belum dinilai / Tidak Malnutrisi';
+            }
+        }
+
+        function selectEtiologi(key) {
+            currentEtiologi = key;
+            document.querySelectorAll('.etiologi-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('etbtn-' + key)?.classList.add('selected');
+            renderTabel7(key);
+        }
+
+        function renderTabel7(key) {
+            const data = TABEL7_DATA[key];
+            if (!data) return;
+            const container = document.getElementById('tabel7-content');
+            let html = `<div class="t7-row">
+                <div class="t7-cell t7-header">Parameter</div>
+                <div class="t7-cell t7-header t7-sedang" style="text-align:center;">🟡 Sedang</div>
+                <div class="t7-cell t7-header t7-berat" style="text-align:center;">🔴 Berat</div>
+            </div>`;
+            for (let i = 0; i < data.sedang.length; i++) {
+                html += `<div class="t7-row">
+                    <div class="t7-cell t7-label">${data.sedang[i][0]}</div>
+                    <div class="t7-cell t7-sedang">${data.sedang[i][1]}</div>
+                    <div class="t7-cell t7-berat">${data.berat[i][1]}</div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function applySkriningResult() {
+            const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
+            const kritNames = [
+                'Asupan energi tidak adekuat',
+                'Penurunan berat badan',
+                'Penurunan massa otot',
+                'Penurunan massa lemak subkutan',
+                'Akumulasi cairan (edema)',
+                'Penurunan status fungsional',
+            ];
+            let sedang = 0, berat = 0;
+            const kriteriaTerpenuhi = [];
+            names.forEach((name, i) => {
+                const val = document.querySelector('input[name="' + name + '"]:checked')?.value || '0';
+                if (val === 'sedang') { sedang++; kriteriaTerpenuhi.push(kritNames[i] + ' (Sedang)'); }
+                if (val === 'berat')  { berat++;  kriteriaTerpenuhi.push(kritNames[i] + ' (Berat)');  }
+            });
+            const total = sedang + berat;
+            if (total >= 2) {
+                const isBerat = berat >= 2;
+                const etiLabel = TABEL7_DATA[currentEtiologi]?.label || '';
+                const detail = 'ASPEN: ' + kriteriaTerpenuhi.join('; ') + '. Etiologi: ' + etiLabel + '.';
+                const ta = document.getElementById('skriningDetail');
+                if (ta) {
+                    ta.value = detail;
+                    ta.style.height = 'auto';
+                    ta.style.height = ta.scrollHeight + 'px';
+                }
+                const sel = document.getElementById('hasilSkrining');
+                if (sel) {
+                    const target = isBerat ? 'SGA C (Malnutrisi Berat)' : 'SGA B (Malnutrisi Ringan-Sedang)';
+                    for (let opt of sel.options) {
+                        if (opt.value === target) { sel.value = target; break; }
+                    }
+                }
+                updateStats();
+            }
+            closeSkriningModal();
+        }
+        // ─────────────────────────────────────────────────────────────────────
 
         function getValue(id) { return document.getElementById(id)?.value; }
         function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
