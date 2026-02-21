@@ -293,20 +293,24 @@
                     </select>
                 </div>
                 <div class="form-group"><label>Kecepatan Koreksi:</label>
-                    <select id="kecepatanK">
-                        <option value="5" selected>5 mEq/jam</option>
-                        <option value="6">6 mEq/jam</option>
-                        <option value="7">7 mEq/jam</option>
-                        <option value="8">8 mEq/jam</option>
-                        <option value="9">9 mEq/jam</option>
-                        <option value="10">10 mEq/jam</option>
-                        <option value="15">15 mEq/jam (Sentral)</option>
-                        <option value="20">20 mEq/jam (Sentral)</option>
-                        <option value="25">25 mEq/jam (Sentral, Life-threatening)</option>
-                        <option value="30">30 mEq/jam (Sentral, Life-threatening)</option>
-                        <option value="35">35 mEq/jam (Sentral, Life-threatening)</option>
-                        <option value="40">40 mEq/jam (Sentral, Life-threatening)</option>
-                    </select>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <button onclick="changeKacepatanK(-1)" style="padding:4px 11px; border:1px solid #bbb; border-radius:4px; background:#f5f5f5; cursor:pointer; font-size:18px; line-height:1; flex-shrink:0;">−</button>
+                        <select id="kecepatanK" style="flex:1; text-align:center;">
+                            <option value="5" selected>5 mEq/jam</option>
+                            <option value="6">6 mEq/jam</option>
+                            <option value="7">7 mEq/jam</option>
+                            <option value="8">8 mEq/jam</option>
+                            <option value="9">9 mEq/jam</option>
+                            <option value="10">10 mEq/jam</option>
+                            <option value="15">15 mEq/jam (Sentral)</option>
+                            <option value="20">20 mEq/jam (Sentral)</option>
+                            <option value="25">25 mEq/jam (Sentral, Life-threatening)</option>
+                            <option value="30">30 mEq/jam (Sentral, Life-threatening)</option>
+                            <option value="35">35 mEq/jam (Sentral, Life-threatening)</option>
+                            <option value="40">40 mEq/jam (Sentral, Life-threatening)</option>
+                        </select>
+                        <button onclick="changeKacepatanK(1)" style="padding:4px 11px; border:1px solid #bbb; border-radius:4px; background:#f5f5f5; cursor:pointer; font-size:18px; line-height:1; flex-shrink:0;">+</button>
+                    </div>
                 </div>
             </div>
 
@@ -1095,12 +1099,13 @@
             `;
 
             // Safety warnings
+            const jamPerBagCalc = VIAL_MEQ / rateEq; // durasi 1 botol/vial habis (jam)
             const warnings = [];
             if (akses === 'perifer' && kSerum < 3.0) {
                 warnings.push('⚠️ K &lt;3.0 mEq/L — Pertimbangkan akses vena sentral');
             }
-            if (akses === 'perifer' && rateEq > 10) {
-                warnings.push('⚠️ Rate &gt;10 mEq/jam tidak dianjurkan via vena perifer (batas aman perifer: 5–10 mEq/jam)');
+            if (akses === 'perifer' && jamPerBagCalc < 4) {
+                warnings.push(`⚠️ Kecepatan terlalu tinggi untuk perifer — 1 botol habis dalam ~${Math.round(jamPerBagCalc * 10) / 10} jam (batas aman: 4–6 jam/botol). Kurangi kecepatan atau gunakan vena sentral.`);
             }
             if (rateEq > 20) {
                 warnings.push('⚠️ Life-threatening: Monitoring ECG kontinu wajib. Pantau K setiap 1 jam. Tidak ada infus lain di kateter yang sama.');
@@ -1386,6 +1391,16 @@
             closeSkriningModal();
         }
         // ─────────────────────────────────────────────────────────────────────
+
+        function changeKacepatanK(dir) {
+            const sel = document.getElementById('kecepatanK');
+            if (!sel) return;
+            const newIdx = sel.selectedIndex + dir;
+            if (newIdx >= 0 && newIdx < sel.options.length) {
+                sel.selectedIndex = newIdx;
+                updateStats();
+            }
+        }
 
         function getValue(id) { return document.getElementById(id)?.value; }
         function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
