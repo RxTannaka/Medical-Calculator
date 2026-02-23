@@ -1140,7 +1140,7 @@
             const deltaK = kTarget - kSerum;
             setText('displayDeltaK', !isNaN(deltaK) && deltaK > 0 ? deltaK.toFixed(1) : "0");
 
-            const kebutuhan = 0.3 * bb * (kTarget - kSerum);
+            const kebutuhan = (bb * (kTarget - kSerum)) / 3;
             setText('displayKebutuhanK', !isNaN(kebutuhan) && kebutuhan > 0 ? kebutuhan.toFixed(1) : "0");
 
             const container = document.getElementById('kalium-instructions');
