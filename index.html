@@ -74,6 +74,20 @@
         .autofill-btn { margin-top: 8px; padding: 5px 12px; background: #1976D2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
         .autofill-btn:hover { background: #1565C0; }
 
+        /* TABEL 7 CHECKLIST */
+        .tabel7-checklist { margin-bottom: 10px; }
+        .tabel7-checklist-title { text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px; font-style: italic; }
+        .tabel7-checklist-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .tabel7-checklist-table th { background: #37474f; color: white; padding: 5px 4px; text-align: center; font-size: 9.5px; border: 1px solid #999; line-height: 1.3; }
+        .tabel7-checklist-table td { border: 1px solid #aaa; padding: 4px 5px; vertical-align: top; font-size: 9.5px; line-height: 1.3; }
+        .tabel7-checklist-table .col-kriteria { width: 100px; font-weight: bold; background: #eceff1; }
+        .tabel7-checklist-table .t7c-sedang { background: #fffde7; }
+        .tabel7-checklist-table .t7c-berat { background: #fce4ec; }
+        .t7c-cell label { display: flex; align-items: flex-start; gap: 4px; cursor: pointer; margin: 0; }
+        .t7c-cell input[type="checkbox"] { margin-top: 1px; flex-shrink: 0; width: 13px; height: 13px; }
+        .checklist-kesimpulan { margin-top: 10px; padding: 10px 14px; border: 2px solid #333; border-radius: 4px; }
+        .checklist-kesimpulan-title { font-weight: bold; text-decoration: underline; margin-bottom: 6px; font-size: 12px; }
+
         /* KESIMPULAN */
         .kesimpulan-box { margin-top: 15px; padding: 12px 16px; border: 2px solid #333; border-radius: 4px; }
         .kesimpulan-title { font-weight: bold; text-decoration: underline; margin-bottom: 10px; font-size: 13px; }
@@ -124,70 +138,24 @@
             body.mode-malnutrisi .info-line-malnutrisi { display: grid !important; }
             .malnutrisi-textarea { min-height: 40px; }
             .malnutrisi-form-table td, .malnutrisi-form-table th { border: 1px solid #000; }
+
+            /* Malnutrisi Page 1: checklist + kesimpulan */
+            body.mode-malnutrisi #tabel7-checklist { display: block !important; page-break-after: always; }
+            body.mode-malnutrisi .tabel7-checklist-table th { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body.mode-malnutrisi .tabel7-checklist-table { font-size: 9px !important; }
+            body.mode-malnutrisi .tabel7-checklist-table td { padding: 3px 4px !important; }
+            body.mode-malnutrisi .checklist-kesimpulan { border: 2px solid #000 !important; }
+
+            /* Malnutrisi Page 2: form tatalaksana starts new page */
+            body.mode-malnutrisi .malnutrisi-form-wrapper { page-break-before: always; }
+            body.mode-malnutrisi .malnutrisi-form-wrapper > div:first-child {
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
+            body.mode-malnutrisi .page2-patient-header { display: block !important; }
         }
-        /* MODAL SKRINING */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 2000; display: none; overflow-y: auto; padding: 20px 0; }
-        .modal-box { max-width: 760px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 6px 30px rgba(0,0,0,0.35); overflow: hidden; }
-        .modal-header { background: #37474f; color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { margin: 0; font-size: 14px; }
-        .modal-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; line-height: 1; padding: 0; }
-        .modal-tabs { display: flex; border-bottom: 2px solid #ddd; background: #f8f8f8; }
-        .modal-tab { padding: 10px 18px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 12px; color: #777; border-bottom: 3px solid transparent; margin-bottom: -2px; }
-        .modal-tab.active { color: #37474f; border-bottom-color: #37474f; background: white; }
-        .modal-body { padding: 16px; max-height: 58vh; overflow-y: auto; }
-        .aspen-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .aspen-table th { background: #455a64; color: white; padding: 8px 10px; text-align: center; font-size: 11px; }
-        .aspen-table td { border: 1px solid #ddd; padding: 7px 10px; vertical-align: top; }
-        .aspen-table tr:nth-child(even) td { background: #fafafa; }
-        .aspen-crit { font-weight: bold; font-size: 12px; }
-        .aspen-desc { font-size: 10px; color: #555; margin-top: 2px; line-height: 1.4; }
-        .aspen-radio-group { display: flex; flex-direction: column; gap: 5px; }
-        .aspen-radio-group label { display: flex; align-items: flex-start; gap: 6px; font-size: 11px; cursor: pointer; line-height: 1.4; }
-        .aspen-radio-group label.opt-sedang { color: #e65100; }
-        .aspen-radio-group label.opt-berat { color: #b71c1c; font-weight: bold; }
-        .aspen-count-bar { display: flex; gap: 15px; padding: 10px 14px; background: #eceff1; border-radius: 6px; margin-top: 12px; font-size: 12px; align-items: center; }
-        .count-badge { padding: 4px 14px; border-radius: 12px; font-size: 13px; font-weight: bold; }
-        .count-badge.sedang { background: #fff3e0; color: #e65100; border: 1px solid #FFB74D; }
-        .count-badge.berat { background: #ffebee; color: #b71c1c; border: 1px solid #EF9A9A; }
-        .etiologi-btns { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-        .etiologi-btn { padding: 7px 16px; border: 2px solid #ccc; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; background: white; }
-        .etiologi-btn.selected { border-color: #37474f; background: #37474f; color: white; }
-        .tabel7-grid { border: 1px solid #bbb; border-radius: 6px; overflow: hidden; font-size: 11px; }
-        .t7-row { display: grid; grid-template-columns: 155px 1fr 1fr; border-bottom: 1px solid #ddd; }
-        .t7-row:last-child { border-bottom: none; }
-        .t7-cell { padding: 7px 10px; border-right: 1px solid #ddd; line-height: 1.5; }
-        .t7-cell:last-child { border-right: none; }
-        .t7-header { background: #455a64; color: white; font-weight: bold; text-align: center; font-size: 12px; }
-        .t7-sedang { background: #fff8e1; }
-        .t7-berat { background: #fce4ec; }
-        .t7-label { font-weight: bold; background: #eceff1; font-size: 11px; }
-        .antropo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .antropo-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px; }
-        .antropo-card h4 { margin: 0 0 10px 0; color: #37474f; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
-        .klasif-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #eee; }
-        .klasif-row.match { background: #e8f5e9; font-weight: bold; border-radius: 3px; padding: 4px 6px; }
-        .modal-footer { background: #f5f5f5; border-top: 2px solid #ddd; padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .result-pill { padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 14px; background: #eee; border: 2px solid #ccc; min-width: 200px; text-align: center; }
-        .result-pill.sedang { background: #fff3e0; color: #e65100; border-color: #FFB74D; }
-        .result-pill.berat { background: #ffebee; color: #b71c1c; border-color: #EF9A9A; }
-        .btn-apply-skrining { padding: 8px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        @media print { .modal-overlay { display: none !important; } }
-        /* NRS-2002 */
-        .nrs-section { margin-bottom: 14px; }
-        .nrs-section-title { font-weight: bold; color: #37474f; font-size: 12px; background: #eceff1; padding: 6px 10px; border-radius: 4px; margin-bottom: 8px; border-left: 3px solid #607d8b; }
-        .nrs-option { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-bottom: 3px; border: 1px solid transparent; line-height: 1.5; }
-        .nrs-option:hover { background: #f5f5f5; border-color: #e0e0e0; }
-        .nrs-option input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
-        .nrs-prescreen label { display: flex; gap: 8px; font-size: 12px; padding: 6px 10px; cursor: pointer; align-items: flex-start; border-radius: 4px; margin-bottom: 3px; line-height: 1.5; }
-        .nrs-prescreen label:hover { background: #f5f5f5; }
-        .nrs-prescreen input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
-        .nrs-score-box { display: flex; gap: 10px; padding: 12px 16px; background: #eceff1; border-radius: 6px; margin-top: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
-        .nrs-score-item { text-align: center; min-width: 48px; }
-        .nrs-score-num { font-size: 28px; font-weight: bold; color: #37474f; line-height: 1; }
-        .nrs-score-label { font-size: 10px; color: #777; margin-top: 3px; }
-        .nrs-result-box { padding: 10px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; margin-top: 10px; text-align: center; }
-        .nrs-result-box.risk { background: #ffebee; color: #b71c1c; border: 1px solid #EF9A9A; }
-        .nrs-result-box.no-risk { background: #e8f5e9; color: #2E7D32; border: 1px solid #A5D6A7; }
+        .page2-patient-header { display: none; font-size: 10px; padding: 6px 10px; border-bottom: 1px solid #999; margin-bottom: 0; }
+        .btn-tab-malnutrisi { background: #795548; color: white; }
+        .btn-tab-danger { background: #e53935; color: white; margin-left: 12px; }
         /* --- CSS END --- */
     </style>
 </head>
@@ -202,7 +170,8 @@
             <button onclick="showCalculator('psi')" id="btn-psi" class="btn-tab active">PSI Score</button>
             <button onclick="showCalculator('natrium')" id="btn-natrium" class="btn-tab">Koreksi Natrium</button>
             <button onclick="showCalculator('kalium')" id="btn-kalium" class="btn-tab">Koreksi Kalium</button>
-            <button onclick="showCalculator('malnutrisi')" id="btn-malnutrisi" class="btn-tab" style="background:#795548; color:white;">Tatalaksana Malnutrisi</button>
+            <button onclick="showCalculator('malnutrisi')" id="btn-malnutrisi" class="btn-tab btn-tab-malnutrisi">Tatalaksana Malnutrisi</button>
+            <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
         <!-- PATIENT INFO HEADER -->
@@ -216,6 +185,9 @@
                 <!-- Hanya tampil di mode malnutrisi -->
                 <div class="info-line info-line-malnutrisi"><span class="label">Ruang</span><span>:</span><span id="displayRuang">-</span></div>
                 <div class="info-line info-line-malnutrisi"><span class="label">Jam</span><span>:</span><span id="displayJam">-</span></div>
+                <div class="info-line info-line-malnutrisi"><span class="label">BB / TB</span><span>:</span><span id="displayBBTB">-</span></div>
+                <div class="info-line info-line-malnutrisi"><span class="label">BMI</span><span>:</span><span id="displayBMIPrint">-</span></div>
+                <div class="info-line info-line-malnutrisi"><span class="label">BB Ideal</span><span>:</span><span id="displayIBWPrint">-</span></div>
             </div>
 
             <div id="psi-output-box" class="output-box">
@@ -245,6 +217,7 @@
                 <div style="font-weight:bold; color:#333;" id="displayTargetKkal">- kkal/hari</div>
                 <div style="font-size:11px; color:#555; margin-top:4px;">Target Protein</div>
                 <div style="font-weight:bold; color:#333;" id="displayTargetProtein">- g/hari</div>
+                <div id="displayBasisBB" style="font-size:10px; color:#1565C0; margin-top:6px;"></div>
             </div>
         </div>
 
@@ -302,6 +275,7 @@
             <div id="input-kalium-group" style="display:none; display:contents;">
                 <div class="form-group"><label>K Serum Awal:</label><input type="number" id="kSerum" step="0.1"></div>
                 <div class="form-group"><label>Target K (mEq/L):</label><input type="number" id="kTarget" step="0.1" value="3.5"></div>
+                <div class="form-group"><label>Konstanta:</label><input type="number" id="kConstant" step="0.01" min="0.3" max="0.4" value="0.3" style="text-align:center;"></div>
                 <div class="form-group"><label>Akses Vena:</label>
                     <select id="aksesVena">
                         <option value="perifer">Vena Perifer</option>
@@ -336,6 +310,15 @@
                 <div class="form-group"><label>Ruang/Ward:</label><input type="text" id="ruang" placeholder="cth: ICU, 6 South"></div>
                 <div class="form-group"><label>Jam Assessment:</label><input type="time" id="jam"></div>
                 <div class="form-group"><label>Tinggi Badan (cm):</label><input type="number" id="tb" placeholder="Opsional (BMI)"></div>
+                <div class="form-group"><label>Formula BB Ideal:</label>
+                    <select id="ibwFormula">
+                        <option value="none">Gunakan BB Aktual</option>
+                        <option value="hamwi">Hamwi</option>
+                        <option value="devine">Devine</option>
+                        <option value="broca">Broca</option>
+                    </select>
+                    <div id="ibwDisplay" style="font-size:11px; font-weight:bold; color:#1565C0; margin-top:2px;"></div>
+                </div>
                 <div class="form-group"><label>Kondisi / Faktor Stres:</label>
                     <select id="faktorStres">
                         <option value="25">Normal (25 kkal/kg)</option>
@@ -398,6 +381,34 @@
         <!-- MALNUTRISI CONTENT -->
         <div id="calc-malnutrisi-content" class="calc-content" style="display:none;">
 
+            <!-- TABEL 7 CHECKLIST (Print Page 1) -->
+            <div id="tabel7-checklist">
+                <div class="tabel7-checklist-title">Klasifikasi malnutrisi berdasarkan anamnesis dan gejala klinis</div>
+                <table class="tabel7-checklist-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width:100px;">Karakteristik Klinis</th>
+                            <th colspan="2">Malnutrisi karena<br>Penyakit Akut / Cedera</th>
+                            <th colspan="2">Malnutrisi karena<br>Penyakit Kronik</th>
+                            <th colspan="2">Malnutrisi karena<br>Keadaan Sosial / Lingkungan</th>
+                        </tr>
+                        <tr>
+                            <th class="t7c-sedang" style="color:#333;">Sedang</th>
+                            <th class="t7c-berat" style="color:#333;">Berat</th>
+                            <th class="t7c-sedang" style="color:#333;">Sedang</th>
+                            <th class="t7c-berat" style="color:#333;">Berat</th>
+                            <th class="t7c-sedang" style="color:#333;">Sedang</th>
+                            <th class="t7c-berat" style="color:#333;">Berat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel7-checklist-body"></tbody>
+                </table>
+                <div class="checklist-kesimpulan">
+                    <div class="checklist-kesimpulan-title">KESIMPULAN:</div>
+                    <div id="checklist-kesimpulan-text" style="font-size:13px; font-weight:bold; color:#999;">—</div>
+                </div>
+            </div>
+
             <!-- Helper: Target Kalori & Protein (screen only) -->
             <div class="helper-box screen-only">
                 <div class="helper-box-title">🧮 Kalkulator Target Nutrisi</div>
@@ -421,6 +432,10 @@
                     <div class="helper-result-item">
                         <div class="hval" id="hBMI">-</div>
                         <div class="hlabel">BMI (kg/m²)</div>
+                    </div>
+                    <div class="helper-result-item">
+                        <div class="hval" id="hIBW">-</div>
+                        <div class="hlabel">BB Ideal (kg)</div>
                     </div>
                     <div class="helper-result-item">
                         <div class="hval" id="hFaktorKalori">-</div>
@@ -450,6 +465,15 @@
             </div>
 
             <!-- FORM TATALAKSANA MALNUTRISI -->
+            <div class="malnutrisi-form-wrapper">
+            <div class="page2-patient-header">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                    <span><strong>Nama:</strong> <span id="displayNamaP2">-</span></span>
+                    <span><strong>No. MR:</strong> <span id="displayNoMRP2">-</span></span>
+                    <span><strong>Ruang:</strong> <span id="displayRuangP2">-</span></span>
+                    <span><strong>Tanggal:</strong> <span id="displayTglP2">-</span></span>
+                </div>
+            </div>
             <div style="text-align:center; font-weight:bold; font-size:14px; padding: 8px; background:#37474f; color:white; border-radius:4px 4px 0 0; margin-top:5px;">
                 FORM TATALAKSANA MALNUTRISI
             </div>
@@ -462,35 +486,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 1. Skrining gizi -->
+                    <!-- 1. Skrining gizi (auto dari Tabel Klasifikasi Malnutrisi) -->
                     <tr>
                         <td class="col-no">1.</td>
                         <td class="col-jenis">Skrining gizi</td>
                         <td>
-                            <div class="screen-only" style="margin-bottom:6px;">
-                                <button onclick="openSkriningModal()" style="padding:5px 12px; background:#37474f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">📋 Klasifikasi Malnutrisi</button>
-                            </div>
-                            <div class="screen-only" style="margin-bottom:4px;">
-                                <select id="hasilSkrining" onchange="updateStats()" style="padding:3px 6px; border:1px solid #ccc; border-radius:3px; font-size:12px; margin-right:5px;">
-                                    <option value="">-- Pilih Hasil Skrining --</option>
-                                    <optgroup label="SGA (Subjective Global Assessment)">
-                                        <option value="SGA A (Gizi Baik)">SGA A — Gizi Baik</option>
-                                        <option value="SGA B (Malnutrisi Ringan-Sedang)">SGA B — Malnutrisi Ringan-Sedang</option>
-                                        <option value="SGA C (Malnutrisi Berat)">SGA C — Malnutrisi Berat</option>
-                                    </optgroup>
-                                    <optgroup label="NRS-2002">
-                                        <option value="NRS-2002 skor &lt;3 (Tidak Berisiko)">NRS-2002 &lt;3 — Tidak Berisiko</option>
-                                        <option value="NRS-2002 skor ≥3 (Berisiko Malnutrisi)">NRS-2002 ≥3 — Berisiko Malnutrisi</option>
-                                    </optgroup>
-                                    <optgroup label="MNA (Lansia)">
-                                        <option value="MNA Normal (≥24 poin)">MNA Normal ≥24 poin</option>
-                                        <option value="MNA Risiko Malnutrisi (17-23.5 poin)">MNA Risiko (17–23.5 poin)</option>
-                                        <option value="MNA Malnutrisi (&lt;17 poin)">MNA Malnutrisi &lt;17 poin</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                            <div id="printSkrining" style="font-size:12px; min-height:16px;"></div>
-                            <textarea class="malnutrisi-textarea screen-only" id="skriningDetail" placeholder="Catatan tambahan skrining gizi..."></textarea>
+                            <div id="printSkrining" style="font-size:12px; font-weight:bold; min-height:16px;">—</div>
                         </td>
                     </tr>
 
@@ -590,6 +591,7 @@
                     <div style="font-size:10px; color:#aaa; margin-top:2px;">(mengikuti hasil skrining gizi)</div>
                 </div>
             </div>
+            </div><!-- /malnutrisi-form-wrapper -->
         </div>
 
         <!-- FOOTER -->
@@ -608,193 +610,6 @@
         </div>
     </div>
 
-    <!-- MODAL SKRINING GIZI (Tabel 7 PnPK Gizi) -->
-    <div id="modal-skrining" class="modal-overlay" onclick="if(event.target===this)closeSkriningModal()">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Klasifikasi Malnutrisi</h3>
-                <button class="modal-close" onclick="closeSkriningModal()">×</button>
-            </div>
-            <div class="modal-tabs">
-                <button class="modal-tab active" id="mtab-aspen" onclick="showModalTab('aspen')">6 Kriteria ASPEN</button>
-                <button class="modal-tab" id="mtab-tabel7" onclick="showModalTab('tabel7')">Etiologi</button>
-                <button class="modal-tab" id="mtab-antropo" onclick="showModalTab('antropo')">Antropometri</button>
-                <button class="modal-tab" id="mtab-nrs" onclick="showModalTab('nrs')">NRS-2002</button>
-            </div>
-
-            <!-- Tab 1: ASPEN 6 Criteria -->
-            <div id="modal-body-aspen" class="modal-body">
-                <p style="font-size:11px; color:#555; margin:0 0 10px 0;">Diagnosis malnutrisi ditegakkan bila <strong>≥2 kriteria</strong> terpenuhi (Academy of Nutrition/ASPEN, 2012).</p>
-                <table class="aspen-table">
-                    <thead>
-                        <tr>
-                            <th style="width:40%">Kriteria Klinis</th>
-                            <th>Pilihan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><div class="aspen-crit">1. Asupan energi tidak adekuat</div><div class="aspen-desc">Asupan kalori &lt; kebutuhan dalam periode tertentu</div></td>
-                            <td><div class="aspen-radio-group">
-                                <label><input type="radio" name="aspen1" value="0" checked> Tidak Ada</label>
-                                <label class="opt-sedang"><input type="radio" name="aspen1" value="sedang" onchange="calcAspen()"> Sedang — &lt;75% &gt;7 hari (akut) / ≥1 bulan (kronik)</label>
-                                <label class="opt-berat"><input type="radio" name="aspen1" value="berat" onchange="calcAspen()"> Berat — ≤50% ≥5 hari (akut) / &lt;75% ≥1 bulan (kronik)</label>
-                            </div></td>
-                        </tr>
-                        <tr>
-                            <td><div class="aspen-crit">2. Penurunan berat badan</div><div class="aspen-desc">Kehilangan BB signifikan dalam waktu tertentu</div></td>
-                            <td><div class="aspen-radio-group">
-                                <label><input type="radio" name="aspen2" value="0" checked> Tidak Ada</label>
-                                <label class="opt-sedang"><input type="radio" name="aspen2" value="sedang" onchange="calcAspen()"> Sedang — 1–2%/1 mg, 5%/1 bl, 7.5%/3 bl</label>
-                                <label class="opt-berat"><input type="radio" name="aspen2" value="berat" onchange="calcAspen()"> Berat — &gt;2%/1 mg, &gt;5%/1 bl, &gt;7.5%/3 bl</label>
-                            </div></td>
-                        </tr>
-                        <tr>
-                            <td><div class="aspen-crit">3. Penurunan massa otot</div><div class="aspen-desc">Dinilai klinis: temporal, deltoid, thenar, kuadriseps</div></td>
-                            <td><div class="aspen-radio-group">
-                                <label><input type="radio" name="aspen3" value="0" checked> Tidak Ada</label>
-                                <label class="opt-sedang"><input type="radio" name="aspen3" value="sedang" onchange="calcAspen()"> Sedang — penurunan ringan</label>
-                                <label class="opt-berat"><input type="radio" name="aspen3" value="berat" onchange="calcAspen()"> Berat — penurunan sedang–berat</label>
-                            </div></td>
-                        </tr>
-                        <tr>
-                            <td><div class="aspen-crit">4. Penurunan lemak subkutan</div><div class="aspen-desc">Kulit atas trisep, pinggang, abdomen</div></td>
-                            <td><div class="aspen-radio-group">
-                                <label><input type="radio" name="aspen4" value="0" checked> Tidak Ada</label>
-                                <label class="opt-sedang"><input type="radio" name="aspen4" value="sedang" onchange="calcAspen()"> Sedang — penurunan ringan</label>
-                                <label class="opt-berat"><input type="radio" name="aspen4" value="berat" onchange="calcAspen()"> Berat — penurunan sedang–berat</label>
-                            </div></td>
-                        </tr>
-                        <tr>
-                            <td><div class="aspen-crit">5. Akumulasi cairan (edema)</div><div class="aspen-desc">Edema lokalisata atau generalisata terkait malnutrisi</div></td>
-                            <td><div class="aspen-radio-group">
-                                <label><input type="radio" name="aspen5" value="0" checked> Tidak Ada</label>
-                                <label class="opt-sedang"><input type="radio" name="aspen5" value="sedang" onchange="calcAspen()"> Sedang — edema ringan–sedang</label>
-                                <label class="opt-berat"><input type="radio" name="aspen5" value="berat" onchange="calcAspen()"> Berat — edema sedang–berat / anasarka</label>
-                            </div></td>
-                        </tr>
-                        <tr>
-                            <td><div class="aspen-crit">6. Penurunan status fungsional</div><div class="aspen-desc">Hand grip strength &lt; normal, atau kelelahan signifikan</div></td>
-                            <td><div class="aspen-radio-group">
-                                <label><input type="radio" name="aspen6" value="0" checked> Tidak Ada</label>
-                                <label class="opt-sedang"><input type="radio" name="aspen6" value="sedang" onchange="calcAspen()"> Sedang — penurunan ringan</label>
-                                <label class="opt-berat"><input type="radio" name="aspen6" value="berat" onchange="calcAspen()"> Berat — penurunan berat / imobilisasi</label>
-                            </div></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="aspen-count-bar">
-                    <span>Kriteria terpenuhi:</span>
-                    <span class="count-badge sedang" id="aspen-badge-sedang">0 Sedang</span>
-                    <span class="count-badge berat" id="aspen-badge-berat">0 Berat</span>
-                    <span id="aspen-diagnosis-note" style="color:#888; font-size:11px;">Belum memenuhi syarat diagnosis.</span>
-                </div>
-            </div>
-
-            <!-- Tab 2: Tabel 7 Etiologi -->
-            <div id="modal-body-tabel7" class="modal-body" style="display:none;">
-                <p style="font-size:11px; color:#555; margin:0 0 10px 0;">Pilih etiologi pasien untuk melihat kriteria <strong>Sedang</strong> vs <strong>Berat</strong> berdasarkan Tabel 7 PnPK Gizi.</p>
-                <div class="etiologi-btns">
-                    <button class="etiologi-btn selected" id="etbtn-akut" onclick="selectEtiologi('akut')">🏥 Penyakit Akut / Cedera</button>
-                    <button class="etiologi-btn" id="etbtn-kronik" onclick="selectEtiologi('kronik')">🩺 Penyakit Kronik</button>
-                    <button class="etiologi-btn" id="etbtn-sosial" onclick="selectEtiologi('sosial')">🏘 Sosial / Lingkungan</button>
-                </div>
-                <div class="tabel7-grid" id="tabel7-content"></div>
-            </div>
-
-            <!-- Tab 3: Antropometri -->
-            <div id="modal-body-antropo" class="modal-body" style="display:none;">
-                <div class="antropo-grid">
-                    <div class="antropo-card">
-                        <h4>Indeks Massa Tubuh (IMT / BMI)</h4>
-                        <div style="font-size:12px; margin-bottom:8px;">BB: <span id="modal-bb">-</span> kg &nbsp;|&nbsp; TB: <span id="modal-tb">-</span> cm &nbsp;|&nbsp; BMI: <strong id="modal-bmi">-</strong> kg/m²</div>
-                        <div>
-                            <div class="klasif-row" id="bmi-row-1"><span>Gizi Kurang (Wasted)</span><span>&lt; 17.0</span></div>
-                            <div class="klasif-row" id="bmi-row-2"><span>Gizi Kurang (Underweight)</span><span>17.0–18.4</span></div>
-                            <div class="klasif-row" id="bmi-row-3"><span>Normal</span><span>18.5–24.9</span></div>
-                            <div class="klasif-row" id="bmi-row-4"><span>Overweight</span><span>25.0–29.9</span></div>
-                            <div class="klasif-row" id="bmi-row-5"><span>Obese I</span><span>30.0–34.9</span></div>
-                            <div class="klasif-row" id="bmi-row-6"><span>Obese II</span><span>≥ 35.0</span></div>
-                        </div>
-                    </div>
-                    <div class="antropo-card">
-                        <h4>Lingkar Lengan Atas (LLA)</h4>
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                            <label style="font-size:12px;">LLA:</label>
-                            <input type="number" id="modal-lla" placeholder="cm" step="0.1" style="width:80px; padding:4px; border:1px solid #ccc; border-radius:4px; font-size:12px;" oninput="calcLLA()">
-                            <span style="font-size:12px;">cm</span>
-                        </div>
-                        <div>
-                            <div class="klasif-row" id="lla-row-1"><span>Malnutrisi Berat</span><span>&lt;19.5 cm (L) / &lt;18.5 cm (P)</span></div>
-                            <div class="klasif-row" id="lla-row-2"><span>Malnutrisi Sedang</span><span>19.5–21.5 cm (L) / 18.5–20.5 cm (P)</span></div>
-                            <div class="klasif-row" id="lla-row-3"><span>Normal</span><span>&gt;21.5 cm (L) / &gt;20.5 cm (P)</span></div>
-                        </div>
-                        <div id="lla-result" style="margin-top:8px; font-size:12px; color:#555;"></div>
-                    </div>
-                </div>
-                <div style="margin-top:12px; background:#e8f5e9; border-radius:6px; padding:10px; font-size:11px; color:#2E7D32; border:1px solid #A5D6A7;">
-                    <strong>Catatan:</strong> BMI diambil otomatis dari input BB dan TB pada form utama. LLA berguna sebagai indikator cadangan protein/lemak, terutama pada pasien yang sulit ditimbang.
-                </div>
-            </div>
-
-            <!-- Tab 4: NRS-2002 -->
-            <div id="modal-body-nrs" class="modal-body" style="display:none;">
-                <p style="font-size:11px; color:#555; margin:0 0 12px 0;">Nutritional Risk Screening 2002 (Kondrup et al.). Skor ≥3 → pasien berisiko malnutrisi → buat rencana nutrisi.</p>
-
-                <!-- Step 1: Pre-screen -->
-                <div class="nrs-section">
-                    <div class="nrs-section-title">Langkah 1 — Skrining Awal (Jika ada 1 jawaban YA → lanjut ke Langkah 2)</div>
-                    <div class="nrs-prescreen">
-                        <label><input type="checkbox" id="nrs_pre1" onchange="calcNRS()"> BMI &lt; 20.5 kg/m²?</label>
-                        <label><input type="checkbox" id="nrs_pre2" onchange="calcNRS()"> Penurunan <strong>berat badan</strong> dalam 3 bulan terakhir?</label>
-                        <label><input type="checkbox" id="nrs_pre3" onchange="calcNRS()"> Penurunan <strong>asupan makan</strong> dalam 1 minggu terakhir?</label>
-                        <label><input type="checkbox" id="nrs_pre4" onchange="calcNRS()"> Pasien dalam kondisi <strong>sakit berat</strong> / dirawat intensif?</label>
-                    </div>
-                    <div id="nrs-prescreen-note" style="font-size:11px; padding:6px 10px; background:#fff8e1; border-radius:4px; border-left:3px solid #FFC107; color:#555;">Jawab pertanyaan di atas terlebih dahulu.</div>
-                </div>
-
-                <!-- Step 2: Final Screening -->
-                <div id="nrs-final-section" style="display:none;">
-                    <div class="nrs-section">
-                        <div class="nrs-section-title">Langkah 2A — Skor Status Nutrisi (pilih salah satu)</div>
-                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="0" checked onchange="calcNRS()"><span><strong>0</strong> — Status gizi normal</span></label>
-                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="1" onchange="calcNRS()"><span><strong>1 Ringan</strong> — BB turun &gt;5% dalam 3 bulan, ATAU asupan 50–75% dari kebutuhan dalam seminggu terakhir</span></label>
-                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="2" onchange="calcNRS()"><span><strong>2 Sedang</strong> — BB turun &gt;5% dalam 2 bulan, ATAU BMI 18.5–20.5 + kondisi umum menurun, ATAU asupan 25–50% dari kebutuhan dalam seminggu terakhir</span></label>
-                        <label class="nrs-option"><input type="radio" name="nrs_nutr" value="3" onchange="calcNRS()"><span><strong>3 Berat</strong> — BB turun &gt;5% dalam 1 bulan (&gt;15% dalam 3 bulan), ATAU BMI &lt;18.5 + kondisi umum menurun, ATAU asupan 0–25% dari kebutuhan dalam seminggu terakhir</span></label>
-                    </div>
-                    <div class="nrs-section">
-                        <div class="nrs-section-title">Langkah 2B — Skor Beratnya Penyakit (pilih salah satu)</div>
-                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="0" checked onchange="calcNRS()"><span><strong>0</strong> — Kebutuhan nutrisi normal</span></label>
-                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="1" onchange="calcNRS()"><span><strong>1 Ringan</strong> — Fraktur panggul; penyakit kronik (sirosis, PPOK, hemodialisis kronik, diabetes, keganasan)</span></label>
-                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="2" onchange="calcNRS()"><span><strong>2 Sedang</strong> — Operasi besar abdomen; stroke; pneumonia berat; keganasan hematologi</span></label>
-                        <label class="nrs-option"><input type="radio" name="nrs_dis" value="3" onchange="calcNRS()"><span><strong>3 Berat</strong> — Cedera kepala; transplantasi sumsum tulang; pasien ICU (APACHE &gt;10)</span></label>
-                    </div>
-                    <div class="nrs-section">
-                        <div class="nrs-section-title">Langkah 2C — Koreksi Usia</div>
-                        <div id="nrs-age-info" style="font-size:12px; padding:7px 10px; background:#f5f5f5; border-radius:4px;">Usia &lt;70 tahun: +0 &nbsp;|&nbsp; Usia ≥70 tahun: tambah +1 ke total skor</div>
-                    </div>
-                    <div class="nrs-score-box">
-                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-nutr">0</div><div class="nrs-score-label">Nutrisi</div></div>
-                        <div style="font-size:22px; color:#aaa; align-self:center; padding-bottom:14px;">+</div>
-                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-dis">0</div><div class="nrs-score-label">Penyakit</div></div>
-                        <div style="font-size:22px; color:#aaa; align-self:center; padding-bottom:14px;">+</div>
-                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-age">0</div><div class="nrs-score-label">Usia</div></div>
-                        <div style="font-size:22px; color:#aaa; align-self:center; padding-bottom:14px;">=</div>
-                        <div class="nrs-score-item"><div class="nrs-score-num" id="nrs-s-total" style="font-size:38px;">0</div><div class="nrs-score-label">Total Skor</div></div>
-                    </div>
-                    <div id="nrs-result-box" class="nrs-result-box" style="display:none;"></div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <div style="flex:1">
-                    <div style="font-size:11px; color:#888; margin-bottom:4px;">Kesimpulan Skrining:</div>
-                    <div class="result-pill" id="modal-result-pill">Belum dinilai</div>
-                </div>
-                <button class="btn-apply-skrining" onclick="applySkriningResult()">✅ Terapkan ke Form</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         let currentMode = 'psi';
@@ -830,18 +645,72 @@
             return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
         }
 
+        // --- CALCULATOR VALUE MEMORY ---
+        const CALC_CACHE = 'calc_v1';
+        const CALC_FIELDS = ['nama', 'noMR', 'inputDPJP', 'tglAsesmen', 'tglLahir', 'jk', 'bb',
+                             'naSerum', 'naTarget', 'naKecepatan', 'naInfus',
+                             'kSerum', 'kTarget', 'aksesVena', 'kecepatanK',
+                             'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
+                             'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
+                             'asessmen', 'terapiMedikGizi', 'terapiOral', 'terapiEnteral',
+                             'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik'];
+
+        function saveCalcState() {
+            const state = {};
+            CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) state[id] = el.value; });
+            document.querySelectorAll('.psi-check').forEach(cb => { if (cb.id) state[cb.id] = cb.checked; });
+            state._monev = Array.from(document.querySelectorAll('.monev-check')).map(cb => cb.checked);
+            state._t7checks = Array.from(document.querySelectorAll('.t7-check')).map(cb => cb.checked);
+            try { sessionStorage.setItem(CALC_CACHE, JSON.stringify(state)); } catch(e) {}
+        }
+
+        function restoreCalcState() {
+            try {
+                const raw = sessionStorage.getItem(CALC_CACHE);
+                if (!raw) return;
+                const state = JSON.parse(raw);
+                CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el && state[id] !== undefined) el.value = state[id]; });
+                document.querySelectorAll('.psi-check').forEach(cb => { if (cb.id && state[cb.id] !== undefined) cb.checked = state[cb.id]; });
+                if (state._monev) { const boxes = document.querySelectorAll('.monev-check'); state._monev.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
+                if (state._t7checks) { const boxes = document.querySelectorAll('.t7-check'); state._t7checks.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
+                document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
+                updateStats();
+            } catch(e) {}
+        }
+
+        function clearCalcState() {
+            if (!confirm('Hapus semua data dan mulai pasien baru?')) return;
+            sessionStorage.removeItem(CALC_CACHE);
+            CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { ta.style.height = 'auto'; });
+            document.querySelectorAll('.psi-check, .monev-check, .t7-check').forEach(cb => cb.checked = false);
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tglAsesmen').value = today;
+            updateStats();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const inputs = ['nama', 'noMR', 'inputDPJP', 'tglAsesmen', 'tglLahir', 'jk', 'bb',
                             'naSerum', 'naTarget', 'naKecepatan', 'naInfus',
                             'kSerum', 'kTarget', 'aksesVena', 'kecepatanK',
                             'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
-                            'densitasFormula', 'frekEnteral', 'pctEnteral', 'hasilSkrining'];
+                            'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.addEventListener((el.tagName === 'SELECT' || el.type === 'date' || el.type === 'time') ? 'change' : 'input', updateStats);
+                if (el) {
+                    const evt = (el.tagName === 'SELECT' || el.type === 'date' || el.type === 'time') ? 'change' : 'input';
+                    el.addEventListener(evt, updateStats);
+                    el.addEventListener(evt, saveCalcState);
+                }
             });
-            document.querySelectorAll('.psi-check').forEach(box => box.addEventListener('change', updateStats));
-            document.querySelectorAll('.monev-check').forEach(box => box.addEventListener('change', updateStats));
+            document.querySelectorAll('.malnutrisi-textarea').forEach(ta => {
+                ta.addEventListener('input', saveCalcState);
+            });
+            document.querySelectorAll('.psi-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
+            document.querySelectorAll('.monev-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
+
+            renderTabel7Checklist();
+            document.querySelectorAll('.t7-check').forEach(box => { box.addEventListener('change', updateChecklistKesimpulan); box.addEventListener('change', saveCalcState); });
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tglAsesmen').value = today;
@@ -855,6 +724,7 @@
                 });
             });
 
+            restoreCalcState(); // restores previous patient values (overwrites defaults if session exists)
             showCalculator('psi');
         });
 
@@ -867,6 +737,12 @@
             setText('displayTanggalPrint', formatDateIndo(getValue('tglAsesmen')));
             setText('displayRuang', getValue('ruang') || '-');
             setText('displayJam', getValue('jam') || '-');
+
+            // Page 2 mini header
+            setText('displayNamaP2', getValue('nama') || '-');
+            setText('displayNoMRP2', getValue('noMR') || '-');
+            setText('displayRuangP2', getValue('ruang') || '-');
+            setText('displayTglP2', formatDateIndo(getValue('tglAsesmen')));
 
             const tgl = getValue('tglLahir');
             if (tgl) {
@@ -893,7 +769,7 @@
             const frek = parseInt(getValue('frekEnteral')) || 4;
             const pctEnteral = parseFloat(getValue('pctEnteral')) || 100;
 
-            // BMI
+            // BMI (always uses actual BB)
             let bmiText = '-';
             if (bb && tb) {
                 const tbM = tb / 100;
@@ -901,18 +777,48 @@
                 bmiText = bmi.toFixed(1);
             }
             setText('hBMI', bmiText);
+
+            // Print page 1 antropometri
+            setText('displayBBTB', (bb ? bb + ' kg' : '-') + ' / ' + (tb ? tb + ' cm' : '-'));
+            setText('displayBMIPrint', bmiText === '-' ? '-' : bmiText + ' kg/m²');
+
+            // IBW
+            const ibw = calculateIBW();
+            setText('hIBW', ibw ? ibw + ' kg' : '-');
+            const ibwDisp = document.getElementById('ibwDisplay');
+            if (ibwDisp) {
+                const formula = getValue('ibwFormula') || 'none';
+                const tb = parseFloat(getValue('tb'));
+                if (ibw) {
+                    let warn = '';
+                    if (tb && tb < 152 && (formula === 'hamwi' || formula === 'devine')) {
+                        warn = ' ⚠ TB <152cm, formula kurang akurat';
+                    }
+                    ibwDisp.textContent = `BB Ideal: ${ibw} kg${warn}`;
+                    ibwDisp.style.color = warn ? '#e65100' : '#1565C0';
+                } else {
+                    ibwDisp.textContent = '';
+                }
+            }
+            const weightForCalc = ibw || bb;
+            const formulaNames = { hamwi: 'Hamwi', devine: 'Devine', broca: 'Broca' };
+            const fml = getValue('ibwFormula') || 'none';
+            setText('displayIBWPrint', ibw ? `${ibw} kg (${formulaNames[fml]})` : '-');
             setText('hFaktorKalori', bb ? faktorKalori : '-');
 
             if (!bb) {
                 ['hTargetKkal','hTargetProtein','hTargetLemak','hTargetKarbo',
                  'eVolTotal','eVolPerPemberian','eKecepatan',
-                 'displayTargetKkal','displayTargetProtein'].forEach(id => setText(id, '-'));
+                 'displayTargetKkal','displayTargetProtein','hIBW'].forEach(id => setText(id, '-'));
+                if (ibwDisp) ibwDisp.textContent = '';
+                const basisEl = document.getElementById('displayBasisBB');
+                if (basisEl) basisEl.textContent = '';
                 return;
             }
 
-            // Nutritional targets
-            const targetKkal = Math.round(bb * faktorKalori);
-            const targetProtein = Math.round(bb * faktorProt * 10) / 10;
+            // Nutritional targets (use IBW if available)
+            const targetKkal = Math.round(weightForCalc * faktorKalori);
+            const targetProtein = Math.round(weightForCalc * faktorProt * 10) / 10;
             const targetLemakG = Math.round((targetKkal * (pctLemak / 100)) / 9 * 10) / 10;
             const kkalLemak = targetLemakG * 9;
             const kkalProtein = targetProtein * 4;
@@ -924,6 +830,12 @@
             setText('hTargetKarbo', Math.max(0, targetKarboG));
             setText('displayTargetKkal', targetKkal + ' kkal/hari');
             setText('displayTargetProtein', targetProtein + ' g/hari');
+
+            // Show BB basis
+            const basisEl = document.getElementById('displayBasisBB');
+            if (basisEl) {
+                basisEl.textContent = ibw ? `Basis: IBW ${ibw} kg (${formulaNames[fml]})` : 'Basis: BB Aktual';
+            }
 
             // Auto-populate target summary for terapi field
             const ringkas = `Target: ${targetKkal} kkal/hari, Protein ${targetProtein} g/hari, Lemak ${targetLemakG} g/hari (${pctLemak}%)`;
@@ -947,14 +859,6 @@
                 setText('eKecepatan', rate);
             }
 
-            // Skrining result → print
-            const hasilSkrining = getValue('hasilSkrining');
-            const skriningDetail = document.getElementById('skriningDetail')?.value || '';
-            const printSkriningEl = document.getElementById('printSkrining');
-            if (printSkriningEl) {
-                printSkriningEl.textContent = [hasilSkrining, skriningDetail].filter(Boolean).join(' — ');
-            }
-
             // Monev checkboxes → print
             const monevChecked = Array.from(document.querySelectorAll('.monev-check:checked')).map(c => c.value);
             const monevDetail = document.getElementById('monevDetail')?.value || '';
@@ -964,26 +868,16 @@
                 printMonevEl.textContent = monevItems.join(', ');
             }
 
-            // Diagnosis / Kesimpulan — auto-derived from hasilSkrining
-            const skriningVal = getValue('hasilSkrining') || '';
-            let diagnosis = '-';
-            if (/Berat/.test(skriningVal) || /Malnutrisi \(<17/.test(skriningVal)) {
-                diagnosis = 'MALNUTRISI BERAT';
-            } else if (/Ringan-Sedang|Sedang|Risiko/.test(skriningVal)) {
-                diagnosis = 'MALNUTRISI SEDANG';
-            }
-            const displayKes = document.getElementById('displayKesimpulan');
-            if (displayKes) {
-                displayKes.textContent = diagnosis === '-' ? '—' : diagnosis;
-                displayKes.style.color = diagnosis === 'MALNUTRISI BERAT' ? '#b71c1c' : (diagnosis === 'MALNUTRISI SEDANG' ? '#e65100' : '#999');
-            }
-            setText('displayDiagnosis', diagnosis);
+            // Diagnosis driven by checklist checkboxes
+            updateChecklistKesimpulan();
         }
 
         function autofillEnteral() {
             const bb = parseFloat(getValue('bb'));
             if (!bb) { alert('Masukkan Berat Badan terlebih dahulu.'); return; }
 
+            const ibw = calculateIBW();
+            const weightForCalc = ibw || bb;
             const faktorKalori = parseFloat(getValue('faktorStres')) || 30;
             const faktorProt = parseFloat(getValue('faktorProtein')) || 1.2;
             const pctLemak = parseFloat(getValue('persenLemak')) || 25;
@@ -991,8 +885,8 @@
             const frek = parseInt(getValue('frekEnteral')) || 4;
             const pctEnteral = parseFloat(getValue('pctEnteral')) || 100;
 
-            const targetKkal = Math.round(bb * faktorKalori);
-            const targetProtein = Math.round(bb * faktorProt * 10) / 10;
+            const targetKkal = Math.round(weightForCalc * faktorKalori);
+            const targetProtein = Math.round(weightForCalc * faktorProt * 10) / 10;
             const targetLemakG = Math.round((targetKkal * (pctLemak / 100)) / 9 * 10) / 10;
             const kkalEnteral = targetKkal * (pctEnteral / 100);
             const volTotal = Math.round(kkalEnteral / densitas);
@@ -1132,6 +1026,7 @@
             const bb = parseFloat(getValue('bb'));
             const kSerum = parseFloat(getValue('kSerum'));
             const kTarget = parseFloat(getValue('kTarget')) || 3.5;
+            const kConst = Math.min(0.4, Math.max(0.3, parseFloat(getValue('kConstant')) || 0.3));
             const akses = getValue('aksesVena');
             const rateEq = parseFloat(getValue('kecepatanK')) || 5;
 
@@ -1140,7 +1035,7 @@
             const deltaK = kTarget - kSerum;
             setText('displayDeltaK', !isNaN(deltaK) && deltaK > 0 ? deltaK.toFixed(1) : "0");
 
-            const kebutuhan = (bb * (kTarget - kSerum)) / 3;
+            const kebutuhan = kConst * bb * (kTarget - kSerum);
             setText('displayKebutuhanK', !isNaN(kebutuhan) && kebutuhan > 0 ? kebutuhan.toFixed(1) : "0");
 
             const container = document.getElementById('kalium-instructions');
@@ -1158,7 +1053,8 @@
             let rows = `
                 <tr><td>Kalium Serum</td><td>${kSerum.toFixed(1)} mEq/L</td></tr>
                 <tr><td>Target Koreksi</td><td>${kTarget.toFixed(1)} mEq/L</td></tr>
-                <tr><td>Total Kebutuhan KCl</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong></td></tr>
+                <tr><td>Konstanta</td><td>${kConst.toFixed(2)} <small style="color:#888">(range 0.3–0.4)</small></td></tr>
+                <tr><td>Total Kebutuhan KCl</td><td><strong>${kebutuhan.toFixed(1)} mEq</strong> <small style="color:#888">(${kConst} × ${bb} × ${deltaK.toFixed(1)})</small></td></tr>
                 <tr class="highlight-natrium"><td>Jumlah Vial KCl 25 mEq</td><td><strong>${nVials} vial</strong> (= ${nVials * VIAL_MEQ} mEq tersedia)</td></tr>
                 <tr><td>Kecepatan Dipilih</td><td><strong>${rateEq} mEq/jam</strong></td></tr>
                 <tr class="highlight-natrium"><td>Estimasi Durasi Total</td><td><strong>~${durasi} jam</strong></td></tr>
@@ -1225,6 +1121,7 @@
                     ['Kehilangan Lemak', 'Ringan (mild)'],
                     ['Kehilangan Otot', 'Ringan (mild)'],
                     ['Akumulasi Cairan', 'Edema ringan (mild)'],
+                    ['Status Fungsional', 'Kekuatan genggaman menurun (ringan)'],
                 ],
                 berat: [
                     ['Asupan Energi', '≤50% kebutuhan selama ≥5 hari'],
@@ -1232,6 +1129,7 @@
                     ['Kehilangan Lemak', 'Sedang (moderate)'],
                     ['Kehilangan Otot', 'Sedang (moderate)'],
                     ['Akumulasi Cairan', 'Edema sedang–berat'],
+                    ['Status Fungsional', 'Kekuatan genggaman menurun (berat)'],
                 ]
             },
             kronik: {
@@ -1242,6 +1140,7 @@
                     ['Kehilangan Lemak', 'Ringan (mild)'],
                     ['Kehilangan Otot', 'Ringan (mild)'],
                     ['Akumulasi Cairan', 'Edema ringan'],
+                    ['Status Fungsional', 'Kekuatan genggaman menurun (ringan)'],
                 ],
                 berat: [
                     ['Asupan Energi', '≤75% kebutuhan selama ≥1 bulan'],
@@ -1249,6 +1148,7 @@
                     ['Kehilangan Lemak', 'Sedang (moderate)'],
                     ['Kehilangan Otot', 'Berat (severe)'],
                     ['Akumulasi Cairan', 'Edema berat'],
+                    ['Status Fungsional', 'Kekuatan genggaman menurun (berat)'],
                 ]
             },
             sosial: {
@@ -1259,6 +1159,7 @@
                     ['Kehilangan Lemak', 'Ringan (mild)'],
                     ['Kehilangan Otot', 'Ringan (mild)'],
                     ['Akumulasi Cairan', 'Edema ringan'],
+                    ['Status Fungsional', 'Kekuatan genggaman menurun (ringan)'],
                 ],
                 berat: [
                     ['Asupan Energi', '≤50% kebutuhan selama >7 hari'],
@@ -1266,275 +1167,85 @@
                     ['Kehilangan Lemak', 'Berat (severe)'],
                     ['Kehilangan Otot', 'Berat (severe)'],
                     ['Akumulasi Cairan', 'Edema berat / anasarka'],
+                    ['Status Fungsional', 'Kekuatan genggaman menurun (berat)'],
                 ]
             }
         };
 
-        let currentEtiologi = 'akut';
-        let activeModalTab = 'aspen';
-
-        function openSkriningModal() {
-            const bb = parseFloat(getValue('bb'));
-            const tb = parseFloat(getValue('tb'));
-            document.getElementById('modal-bb').textContent = bb || '-';
-            document.getElementById('modal-tb').textContent = tb || '-';
-            if (bb && tb) {
-                const bmi = bb / Math.pow(tb / 100, 2);
-                document.getElementById('modal-bmi').textContent = bmi.toFixed(1);
-                highlightBMIRow(bmi);
-            } else {
-                document.getElementById('modal-bmi').textContent = '-';
-                document.querySelectorAll('[id^="bmi-row-"]').forEach(r => r.classList.remove('match'));
-            }
-            renderTabel7(currentEtiologi);
-            calcAspen();
-            document.getElementById('modal-skrining').style.display = 'block';
-        }
-
-        function closeSkriningModal() {
-            document.getElementById('modal-skrining').style.display = 'none';
-        }
-
-        function showModalTab(tab) {
-            activeModalTab = tab;
-            ['aspen','tabel7','antropo','nrs'].forEach(t => {
-                document.getElementById('modal-body-' + t).style.display = (t === tab) ? 'block' : 'none';
-                document.getElementById('mtab-' + t).classList.toggle('active', t === tab);
+        // ─── TABEL 7 CHECKLIST ──────────────────────────────────────────────
+        function renderTabel7Checklist() {
+            const container = document.getElementById('tabel7-checklist-body');
+            if (!container) return;
+            const criteria = ['Analisis Asupan (Intake)', 'Penurunan Berat Badan', 'Fat Loss', 'Muscle Wasting', 'Akumulasi Cairan (edema)', 'Status Fungsional'];
+            const etios = ['akut', 'kronik', 'sosial'];
+            let html = '';
+            criteria.forEach((crit, i) => {
+                html += '<tr>';
+                html += `<td class="col-kriteria">${crit}</td>`;
+                etios.forEach(etio => {
+                    const data = TABEL7_DATA[etio];
+                    ['sedang', 'berat'].forEach(sev => {
+                        const cellData = data[sev][i];
+                        const cls = sev === 'sedang' ? 't7c-sedang' : 't7c-berat';
+                        html += `<td class="t7c-cell ${cls}"><label><input type="checkbox" class="t7-check" data-row="${i}" data-etio="${etio}" data-sev="${sev}"> ${cellData[1]}</label></td>`;
+                    });
+                });
+                html += '</tr>';
             });
-            if (tab === 'antropo') {
-                const bb = parseFloat(getValue('bb'));
-                const tb = parseFloat(getValue('tb'));
-                document.getElementById('modal-bb').textContent = bb || '-';
-                document.getElementById('modal-tb').textContent = tb || '-';
-                if (bb && tb) {
-                    const bmi = bb / Math.pow(tb / 100, 2);
-                    document.getElementById('modal-bmi').textContent = bmi.toFixed(1);
-                    highlightBMIRow(bmi);
-                }
-            }
-            if (tab === 'nrs') calcNRS();
-        }
-
-        function highlightBMIRow(bmi) {
-            const ranges = [
-                [1, bmi < 17],
-                [2, bmi >= 17 && bmi < 18.5],
-                [3, bmi >= 18.5 && bmi < 25],
-                [4, bmi >= 25 && bmi < 30],
-                [5, bmi >= 30 && bmi < 35],
-                [6, bmi >= 35],
-            ];
-            ranges.forEach(([n, match]) => {
-                const row = document.getElementById('bmi-row-' + n);
-                if (row) row.classList.toggle('match', match);
-            });
-        }
-
-        function calcLLA() {
-            const lla = parseFloat(document.getElementById('modal-lla')?.value);
-            const jk = getValue('jk');
-            const resultEl = document.getElementById('lla-result');
-            document.querySelectorAll('[id^="lla-row-"]').forEach(r => r.classList.remove('match'));
-            if (!lla || !resultEl) return;
-            let klasif = '', rowId = '';
-            if (jk === 'L') {
-                if (lla < 19.5) { klasif = 'Malnutrisi Berat'; rowId = 'lla-row-1'; }
-                else if (lla < 21.5) { klasif = 'Malnutrisi Sedang'; rowId = 'lla-row-2'; }
-                else { klasif = 'Normal'; rowId = 'lla-row-3'; }
-            } else {
-                if (lla < 18.5) { klasif = 'Malnutrisi Berat'; rowId = 'lla-row-1'; }
-                else if (lla < 20.5) { klasif = 'Malnutrisi Sedang'; rowId = 'lla-row-2'; }
-                else { klasif = 'Normal'; rowId = 'lla-row-3'; }
-            }
-            if (rowId) document.getElementById(rowId)?.classList.add('match');
-            resultEl.textContent = 'Klasifikasi LLA: ' + klasif;
-        }
-
-        function calcAspen() {
-            const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
-            let sedang = 0, berat = 0;
-            names.forEach(name => {
-                const val = document.querySelector('input[name="' + name + '"]:checked')?.value || '0';
-                if (val === 'sedang') sedang++;
-                if (val === 'berat') berat++;
-            });
-            const total = sedang + berat;
-            document.getElementById('aspen-badge-sedang').textContent = sedang + ' Sedang';
-            document.getElementById('aspen-badge-berat').textContent = berat + ' Berat';
-            const noteEl = document.getElementById('aspen-diagnosis-note');
-            if (total >= 2) {
-                noteEl.textContent = '✓ Memenuhi syarat diagnosis malnutrisi (' + total + ' dari 6 kriteria).';
-                noteEl.style.color = '#b71c1c';
-            } else {
-                noteEl.textContent = 'Belum memenuhi syarat diagnosis (butuh ≥2 kriteria).';
-                noteEl.style.color = '#888';
-            }
-            updateModalResult();
-        }
-
-        function updateModalResult() {
-            const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
-            let sedang = 0, berat = 0;
-            names.forEach(name => {
-                const val = document.querySelector('input[name="' + name + '"]:checked')?.value || '0';
-                if (val === 'sedang') sedang++;
-                if (val === 'berat') berat++;
-            });
-            const total = sedang + berat;
-            const pill = document.getElementById('modal-result-pill');
-            pill.className = 'result-pill';
-            if (total >= 2 && berat >= 2) {
-                pill.textContent = 'MALNUTRISI BERAT';
-                pill.classList.add('berat');
-            } else if (total >= 2) {
-                pill.textContent = 'MALNUTRISI SEDANG';
-                pill.classList.add('sedang');
-            } else {
-                pill.textContent = 'Belum dinilai / Tidak Malnutrisi';
-            }
-        }
-
-        function selectEtiologi(key) {
-            currentEtiologi = key;
-            document.querySelectorAll('.etiologi-btn').forEach(b => b.classList.remove('selected'));
-            document.getElementById('etbtn-' + key)?.classList.add('selected');
-            renderTabel7(key);
-        }
-
-        function renderTabel7(key) {
-            const data = TABEL7_DATA[key];
-            if (!data) return;
-            const container = document.getElementById('tabel7-content');
-            let html = `<div class="t7-row">
-                <div class="t7-cell t7-header">Parameter</div>
-                <div class="t7-cell t7-header t7-sedang" style="text-align:center;">🟡 Sedang</div>
-                <div class="t7-cell t7-header t7-berat" style="text-align:center;">🔴 Berat</div>
-            </div>`;
-            for (let i = 0; i < data.sedang.length; i++) {
-                html += `<div class="t7-row">
-                    <div class="t7-cell t7-label">${data.sedang[i][0]}</div>
-                    <div class="t7-cell t7-sedang">${data.sedang[i][1]}</div>
-                    <div class="t7-cell t7-berat">${data.berat[i][1]}</div>
-                </div>`;
-            }
             container.innerHTML = html;
         }
 
-        function calcNRS() {
-            const pre1 = document.getElementById('nrs_pre1')?.checked;
-            const pre2 = document.getElementById('nrs_pre2')?.checked;
-            const pre3 = document.getElementById('nrs_pre3')?.checked;
-            const pre4 = document.getElementById('nrs_pre4')?.checked;
-            const anyPre = pre1 || pre2 || pre3 || pre4;
-            const note = document.getElementById('nrs-prescreen-note');
-            const finalSection = document.getElementById('nrs-final-section');
-            const pill = document.getElementById('modal-result-pill');
-
-            if (!anyPre) {
-                if (note) { note.textContent = 'Semua jawaban TIDAK → Skrining ulang setiap 1 minggu.'; note.style.borderLeftColor = '#A5D6A7'; note.style.background = '#e8f5e9'; }
-                if (finalSection) finalSection.style.display = 'none';
-                if (pill) { pill.className = 'result-pill'; pill.textContent = 'NRS: Pre-screen semua TIDAK'; }
-                return;
+        function updateChecklistKesimpulan() {
+            const checks = document.querySelectorAll('.t7-check:checked');
+            let sedangCount = 0, beratCount = 0;
+            checks.forEach(cb => {
+                if (cb.dataset.sev === 'sedang') sedangCount++;
+                if (cb.dataset.sev === 'berat') beratCount++;
+            });
+            const total = sedangCount + beratCount;
+            let diagnosis = '—';
+            let color = '#999';
+            if (total >= 2 && beratCount >= 2) {
+                diagnosis = 'MALNUTRISI BERAT';
+                color = '#b71c1c';
+            } else if (total >= 2) {
+                diagnosis = 'MALNUTRISI SEDANG';
+                color = '#e65100';
             }
-            if (note) { note.textContent = 'Ada jawaban YA → Lanjutkan ke Langkah 2.'; note.style.borderLeftColor = '#FFB74D'; note.style.background = '#fff8e1'; }
-            if (finalSection) finalSection.style.display = 'block';
 
-            const sNutr = parseInt(document.querySelector('input[name="nrs_nutr"]:checked')?.value || '0');
-            const sDis  = parseInt(document.querySelector('input[name="nrs_dis"]:checked')?.value  || '0');
-            const ageText = document.getElementById('displayUmur')?.innerText || '';
-            const age = parseInt(ageText) || 0;
-            const sAge = age >= 70 ? 1 : 0;
-            const total = sNutr + sDis + sAge;
+            // Update checklist kesimpulan
+            const el = document.getElementById('checklist-kesimpulan-text');
+            if (el) { el.textContent = diagnosis; el.style.color = color; }
 
-            const ageInfo = document.getElementById('nrs-age-info');
-            if (ageInfo) ageInfo.textContent = age > 0
-                ? `Usia pasien: ${age} tahun → Koreksi usia: +${sAge}`
-                : 'Usia belum diisi pada form utama (isi Tgl Lahir)';
-
-            document.getElementById('nrs-s-nutr').textContent = sNutr;
-            document.getElementById('nrs-s-dis').textContent  = sDis;
-            document.getElementById('nrs-s-age').textContent  = sAge;
-            document.getElementById('nrs-s-total').textContent = total;
-
-            const resultBox = document.getElementById('nrs-result-box');
-            if (resultBox) {
-                resultBox.style.display = 'block';
-                if (total >= 3) {
-                    resultBox.className = 'nrs-result-box risk';
-                    resultBox.textContent = `Total ${total} ≥ 3 → Pasien BERISIKO MALNUTRISI — buat rencana dukungan nutrisi`;
-                } else {
-                    resultBox.className = 'nrs-result-box no-risk';
-                    resultBox.textContent = `Total ${total} < 3 → Tidak berisiko saat ini — skrining ulang 1 minggu`;
-                }
-            }
-            if (pill) {
-                pill.className = 'result-pill' + (total >= 3 ? ' sedang' : '');
-                pill.textContent = total >= 3
-                    ? `NRS-2002 Skor ${total} — Berisiko Malnutrisi`
-                    : `NRS-2002 Skor ${total} — Tidak Berisiko`;
-            }
+            // Propagate to form tatalaksana row 1 (skrining gizi)
+            setText('printSkrining', diagnosis);
+            // Propagate to output box & kesimpulan
+            setText('displayDiagnosis', diagnosis === '—' ? '-' : diagnosis);
+            const displayKes = document.getElementById('displayKesimpulan');
+            if (displayKes) { displayKes.textContent = diagnosis; displayKes.style.color = color; }
         }
 
-        function applySkriningResult() {
-            if (activeModalTab === 'nrs') {
-                // Apply NRS-2002 result
-                const anyPre = ['nrs_pre1','nrs_pre2','nrs_pre3','nrs_pre4'].some(id => document.getElementById(id)?.checked);
-                const sNutr = parseInt(document.querySelector('input[name="nrs_nutr"]:checked')?.value || '0');
-                const sDis  = parseInt(document.querySelector('input[name="nrs_dis"]:checked')?.value  || '0');
-                const age   = parseInt(document.getElementById('displayUmur')?.innerText) || 0;
-                const sAge  = age >= 70 ? 1 : 0;
-                const total = anyPre ? (sNutr + sDis + sAge) : 0;
-                const dropdownVal = (total >= 3)
-                    ? 'NRS-2002 skor \u22653 (Berisiko Malnutrisi)'
-                    : 'NRS-2002 skor <3 (Tidak Berisiko)';
-                const detail = `NRS-2002 Total: ${total} (Nutrisi ${sNutr} + Penyakit ${sDis} + Usia ${sAge}) → ${total >= 3 ? 'Berisiko Malnutrisi' : 'Tidak Berisiko'}`;
-                const sel = document.getElementById('hasilSkrining');
-                if (sel) { for (let opt of sel.options) { if (opt.value === dropdownVal) { sel.value = dropdownVal; break; } } }
-                const ta = document.getElementById('skriningDetail');
-                if (ta) { ta.value = detail; ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
-                updateStats();
-                closeSkriningModal();
-                return;
+        // ─── IDEAL BODY WEIGHT ──────────────────────────────────────────────
+        function calculateIBW() {
+            const tb = parseFloat(getValue('tb'));
+            const jk = getValue('jk');
+            const formula = getValue('ibwFormula') || 'none';
+            if (!tb || formula === 'none') return null;
+            const tbInch = tb / 2.54;
+            let ibw;
+            switch (formula) {
+                case 'hamwi':
+                    ibw = jk === 'L' ? 48 + 2.7 * (tbInch - 60) : 45.5 + 2.2 * (tbInch - 60);
+                    break;
+                case 'devine':
+                    ibw = jk === 'L' ? 50 + 2.3 * (tbInch - 60) : 45.5 + 2.3 * (tbInch - 60);
+                    break;
+                case 'broca':
+                    ibw = jk === 'L' ? (tb - 100) * 0.9 : (tb - 100) * 0.85;
+                    break;
+                default: return null;
             }
-
-            // Apply ASPEN result
-            const names = ['aspen1','aspen2','aspen3','aspen4','aspen5','aspen6'];
-            const kritNames = [
-                'Asupan energi tidak adekuat',
-                'Penurunan berat badan',
-                'Penurunan massa otot',
-                'Penurunan massa lemak subkutan',
-                'Akumulasi cairan (edema)',
-                'Penurunan status fungsional',
-            ];
-            let sedang = 0, berat = 0;
-            const kriteriaTerpenuhi = [];
-            names.forEach((name, i) => {
-                const val = document.querySelector('input[name="' + name + '"]:checked')?.value || '0';
-                if (val === 'sedang') { sedang++; kriteriaTerpenuhi.push(kritNames[i] + ' (Sedang)'); }
-                if (val === 'berat')  { berat++;  kriteriaTerpenuhi.push(kritNames[i] + ' (Berat)');  }
-            });
-            const total = sedang + berat;
-            if (total >= 2) {
-                const isBerat = berat >= 2;
-                const etiLabel = TABEL7_DATA[currentEtiologi]?.label || '';
-                const detail = 'ASPEN: ' + kriteriaTerpenuhi.join('; ') + '. Etiologi: ' + etiLabel + '.';
-                const ta = document.getElementById('skriningDetail');
-                if (ta) {
-                    ta.value = detail;
-                    ta.style.height = 'auto';
-                    ta.style.height = ta.scrollHeight + 'px';
-                }
-                const sel = document.getElementById('hasilSkrining');
-                if (sel) {
-                    const target = isBerat ? 'SGA C (Malnutrisi Berat)' : 'SGA B (Malnutrisi Ringan-Sedang)';
-                    for (let opt of sel.options) {
-                        if (opt.value === target) { sel.value = target; break; }
-                    }
-                }
-                updateStats();
-            }
-            closeSkriningModal();
+            return Math.max(Math.round(ibw * 10) / 10, 30);
         }
         // ─────────────────────────────────────────────────────────────────────
 
