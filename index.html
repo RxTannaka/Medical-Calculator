@@ -319,54 +319,24 @@
                     </select>
                     <div id="ibwDisplay" style="font-size:11px; font-weight:bold; color:#1565C0; margin-top:2px;"></div>
                 </div>
-                <div class="form-group"><label>Kondisi / Faktor Stres:</label>
-                    <select id="faktorStres">
-                        <option value="25">Normal (25 kkal/kg)</option>
-                        <option value="27">Stres Ringan (27 kkal/kg)</option>
-                        <option value="30" selected>Stres Sedang (30 kkal/kg)</option>
-                        <option value="35">Stres Berat (35 kkal/kg)</option>
-                    </select>
+                <div class="form-group"><label>Kondisi / Faktor Stres (kkal/kg):</label>
+                    <input type="number" id="faktorStres" value="30" step="0.1" min="0" placeholder="kkal/kg">
                 </div>
                 <div class="form-group"><label>Faktor Protein (g/kg):</label>
-                    <select id="faktorProtein">
-                        <option value="0.8">0.8 g/kg (Normal)</option>
-                        <option value="1.0">1.0 g/kg (Ringan)</option>
-                        <option value="1.2" selected>1.2 g/kg (Sedang)</option>
-                        <option value="1.5">1.5 g/kg (Berat)</option>
-                        <option value="2.0">2.0 g/kg (Kritis/Hiperkatabolik)</option>
-                    </select>
+                    <input type="number" id="faktorProtein" value="1.2" step="0.1" min="0" placeholder="g/kg">
                 </div>
                 <div class="form-group"><label>% Lemak dari Total Kalori:</label>
-                    <select id="persenLemak">
-                        <option value="20">20%</option>
-                        <option value="25" selected>25%</option>
-                        <option value="30">30%</option>
-                        <option value="35">35%</option>
-                    </select>
+                    <input type="number" id="persenLemak" value="25" step="1" min="0" max="100" placeholder="%">
                 </div>
                 <div class="form-section-title">Parameter Nutrisi Enteral</div>
-                <div class="form-group"><label>Densitas Formula:</label>
-                    <select id="densitasFormula">
-                        <option value="1.0">Standard 1.0 kkal/mL</option>
-                        <option value="1.5">High-Cal 1.5 kkal/mL</option>
-                        <option value="2.0">High-Cal 2.0 kkal/mL</option>
-                    </select>
+                <div class="form-group"><label>Densitas Formula (kkal/mL):</label>
+                    <input type="number" id="densitasFormula" value="1.0" step="0.1" min="0" placeholder="kkal/mL">
                 </div>
-                <div class="form-group"><label>Frekuensi Pemberian:</label>
-                    <select id="frekEnteral">
-                        <option value="3">3× sehari</option>
-                        <option value="4" selected>4× sehari</option>
-                        <option value="5">5× sehari</option>
-                        <option value="6">6× sehari</option>
-                        <option value="0">Kontinyu 24 jam</option>
-                    </select>
+                <div class="form-group"><label>Frekuensi Pemberian (x/hari):</label>
+                    <input type="number" id="frekEnteral" value="4" step="1" min="0" placeholder="x/hari">
                 </div>
                 <div class="form-group"><label>% Kalori Enteral dari Target:</label>
-                    <select id="pctEnteral">
-                        <option value="100" selected>100%</option>
-                        <option value="75">75%</option>
-                        <option value="50">50%</option>
-                    </select>
+                    <input type="number" id="pctEnteral" value="100" step="1" min="0" max="100" placeholder="%">
                 </div>
             </div>
         </div>
@@ -1126,9 +1096,9 @@
                 berat: [
                     ['Asupan Energi', '≤50% kebutuhan selama ≥5 hari'],
                     ['Penurunan BB', '>2%/1 minggu; >5%/1 bulan; >7.5%/3 bulan'],
-                    ['Kehilangan Lemak', 'Sedang (moderate)'],
-                    ['Kehilangan Otot', 'Sedang (moderate)'],
-                    ['Akumulasi Cairan', 'Edema sedang–berat'],
+                    ['Kehilangan Lemak', 'Sedang / Berat'],
+                    ['Kehilangan Otot', 'Sedang / Berat'],
+                    ['Akumulasi Cairan', 'Edema Sedang / Berat'],
                     ['Status Fungsional', 'Kekuatan genggaman menurun (berat)'],
                 ]
             },
@@ -1136,7 +1106,7 @@
                 label: 'Penyakit Kronik',
                 sedang: [
                     ['Asupan Energi', '<75% kebutuhan selama ≥1 bulan'],
-                    ['Penurunan BB', '5%/1 bulan; 7.5%/3 bulan; 10%/6 bulan; 20%/1 tahun'],
+                    ['Penurunan BB', '5%/1 bulan<br>7.5%/3 bulan<br>10%/6 bulan<br>20%/1 tahun'],
                     ['Kehilangan Lemak', 'Ringan (mild)'],
                     ['Kehilangan Otot', 'Ringan (mild)'],
                     ['Akumulasi Cairan', 'Edema ringan'],
@@ -1144,8 +1114,8 @@
                 ],
                 berat: [
                     ['Asupan Energi', '≤75% kebutuhan selama ≥1 bulan'],
-                    ['Penurunan BB', '>5%/1 bulan; >7.5%/3 bulan; >10%/6 bulan; >20%/1 tahun'],
-                    ['Kehilangan Lemak', 'Sedang (moderate)'],
+                    ['Penurunan BB', '>5%/1 bulan<br>>7.5%/3 bulan<br>>10%/6 bulan<br>>20%/1 tahun'],
+                    ['Kehilangan Lemak', 'Sedang / Berat'],
                     ['Kehilangan Otot', 'Berat (severe)'],
                     ['Akumulasi Cairan', 'Edema berat'],
                     ['Status Fungsional', 'Kekuatan genggaman menurun (berat)'],
@@ -1155,7 +1125,7 @@
                 label: 'Sosial / Lingkungan',
                 sedang: [
                     ['Asupan Energi', '<75% kebutuhan selama ≥3 bulan'],
-                    ['Penurunan BB', '5%/1 bulan; 7.5%/3 bulan; 10%/6 bulan; 20%/1 tahun'],
+                    ['Penurunan BB', '5%/1 bulan<br>7.5%/3 bulan<br>10%/6 bulan<br>20%/1 tahun'],
                     ['Kehilangan Lemak', 'Ringan (mild)'],
                     ['Kehilangan Otot', 'Ringan (mild)'],
                     ['Akumulasi Cairan', 'Edema ringan'],
@@ -1163,7 +1133,7 @@
                 ],
                 berat: [
                     ['Asupan Energi', '≤50% kebutuhan selama >7 hari'],
-                    ['Penurunan BB', '>5%/1 bulan; >7.5%/3 bulan; >10%/6 bulan; >20%/1 tahun'],
+                    ['Penurunan BB', '>5%/1 bulan<br>>7.5%/3 bulan<br>>10%/6 bulan<br>>20%/1 tahun'],
                     ['Kehilangan Lemak', 'Berat (severe)'],
                     ['Kehilangan Otot', 'Berat (severe)'],
                     ['Akumulasi Cairan', 'Edema berat / anasarka'],
