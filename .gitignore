@@ -1,0 +1,7 @@
+# Local backups
+*.bak
+*.bak.*
+index.html.bak.*
+
+# OS cruft
+.DS_Store

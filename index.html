@@ -119,8 +119,8 @@
             .footer-section { justify-content: flex-end; }
             .dpjp-section { margin-left: auto !important; }
 
-            #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content,
-            #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box { display: none !important; }
+            #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content,
+            #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box { display: none !important; }
 
             body.mode-psi #calc-psi-content { display: block !important; }
             body.mode-psi #psi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -130,6 +130,12 @@
 
             body.mode-kalium #calc-kalium-content { display: block !important; }
             body.mode-kalium #kalium-output-box { display: flex !important; border: 2px solid #000 !important; }
+
+            body.mode-timiua #calc-timiua-content { display: block !important; }
+            body.mode-timiua #timiua-output-box { display: flex !important; border: 2px solid #000 !important; }
+
+            body.mode-timistemi #calc-timistemi-content { display: block !important; }
+            body.mode-timistemi #timistemi-output-box { display: flex !important; border: 2px solid #000 !important; }
 
             body.mode-malnutrisi #calc-malnutrisi-content { display: block !important; }
             body.mode-malnutrisi #malnutrisi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -171,6 +177,8 @@
             <button onclick="showCalculator('natrium')" id="btn-natrium" class="btn-tab">Koreksi Natrium</button>
             <button onclick="showCalculator('kalium')" id="btn-kalium" class="btn-tab">Koreksi Kalium</button>
             <button onclick="showCalculator('malnutrisi')" id="btn-malnutrisi" class="btn-tab btn-tab-malnutrisi">Tatalaksana Malnutrisi</button>
+            <button onclick="showCalculator('timiua')" id="btn-timiua" class="btn-tab">TIMI UA/NSTEMI</button>
+            <button onclick="showCalculator('timistemi')" id="btn-timistemi" class="btn-tab">TIMI STEMI</button>
             <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
@@ -218,6 +226,19 @@
                 <div style="font-size:11px; color:#555; margin-top:4px;">Target Protein</div>
                 <div style="font-weight:bold; color:#333;" id="displayTargetProtein">- g/hari</div>
                 <div id="displayBasisBB" style="font-size:10px; color:#1565C0; margin-top:6px;"></div>
+            </div>
+
+            <div id="timiua-output-box" class="output-box" style="background:#ffebee; border-color:#c62828;">
+                <div class="output-title" style="color:#c62828;">TIMI UA/NSTEMI</div>
+                <div class="output-value"><span id="displayTimiuaScore">0</span> <small>/7</small></div>
+                <div class="output-label">Kategori: <span id="displayTimiuaBand">-</span></div>
+                <div class="output-label" style="font-size:11px;">Risiko 14 hari: <span id="displayTimiuaRisk">-</span></div>
+            </div>
+
+            <div id="timistemi-output-box" class="output-box" style="background:#ffebee; border-color:#c62828;">
+                <div class="output-title" style="color:#c62828;">TIMI STEMI</div>
+                <div class="output-value"><span id="displayTimistemiScore">0</span> <small>/14</small></div>
+                <div class="output-label" style="font-size:11px;">Mortalitas 30 hari: <span id="displayTimistemiMort">-</span></div>
             </div>
         </div>
 
@@ -339,6 +360,39 @@
                     <input type="number" id="pctEnteral" value="100" step="1" min="0" max="100" placeholder="%">
                 </div>
             </div>
+
+            <!-- TIMI UA/NSTEMI INPUT GROUP -->
+            <div id="input-timiua-group" style="display:none;">
+                <div class="form-section-title">Kriteria TIMI UA/NSTEMI (Usia &ge;65 otomatis dari Tgl Lahir)</div>
+                <div class="checkbox-grid">
+                    <label><input type="checkbox" class="timiua-check" id="timiua-rf" data-score="1"> &ge;3 faktor risiko PJK (+1)</label>
+                    <label><input type="checkbox" class="timiua-check" id="timiua-cad" data-score="1"> Diketahui PJK / stenosis &ge;50% (+1)</label>
+                    <label><input type="checkbox" class="timiua-check" id="timiua-asa" data-score="1"> Aspirin dalam 7 hari terakhir (+1)</label>
+                    <label><input type="checkbox" class="timiua-check" id="timiua-angina" data-score="1"> Angina berat &ge;2 episode/24 jam (+1)</label>
+                    <label><input type="checkbox" class="timiua-check" id="timiua-st" data-score="1"> Deviasi ST &ge;0,5 mm (+1)</label>
+                    <label><input type="checkbox" class="timiua-check" id="timiua-marker" data-score="1"> Marka jantung meningkat (+1)</label>
+                </div>
+            </div>
+
+            <!-- TIMI STEMI INPUT GROUP -->
+            <div id="input-timistemi-group" style="display:none;">
+                <div class="form-section-title">Kriteria TIMI STEMI (Usia &amp; BB &lt;67 kg otomatis)</div>
+                <div class="form-group"><label>TD Sistolik (mmHg):</label><input type="number" id="timiTDsistolik" min="0" placeholder="cth: 110"></div>
+                <div class="form-group"><label>Frekuensi Nadi (&times;/menit):</label><input type="number" id="timiNadi" min="0" placeholder="cth: 88"></div>
+                <div class="form-group"><label>Killip Class:</label>
+                    <select id="timiKillip">
+                        <option value="I">I (tanpa gagal jantung)</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                    </select>
+                </div>
+                <div class="checkbox-grid">
+                    <label><input type="checkbox" class="timistemi-check" id="timistemi-dm" data-score="1"> DM / hipertensi / riwayat angina (+1)</label>
+                    <label><input type="checkbox" class="timistemi-check" id="timistemi-ant" data-score="1"> STEMI anterior atau LBBB (+1)</label>
+                    <label><input type="checkbox" class="timistemi-check" id="timistemi-time" data-score="1"> Waktu ke terapi &gt;4 jam (+1)</label>
+                </div>
+            </div>
         </div>
 
         <!-- CONTENT SECTIONS -->
@@ -347,6 +401,8 @@
         <div id="calc-kalium-content" class="calc-content" style="display:none;">
             <div id="kalium-result-table"><table class="scoring-table"><thead><tr><th>Rencana Tata Laksana</th><th>Instruksi Klinis</th></tr></thead><tbody id="kalium-instructions"></tbody></table></div>
         </div>
+        <div id="calc-timiua-content" class="calc-content" style="display:none;"></div>
+        <div id="calc-timistemi-content" class="calc-content" style="display:none;"></div>
 
         <!-- MALNUTRISI CONTENT -->
         <div id="calc-malnutrisi-content" class="calc-content" style="display:none;">
@@ -591,7 +647,7 @@
             document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${mode}`).classList.add('active');
 
-            const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi'];
+            const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi'];
             allModes.forEach(m => {
                 document.getElementById(`calc-${m}-content`).style.display = 'none';
                 document.getElementById(`${m}-output-box`).style.display = 'none';
@@ -603,6 +659,8 @@
             document.getElementById('input-natrium-group').style.display = (mode === 'natrium') ? 'contents' : 'none';
             document.getElementById('input-kalium-group').style.display = (mode === 'kalium') ? 'contents' : 'none';
             document.getElementById('input-malnutrisi-group').style.display = (mode === 'malnutrisi') ? 'contents' : 'none';
+            document.getElementById('input-timiua-group').style.display = (mode === 'timiua') ? 'contents' : 'none';
+            document.getElementById('input-timistemi-group').style.display = (mode === 'timistemi') ? 'contents' : 'none';
 
             updateStats();
         }
@@ -623,12 +681,13 @@
                              'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
                              'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
                              'asessmen', 'terapiMedikGizi', 'terapiOral', 'terapiEnteral',
-                             'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik'];
+                             'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik',
+                             'timiTDsistolik', 'timiNadi', 'timiKillip'];
 
         function saveCalcState() {
             const state = {};
             CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) state[id] = el.value; });
-            document.querySelectorAll('.psi-check').forEach(cb => { if (cb.id) state[cb.id] = cb.checked; });
+            document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check').forEach(cb => { if (cb.id) state[cb.id] = cb.checked; });
             state._monev = Array.from(document.querySelectorAll('.monev-check')).map(cb => cb.checked);
             state._t7checks = Array.from(document.querySelectorAll('.t7-check')).map(cb => cb.checked);
             try { sessionStorage.setItem(CALC_CACHE, JSON.stringify(state)); } catch(e) {}
@@ -640,7 +699,7 @@
                 if (!raw) return;
                 const state = JSON.parse(raw);
                 CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el && state[id] !== undefined) el.value = state[id]; });
-                document.querySelectorAll('.psi-check').forEach(cb => { if (cb.id && state[cb.id] !== undefined) cb.checked = state[cb.id]; });
+                document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check').forEach(cb => { if (cb.id && state[cb.id] !== undefined) cb.checked = state[cb.id]; });
                 if (state._monev) { const boxes = document.querySelectorAll('.monev-check'); state._monev.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 if (state._t7checks) { const boxes = document.querySelectorAll('.t7-check'); state._t7checks.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
@@ -653,7 +712,7 @@
             sessionStorage.removeItem(CALC_CACHE);
             CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { ta.style.height = 'auto'; });
-            document.querySelectorAll('.psi-check, .monev-check, .t7-check').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.psi-check, .monev-check, .t7-check, .timiua-check, .timistemi-check').forEach(cb => cb.checked = false);
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tglAsesmen').value = today;
             updateStats();
@@ -664,7 +723,8 @@
                             'naSerum', 'naTarget', 'naKecepatan', 'naInfus',
                             'kSerum', 'kTarget', 'aksesVena', 'kecepatanK',
                             'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
-                            'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula'];
+                            'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
+                            'timiTDsistolik', 'timiNadi', 'timiKillip'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -677,6 +737,7 @@
                 ta.addEventListener('input', saveCalcState);
             });
             document.querySelectorAll('.psi-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
+            document.querySelectorAll('.timiua-check, .timistemi-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
             document.querySelectorAll('.monev-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
 
             renderTabel7Checklist();
@@ -727,6 +788,8 @@
             try { calculateNatrium(); } catch(e) {}
             try { calculateKalium(); } catch(e) {}
             try { calculateMalnutrisi(); } catch(e) {}
+            try { calculateTIMIUA(); } catch(e) {}
+            try { calculateTIMISTEMI(); } catch(e) {}
         }
 
         function calculateMalnutrisi() {
@@ -1227,6 +1290,90 @@
                 sel.selectedIndex = newIdx;
                 updateStats();
             }
+        }
+
+        function calculateTIMISTEMI() {
+            let total = 0;
+            let detailsTable = `<table class="scoring-table"><thead><tr><th>Parameter</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
+
+            const tgl = getValue('tglLahir');
+            if (tgl) {
+                const dob = new Date(tgl);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age--;
+                if (age >= 75) { total += 3; detailsTable += `<tr><td>Usia &ge; 75 tahun (${age})</td><td>3</td></tr>`; }
+                else if (age >= 65) { total += 2; detailsTable += `<tr><td>Usia 65&ndash;74 tahun (${age})</td><td>2</td></tr>`; }
+            }
+
+            document.querySelectorAll('.timistemi-check').forEach(c => {
+                if (c.checked) {
+                    const score = parseInt(c.dataset.score);
+                    total += score;
+                    detailsTable += `<tr><td>${c.parentElement.innerText.split(' (+')[0]}</td><td>${score}</td></tr>`;
+                }
+            });
+
+            const sbp = parseFloat(getValue('timiTDsistolik'));
+            if (!isNaN(sbp) && sbp < 100) { total += 3; detailsTable += `<tr><td>TD sistolik &lt; 100 mmHg (${sbp})</td><td>3</td></tr>`; }
+
+            const hr = parseFloat(getValue('timiNadi'));
+            if (!isNaN(hr) && hr > 100) { total += 2; detailsTable += `<tr><td>Nadi &gt; 100 &times;/menit (${hr})</td><td>2</td></tr>`; }
+
+            const killip = getValue('timiKillip');
+            if (killip && killip !== 'I') { total += 2; detailsTable += `<tr><td>Killip kelas ${killip}</td><td>2</td></tr>`; }
+
+            const bb = parseFloat(getValue('bb'));
+            if (!isNaN(bb) && bb < 67) { total += 1; detailsTable += `<tr><td>Berat badan &lt; 67 kg (${bb})</td><td>1</td></tr>`; }
+
+            detailsTable += `<tr><td><strong>TOTAL</strong></td><td><strong>${total}</strong></td></tr></tbody></table>`;
+
+            const mortMap = {0:"0.8%",1:"1.6%",2:"2.2%",3:"4.4%",4:"7.3%",5:"12.4%",6:"16.1%",7:"23.4%",8:"26.8%"};
+            const mort = total > 8 ? "35.9%" : mortMap[total];
+
+            setText('displayTimistemiScore', total);
+            setText('displayTimistemiMort', mort);
+            document.getElementById('calc-timistemi-content').innerHTML = detailsTable;
+        }
+
+        function calculateTIMIUA() {
+            let total = 0;
+            let detailsTable = `<table class="scoring-table"><thead><tr><th>Parameter</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
+
+            const tgl = getValue('tglLahir');
+            if (tgl) {
+                const dob = new Date(tgl);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age--;
+                if (age >= 65) { total += 1; detailsTable += `<tr><td>Usia &ge; 65 tahun (${age})</td><td>1</td></tr>`; }
+            }
+
+            document.querySelectorAll('.timiua-check').forEach(c => {
+                if (c.checked) {
+                    const score = parseInt(c.dataset.score);
+                    total += score;
+                    detailsTable += `<tr><td>${c.parentElement.innerText.split(' (+')[0]}</td><td>${score}</td></tr>`;
+                }
+            });
+
+            detailsTable += `<tr><td><strong>TOTAL</strong></td><td><strong>${total}</strong></td></tr></tbody></table>`;
+
+            let risk = "4.7%";
+            if (total >= 6) risk = "40.9%";
+            else if (total === 5) risk = "26.2%";
+            else if (total === 4) risk = "19.9%";
+            else if (total === 3) risk = "13.2%";
+            else if (total === 2) risk = "8.3%";
+
+            let band = "Rendah";
+            if (total >= 5) band = "Tinggi";
+            else if (total >= 3) band = "Sedang";
+
+            setText('displayTimiuaScore', total);
+            setText('displayTimiuaBand', band);
+            setText('displayTimiuaRisk', risk);
+            document.getElementById('calc-timiua-content').innerHTML = detailsTable;
         }
 
         function getValue(id) { return document.getElementById(id)?.value; }
