@@ -119,8 +119,8 @@
             .footer-section { justify-content: flex-end; }
             .dpjp-section { margin-left: auto !important; }
 
-            #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content,
-            #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box { display: none !important; }
+            #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content,
+            #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box { display: none !important; }
 
             body.mode-psi #calc-psi-content { display: block !important; }
             body.mode-psi #psi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -136,6 +136,9 @@
 
             body.mode-timistemi #calc-timistemi-content { display: block !important; }
             body.mode-timistemi #timistemi-output-box { display: flex !important; border: 2px solid #000 !important; }
+
+            body.mode-grace #calc-grace-content { display: block !important; }
+            body.mode-grace #grace-output-box { display: flex !important; border: 2px solid #000 !important; }
 
             body.mode-malnutrisi #calc-malnutrisi-content { display: block !important; }
             body.mode-malnutrisi #malnutrisi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -179,6 +182,7 @@
             <button onclick="showCalculator('malnutrisi')" id="btn-malnutrisi" class="btn-tab btn-tab-malnutrisi">Tatalaksana Malnutrisi</button>
             <button onclick="showCalculator('timiua')" id="btn-timiua" class="btn-tab">TIMI UA/NSTEMI</button>
             <button onclick="showCalculator('timistemi')" id="btn-timistemi" class="btn-tab">TIMI STEMI</button>
+            <button onclick="showCalculator('grace')" id="btn-grace" class="btn-tab">GRACE Score</button>
             <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
@@ -239,6 +243,13 @@
                 <div class="output-title" style="color:#c62828;">TIMI STEMI</div>
                 <div class="output-value"><span id="displayTimistemiScore">0</span> <small>/14</small></div>
                 <div class="output-label" style="font-size:11px;">Mortalitas 30 hari: <span id="displayTimistemiMort">-</span></div>
+            </div>
+
+            <div id="grace-output-box" class="output-box" style="background:#ffebee; border-color:#c62828;">
+                <div class="output-title" style="color:#c62828;">GRACE Score</div>
+                <div class="output-value" id="displayGraceScore">0</div>
+                <div class="output-label" style="font-size:11px;">Risiko RS: <span id="displayGraceInHosp">-</span></div>
+                <div class="output-label" style="font-size:11px;">Risiko 6 bln: <span id="displayGrace6mo">-</span></div>
             </div>
         </div>
 
@@ -393,6 +404,33 @@
                     <label><input type="checkbox" class="timistemi-check" id="timistemi-time" data-score="1"> Waktu ke terapi &gt;4 jam (+1)</label>
                 </div>
             </div>
+
+            <!-- GRACE SCORE INPUT GROUP -->
+            <div id="input-grace-group" style="display:none;">
+                <div class="form-section-title">Kriteria GRACE Score &ndash; PERKI (Usia otomatis dari Tgl Lahir)</div>
+                <div class="form-group"><label>Laju Nadi (&times;/menit):</label><input type="number" id="graceNadi" min="0" placeholder="cth: 88"></div>
+                <div class="form-group"><label>TD Sistolik (mmHg):</label><input type="number" id="graceTDsistolik" min="0" placeholder="cth: 120"></div>
+                <div class="form-group"><label>Kreatinin:</label>
+                    <input type="number" id="graceKreatinin" step="0.01" min="0" placeholder="cth: 1.0">
+                    <select id="graceKreatininUnit" style="margin-top:4px; font-size:12px;">
+                        <option value="mgdl">mg/dL</option>
+                        <option value="umol">µmol/L</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Killip Class:</label>
+                    <select id="graceKillip">
+                        <option value="I">I (tanpa gagal jantung)</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                    </select>
+                </div>
+                <div class="checkbox-grid">
+                    <label><input type="checkbox" class="grace-check" id="grace-arrest" data-score="43"> Henti jantung saat tiba di RS (+43)</label>
+                    <label><input type="checkbox" class="grace-check" id="grace-marker" data-score="15"> Peningkatan biomarka jantung (+15)</label>
+                    <label><input type="checkbox" class="grace-check" id="grace-st" data-score="30"> Deviasi segmen ST (+30)</label>
+                </div>
+            </div>
         </div>
 
         <!-- CONTENT SECTIONS -->
@@ -403,6 +441,7 @@
         </div>
         <div id="calc-timiua-content" class="calc-content" style="display:none;"></div>
         <div id="calc-timistemi-content" class="calc-content" style="display:none;"></div>
+        <div id="calc-grace-content" class="calc-content" style="display:none;"></div>
 
         <!-- MALNUTRISI CONTENT -->
         <div id="calc-malnutrisi-content" class="calc-content" style="display:none;">
@@ -647,7 +686,7 @@
             document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${mode}`).classList.add('active');
 
-            const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi'];
+            const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi', 'grace'];
             allModes.forEach(m => {
                 document.getElementById(`calc-${m}-content`).style.display = 'none';
                 document.getElementById(`${m}-output-box`).style.display = 'none';
@@ -661,6 +700,7 @@
             document.getElementById('input-malnutrisi-group').style.display = (mode === 'malnutrisi') ? 'contents' : 'none';
             document.getElementById('input-timiua-group').style.display = (mode === 'timiua') ? 'contents' : 'none';
             document.getElementById('input-timistemi-group').style.display = (mode === 'timistemi') ? 'contents' : 'none';
+            document.getElementById('input-grace-group').style.display = (mode === 'grace') ? 'contents' : 'none';
 
             updateStats();
         }
@@ -682,12 +722,13 @@
                              'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
                              'asessmen', 'terapiMedikGizi', 'terapiOral', 'terapiEnteral',
                              'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik',
-                             'timiTDsistolik', 'timiNadi', 'timiKillip'];
+                             'timiTDsistolik', 'timiNadi', 'timiKillip',
+                             'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip'];
 
         function saveCalcState() {
             const state = {};
             CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) state[id] = el.value; });
-            document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check').forEach(cb => { if (cb.id) state[cb.id] = cb.checked; });
+            document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check, .grace-check').forEach(cb => { if (cb.id) state[cb.id] = cb.checked; });
             state._monev = Array.from(document.querySelectorAll('.monev-check')).map(cb => cb.checked);
             state._t7checks = Array.from(document.querySelectorAll('.t7-check')).map(cb => cb.checked);
             try { sessionStorage.setItem(CALC_CACHE, JSON.stringify(state)); } catch(e) {}
@@ -699,7 +740,7 @@
                 if (!raw) return;
                 const state = JSON.parse(raw);
                 CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el && state[id] !== undefined) el.value = state[id]; });
-                document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check').forEach(cb => { if (cb.id && state[cb.id] !== undefined) cb.checked = state[cb.id]; });
+                document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check, .grace-check').forEach(cb => { if (cb.id && state[cb.id] !== undefined) cb.checked = state[cb.id]; });
                 if (state._monev) { const boxes = document.querySelectorAll('.monev-check'); state._monev.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 if (state._t7checks) { const boxes = document.querySelectorAll('.t7-check'); state._t7checks.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
@@ -712,7 +753,7 @@
             sessionStorage.removeItem(CALC_CACHE);
             CALC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { ta.style.height = 'auto'; });
-            document.querySelectorAll('.psi-check, .monev-check, .t7-check, .timiua-check, .timistemi-check').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.psi-check, .monev-check, .t7-check, .timiua-check, .timistemi-check, .grace-check').forEach(cb => cb.checked = false);
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tglAsesmen').value = today;
             updateStats();
@@ -724,7 +765,8 @@
                             'kSerum', 'kTarget', 'aksesVena', 'kecepatanK',
                             'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
                             'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
-                            'timiTDsistolik', 'timiNadi', 'timiKillip'];
+                            'timiTDsistolik', 'timiNadi', 'timiKillip',
+                            'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -737,7 +779,7 @@
                 ta.addEventListener('input', saveCalcState);
             });
             document.querySelectorAll('.psi-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
-            document.querySelectorAll('.timiua-check, .timistemi-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
+            document.querySelectorAll('.timiua-check, .timistemi-check, .grace-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
             document.querySelectorAll('.monev-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
 
             renderTabel7Checklist();
@@ -790,6 +832,7 @@
             try { calculateMalnutrisi(); } catch(e) {}
             try { calculateTIMIUA(); } catch(e) {}
             try { calculateTIMISTEMI(); } catch(e) {}
+            try { calculateGRACE(); } catch(e) {}
         }
 
         function calculateMalnutrisi() {
@@ -1374,6 +1417,123 @@
             setText('displayTimiuaBand', band);
             setText('displayTimiuaRisk', risk);
             document.getElementById('calc-timiua-content').innerHTML = detailsTable;
+        }
+
+        function calculateGRACE() {
+            let total = 0;
+            let detailsTable = `<table class="scoring-table"><thead><tr><th>Parameter</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
+
+            // Usia (PERKI: <40→0, 40-49→18, 50-59→36, 60-69→55, 70-79→73, ≥80→91)
+            const tgl = getValue('tglLahir');
+            if (tgl) {
+                const dob = new Date(tgl);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age--;
+                let s = 0;
+                if (age >= 80) s = 91;
+                else if (age >= 70) s = 73;
+                else if (age >= 60) s = 55;
+                else if (age >= 50) s = 36;
+                else if (age >= 40) s = 18;
+                total += s;
+                detailsTable += `<tr><td>Usia ${age} tahun</td><td>${s}</td></tr>`;
+            }
+
+            // Laju nadi (<70→0, 70-89→7, 90-109→13, 110-149→23, 150-199→36, ≥200→46)
+            const hr = parseFloat(getValue('graceNadi'));
+            if (!isNaN(hr)) {
+                let s = 0;
+                if (hr >= 200) s = 46;
+                else if (hr >= 150) s = 36;
+                else if (hr >= 110) s = 23;
+                else if (hr >= 90) s = 13;
+                else if (hr >= 70) s = 7;
+                total += s;
+                detailsTable += `<tr><td>Laju nadi ${hr} &times;/menit</td><td>${s}</td></tr>`;
+            }
+
+            // TD sistolik (<80→63, 80-99→58, 100-119→47, 120-139→37, 140-159→26, 160-199→11, ≥200→0)
+            const sbp = parseFloat(getValue('graceTDsistolik'));
+            if (!isNaN(sbp)) {
+                let s = 0;
+                if (sbp < 80) s = 63;
+                else if (sbp < 100) s = 58;
+                else if (sbp < 120) s = 47;
+                else if (sbp < 140) s = 37;
+                else if (sbp < 160) s = 26;
+                else if (sbp < 200) s = 11;
+                else s = 0;
+                total += s;
+                detailsTable += `<tr><td>TD sistolik ${sbp} mmHg</td><td>${s}</td></tr>`;
+            }
+
+            // Kreatinin (µmol/L: 0-34→2, 35-70→5, 71-105→8, 106-140→11, 141-176→14, 177-353→23, ≥354→31)
+            const kreaRaw = parseFloat(getValue('graceKreatinin'));
+            if (!isNaN(kreaRaw)) {
+                const unit = getValue('graceKreatininUnit') || 'mgdl';
+                const umol = (unit === 'mgdl') ? kreaRaw * 88.4 : kreaRaw;
+                let s = 2;
+                if (umol >= 354) s = 31;
+                else if (umol >= 177) s = 23;
+                else if (umol >= 141) s = 14;
+                else if (umol >= 106) s = 11;
+                else if (umol >= 71) s = 8;
+                else if (umol >= 35) s = 5;
+                else s = 2;
+                total += s;
+                const krLabel = (unit === 'mgdl') ? `${kreaRaw} mg/dL (≈ ${Math.round(umol)} µmol/L)` : `${kreaRaw} µmol/L`;
+                detailsTable += `<tr><td>Kreatinin ${krLabel}</td><td>${s}</td></tr>`;
+            }
+
+            // Killip (I→0, II→21, III→43, IV→64)
+            const killip = getValue('graceKillip');
+            const killipScore = { I: 0, II: 21, III: 43, IV: 64 };
+            if (killip && killip in killipScore && killipScore[killip] > 0) {
+                total += killipScore[killip];
+                detailsTable += `<tr><td>Killip kelas ${killip}</td><td>${killipScore[killip]}</td></tr>`;
+            }
+
+            // Henti jantung saat tiba di RS (+43), biomarka (+15), deviasi ST (+30)
+            document.querySelectorAll('.grace-check').forEach(c => {
+                if (c.checked) {
+                    const score = parseInt(c.dataset.score);
+                    total += score;
+                    detailsTable += `<tr><td>${c.parentElement.innerText.split(' (+')[0]}</td><td>${score}</td></tr>`;
+                }
+            });
+
+            detailsTable += `<tr><td><strong>TOTAL</strong></td><td><strong>${total}</strong></td></tr></tbody></table>`;
+
+            // Stratifikasi risiko kematian (PERKI Tabel 2.2)
+            // Di RS: ≤108 rendah (<1%); 109-140 menengah (1-3%); >140 tinggi (>3%)
+            let inHosp;
+            if (total <= 108) inHosp = "Rendah (<1%)";
+            else if (total <= 140) inHosp = "Menengah (1–3%)";
+            else inHosp = "Tinggi (>3%)";
+
+            // 6 bulan pascapulang: ≤88 rendah (<3%); 89-118 menengah (3-8%); >118 tinggi (>8%)
+            let sixMo;
+            if (total <= 88) sixMo = "Rendah (<3%)";
+            else if (total <= 118) sixMo = "Menengah (3–8%)";
+            else sixMo = "Tinggi (>8%)";
+
+            setText('displayGraceScore', total);
+            setText('displayGraceInHosp', inHosp);
+            setText('displayGrace6mo', sixMo);
+
+            const summary = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
+                <strong>Stratifikasi risiko kematian (PERKI Tabel 2.2):</strong><br>
+                Saat perawatan di RS: <strong>${inHosp}</strong><br>
+                6 bulan setelah keluar RS: <strong>${sixMo}</strong></div>`;
+
+            let note = '';
+            if (total > 140) {
+                note = `<div style="margin-top:8px; padding:8px; background:#ffebee; border-left:4px solid #c62828; font-size:12px; line-height:1.5;">
+                <strong>Skor &gt;140: kriteria risiko tinggi.</strong> Direkomendasikan angiografi invasif selama rawat inap (rekomendasi kelas I), atau dipertimbangkan dalam waktu 24 jam (kelas IIa). <em>(PERKI, SKA-NEST)</em></div>`;
+            }
+
+            document.getElementById('calc-grace-content').innerHTML = detailsTable + summary + note;
         }
 
         function getValue(id) { return document.getElementById(id)?.value; }
