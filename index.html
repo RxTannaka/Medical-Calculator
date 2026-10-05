@@ -198,6 +198,26 @@
         .syntax-opt { display: flex; align-items: center; gap: 6px; }
         .syntax-icon { width: 60px; height: 36px; flex-shrink: 0; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 4px; }
         @media (max-width: 600px) { .syntax-seg-wrap { flex-direction: column; } .syntax-tree { width: 100%; } .syntax-opt-grid { grid-template-columns: 1fr; } }
+        /* TAMPILAN HP (layar saja, tidak memengaruhi cetak) */
+        @media screen and (max-width: 600px) {
+            body { padding: 8px; }
+            .container { padding: 12px; }
+            .btn-tab { padding: 8px 12px; font-size: 12px; }
+            .btn-tab-danger { margin-left: 0; }
+            .patient-total-wrapper { flex-direction: column; gap: 12px; padding: 10px; }
+            .info-line { grid-template-columns: 105px 10px minmax(0, 1fr); }
+            .info-line span { overflow-wrap: anywhere; }
+            .output-box { width: auto; }
+            .input-form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 10px; }
+            .form-group input, .form-group select { min-width: 0; }
+            .checkbox-grid { grid-template-columns: 1fr; }
+            .helper-results, .enteral-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .tabel7-checklist-table { display: block; overflow-x: auto; }
+            .form-group:has(#kecepatanK) { grid-column: 1 / -1; }
+            .footer-section { flex-direction: column; align-items: stretch; gap: 16px; }
+            .dpjp-section { min-width: 0; margin-left: 0; }
+            .button-container { justify-content: center; }
+        }
         /* --- CSS END --- */
     </style>
 </head>
@@ -486,7 +506,7 @@
                     <input type="number" id="syntaxDifus" min="0" step="1" placeholder="0">
                 </div>
                 <div class="form-group" style="grid-column: span 2; font-size:11px; color:#666; justify-content:center;">
-                    Nilai setiap <em>lesion</em> dengan <em>diameter stenosis</em> &ge;50% pada <em>vessel</em> &ge;1,5 mm. <em>Serial stenoses</em> yang berjarak &lt;3 <em>reference vessel diameters</em> dihitung sebagai satu <em>lesion</em>.
+                    <span>Nilai setiap <em>lesion</em> dengan <em>diameter stenosis</em> &ge;50% pada <em>vessel</em> &ge;1,5 mm. <em>Serial stenoses</em> yang berjarak &lt;3 <em>reference vessel diameters</em> dihitung sebagai satu <em>lesion</em>.</span>
                 </div>
                 <div class="syntax-lesions">
                     <div id="syntax-lesion-list" class="syntax-lesions"></div>
