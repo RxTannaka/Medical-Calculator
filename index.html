@@ -1750,6 +1750,9 @@
             if (new Set(valid.map(syntaxSistem)).size > 1) {
                 warn.push('Lesion ini berisi <em>segment</em> RCA dan <em>left coronary system</em> sekaligus. Satu <em>lesion</em> hanya bisa berada di satu sistem; hapus centang yang salah.');
             }
+            if (l.bifurkasi && (parseInt(l.trifurkasi) || 0) > 0) {
+                warn.push('<em>Bifurcation</em> dan <em>trifurcation</em> dipilih sekaligus pada <em>lesion</em> ini. Satu <em>lesion</em> biasanya dinilai sebagai salah satunya saja; keduanya ikut dijumlahkan.');
+            }
             valid.forEach(id => {
                 const lain = syntaxLesions.map((x, j) => (j !== i && syntaxSegValid(x, dom).includes(id)) ? j + 1 : null).filter(Boolean);
                 if (lain.length) warn.push(`<em>Segment</em> ${id} juga dipakai di <em>Lesion</em> ${lain.join(', ')}; bobotnya terhitung lebih dari sekali.`);
@@ -1904,7 +1907,7 @@
             } else {
                 l[field] = el.value;
             }
-            if (field === 'oklusi' || field === 'bifurkasi' || field === 'segmen') renderSyntaxLesions();
+            if (['oklusi', 'bifurkasi', 'trifurkasi', 'segmen'].includes(field)) renderSyntaxLesions();
             else updateStats();
             saveCalcState();
         }
