@@ -144,9 +144,12 @@
             body.mode-syntax #syntax-output-box { display: flex !important; border: 2px solid #000 !important; }
             body.mode-syntax #calc-syntax-content .scoring-table { margin-top: 8px; }
             body.mode-syntax #calc-syntax-content .scoring-table th,
-            body.mode-syntax #calc-syntax-content .scoring-table td { padding: 3px 6px; font-size: 10px; }
-            body.mode-syntax .footer-section { margin-top: 10px; }
-            body.mode-syntax .dpjp-name { margin-top: 45px; }
+            body.mode-syntax #calc-syntax-content .scoring-table td { padding: 2px 5px; font-size: 9px; line-height: 1.25; }
+            body.mode-syntax #calc-syntax-content > div { font-size: 10px !important; padding: 4px 6px !important; line-height: 1.3 !important; }
+            body.mode-syntax .patient-total-wrapper { margin-bottom: 8px; padding: 8px 15px; }
+            body.mode-syntax .footer-section { margin-top: 4px; }
+            body.mode-syntax .dpjp-section p { margin: 4px 0; }
+            body.mode-syntax .dpjp-name { margin-top: 40px; }
 
             body.mode-malnutrisi #calc-malnutrisi-content { display: block !important; }
             body.mode-malnutrisi #malnutrisi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -1813,16 +1816,29 @@
                 Ini adalah SYNTAX Score I (anatomis); variabel klinis SYNTAX Score II tidak dihitung.
                 Skor ini menggambarkan kompleksitas anatomi koroner sebagai bahan pertimbangan <em>Heart Team</em>.</div>`;
 
-            // Ringkasan PERKI, Pedoman Tata Laksana SKA Edisi ke-5 (2024). Pedoman ini tidak memuat
-            // tabel rekomendasi berdasarkan tertil SYNTAX, jadi yang dicantumkan adalah prinsipnya.
+            // PERKI, Pedoman Tata Laksana SKA Edisi ke-5 (2024). Pedoman ini tidak memuat rekomendasi
+            // berdasarkan tertil SYNTAX; yang dicantumkan Tabel Rekomendasi 17 (lesi multivesel) dan prinsip pemilihan revaskularisasi.
+            const sub = t => `<tr><td colspan="3" style="background:#fff3e0; font-weight:bold;">${t}</td></tr>`;
+            const row = (t, k, l) => `<tr><td>${t}</td><td style="text-align:center">${k}</td><td style="text-align:center">${l}</td></tr>`;
             const rek = `<table class="scoring-table"><thead>
-                <tr><th>Pertimbangan revaskularisasi (PERKI, Pedoman Tata Laksana SKA Edisi ke-5, 2024)</th><th style="width:70px">Bagian</th></tr></thead><tbody>
-                <tr><td>Pemilihan modalitas revaskularisasi mempertimbangkan kompleksitas anatomi koroner, komorbiditas (misalnya diabetes), dan risiko tiap pilihan revaskularisasi.</td><td>5.2.1</td></tr>
+                <tr><th>Rekomendasi tata laksana pasien dengan lesi multivesel (PERKI, Pedoman Tata Laksana SKA Edisi ke-5, 2024, Tabel Rekomendasi 17)</th><th style="width:45px">Kelas</th><th style="width:45px">Level</th></tr></thead><tbody>
+                ${row('Direkomendasikan untuk menerapkan strategi revaskularisasi (IKP pada IRA, IKP multivesel atau BPAK) berdasarkan status klinis pasien dan penyakit penyertanya serta kompleksitas dari penyakit sesuai dengan prinsip tata laksana revaskularisasi miokard', 'I', 'B')}
+                ${sub('Lesi multivesel pada pasien SKA dengan syok kardiogenik')}
+                ${row('Direkomendasikan tindakan IKP pada IRA selama prosedur', 'I', 'B')}
+                ${row('Sebaiknya dipertimbangkan IKP secara bertahap pada non-IRA', 'IIa', 'C')}
+                ${sub('Lesi multivesel pada pasien IMA-EST dengan hemodinamik stabil yang menjadi IKPP')}
+                ${row('Direkomendasikan revaskularisasi lengkap, baik selama prosedur atau dalam 45 hari setelah pasien pulang dari rawatan', 'I', 'A')}
+                ${row('Direkomendasikan tindakan IKP pada non-IRA berdasarkan tingkat keparahan lesi koroner', 'I', 'B')}
+                ${row('Penilaian fungsional epikardial secara invasif pada segmen non-kulprit dari IRA tidak direkomendasikan selama prosedur', 'III', 'C')}
+                ${sub('Lesi multivesel pada pasien SKA-NEST yang menjalani IKP')}
+                ${row('Dipertimbangkan revaskularisasi komplet selama prosedur, pada pasien dengan SKA-NEST dan penyakit mikrovaskular', 'IIa', 'C')}
+                ${row('Bisa dipertimbangkan evaluasi invasif fungsional dari tingkat keparahan non-IRA selama indeks prosedur', 'IIb', 'B')}
+                </tbody></table>
+                <table class="scoring-table"><thead>
+                <tr><th>Pertimbangan pemilihan revaskularisasi (PERKI SKA 2024)</th><th style="width:60px">Bagian</th></tr></thead><tbody>
+                <tr><td>Pemilihan modalitas revaskularisasi mempertimbangkan kompleksitas anatomi koroner, komorbiditas (misalnya diabetes), dan risiko tiap pilihan revaskularisasi. IMA-EST: BPAK hanya dipertimbangkan jika IKP tidak bisa dilakukan dan miokardium yang terancam berukuran besar.</td><td>5.2.1</td></tr>
                 <tr><td>Pada anatomi koroner yang kompleks dengan kondisi stabil, dianjurkan <em>Heart Team meeting</em> untuk memutuskan langkah selanjutnya.</td><td>5.1.4</td></tr>
-                <tr><td>IMA-EST: BPAK hanya dipertimbangkan jika IKP tidak bisa dilakukan dan miokardium yang terancam berukuran besar. IMA-NEST risiko tinggi yang membutuhkan revaskularisasi segera: IKP menjadi pilihan utama, kecuali terdapat komplikasi mekanik yang memerlukan pendekatan bedah.</td><td>5.2.1</td></tr>
-                <tr><td>BPAK darurat dipertimbangkan pada anatomi koroner yang tidak sesuai untuk IKP disertai kerusakan miokard luas atau syok kardiogenik. Pada komplikasi mekanik, revaskularisasi yang dianjurkan adalah BPAK disertai bedah koreksi anatomis.</td><td>3.2.1</td></tr>
-                <tr><td>SKA dengan syok kardiogenik dan lesi multivesel: IKP selama prosedur dilakukan hanya pada arteri penyebab infark (IRA).</td><td>4.4.1</td></tr>
-                <tr><td>IMA-EST dengan lesi multivesel: revaskularisasi komplit; IKP non-IRA dapat dilakukan saat rawat inap atau dalam 45 hari setelah pulang.</td><td>4.4.2&ndash;4.4.3.1</td></tr>
+                <tr><td>BPAK darurat dipertimbangkan pada anatomi koroner yang tidak sesuai untuk IKP disertai kerusakan miokard luas atau syok kardiogenik; pada komplikasi mekanik dianjurkan BPAK disertai bedah koreksi anatomis.</td><td>3.2.1</td></tr>
                 </tbody></table>`;
 
             document.getElementById('calc-syntax-content').innerHTML = detailsTable + summary + rek;
