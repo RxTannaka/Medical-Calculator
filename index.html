@@ -1811,16 +1811,18 @@
             const summary = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
                 <strong>Tertil SYNTAX Score: ${tertil}</strong><br>
                 Ini adalah SYNTAX Score I (anatomis); variabel klinis SYNTAX Score II tidak dihitung.
-                Keputusan akhir PCI atau CABG diambil oleh <em>Heart Team</em>.</div>`;
+                Skor ini menggambarkan kompleksitas anatomi koroner sebagai bahan pertimbangan <em>Heart Team</em>.</div>`;
 
+            // Ringkasan PERKI, Pedoman Tata Laksana SKA Edisi ke-5 (2024). Pedoman ini tidak memuat
+            // tabel rekomendasi berdasarkan tertil SYNTAX, jadi yang dicantumkan adalah prinsipnya.
             const rek = `<table class="scoring-table"><thead>
-                <tr><th>Kelas rekomendasi revaskularisasi (ESC/EACTS 2018)</th><th>SYNTAX 0–22</th><th>SYNTAX 23–32</th><th>SYNTAX &ge;33</th></tr></thead><tbody>
-                <tr><td>Penyakit <em>left main</em> &ndash; CABG</td><td>I</td><td>I</td><td>I</td></tr>
-                <tr><td>Penyakit <em>left main</em> &ndash; PCI</td><td>I</td><td>IIa</td><td>III</td></tr>
-                <tr><td>Penyakit 3 pembuluh tanpa DM &ndash; CABG</td><td>I</td><td>I</td><td>I</td></tr>
-                <tr><td>Penyakit 3 pembuluh tanpa DM &ndash; PCI</td><td>I</td><td>III</td><td>III</td></tr>
-                <tr><td>Penyakit 3 pembuluh dengan DM &ndash; CABG</td><td>I</td><td>I</td><td>I</td></tr>
-                <tr><td>Penyakit 3 pembuluh dengan DM &ndash; PCI</td><td>IIb</td><td>III</td><td>III</td></tr>
+                <tr><th>Pertimbangan revaskularisasi (PERKI, Pedoman Tata Laksana SKA Edisi ke-5, 2024)</th><th style="width:70px">Bagian</th></tr></thead><tbody>
+                <tr><td>Pemilihan modalitas revaskularisasi mempertimbangkan kompleksitas anatomi koroner, komorbiditas (misalnya diabetes), dan risiko tiap pilihan revaskularisasi.</td><td>5.2.1</td></tr>
+                <tr><td>Pada anatomi koroner yang kompleks dengan kondisi stabil, dianjurkan <em>Heart Team meeting</em> untuk memutuskan langkah selanjutnya.</td><td>5.1.4</td></tr>
+                <tr><td>IMA-EST: BPAK hanya dipertimbangkan jika IKP tidak bisa dilakukan dan miokardium yang terancam berukuran besar. IMA-NEST risiko tinggi yang membutuhkan revaskularisasi segera: IKP menjadi pilihan utama, kecuali terdapat komplikasi mekanik yang memerlukan pendekatan bedah.</td><td>5.2.1</td></tr>
+                <tr><td>BPAK darurat dipertimbangkan pada anatomi koroner yang tidak sesuai untuk IKP disertai kerusakan miokard luas atau syok kardiogenik. Pada komplikasi mekanik, revaskularisasi yang dianjurkan adalah BPAK disertai bedah koreksi anatomis.</td><td>3.2.1</td></tr>
+                <tr><td>SKA dengan syok kardiogenik dan lesi multivesel: IKP selama prosedur dilakukan hanya pada arteri penyebab infark (IRA).</td><td>4.4.1</td></tr>
+                <tr><td>IMA-EST dengan lesi multivesel: revaskularisasi komplit; IKP non-IRA dapat dilakukan saat rawat inap atau dalam 45 hari setelah pulang.</td><td>4.4.2&ndash;4.4.3.1</td></tr>
                 </tbody></table>`;
 
             document.getElementById('calc-syntax-content').innerHTML = detailsTable + summary + rek;
