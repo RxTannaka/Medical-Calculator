@@ -213,6 +213,10 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 .syntax-opt { display: flex; align-items: center; gap: 6px; }
 .syntax-icon { width: 60px; height: 36px; flex-shrink: 0; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 4px; }
 @media (max-width: 600px) { .syntax-seg-wrap { flex-direction: column; } .syntax-tree { width: 100%; } .syntax-opt-grid { grid-template-columns: 1fr; } }
+/* Berat badan hanya untuk kalkulator yang memakainya */
+.bb-group { display: none; }
+body.mode-natrium .bb-group, body.mode-kalium .bb-group, body.mode-malnutrisi .bb-group, body.mode-timistemi .bb-group { display: flex; }
+
 /* TAMPILAN HP (layar saja, tidak memengaruhi cetak) */
 @media screen and (max-width: 600px) {
     body { padding: 8px; }
