@@ -16,7 +16,7 @@ Code is split by calculator; it is still one page and still opens straight from 
 - `js/common.js` — loaded **first**: `showCalculator`, `CALC_FIELDS`/save/restore/clear, the `DOMContentLoaded` wiring, `updateStats`, `getValue`/`setText`, `printAndDownload`.
 - `js/psi.js`, `natrium.js`, `kalium.js`, `malnutrisi.js`, `timi.js` (STEMI + UA/NSTEMI), `grace.js`, `syntax.js` — one per calculator, loaded after `common.js`.
 
-All scripts share the global scope, so top-level `const`/`let` in one file are visible in the others at runtime. Only reference another file's names inside functions (run after load), never at a file's top level. `script.js` and `style.css` in the repo root are unused empty placeholders.
+All scripts share the global scope, so top-level `const`/`let` in one file are visible in the others at runtime. Only reference another file's names inside functions (run after load), never at a file's top level.
 
 ## Architecture
 
