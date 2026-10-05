@@ -205,6 +205,7 @@
         .syntax-print-grid.padat .syntax-print-body { flex-direction: column; align-items: center; }
         .syntax-print-grid.padat .syntax-print-body .syntax-tree { width: 150px; }
         .syntax-print-grid.padat .syntax-print-items { width: 100%; }
+        .syntax-print-notes { margin-top: 8px; border: 1px solid #000; border-radius: 4px; padding: 6px 10px; font-size: 11px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
         .syntax-print-total { margin-top: 8px; border: 2px solid #000; border-radius: 4px; padding: 6px 10px; font-size: 11px; line-height: 1.5; }
         .syntax-co-box { background: #fff8e1; border-left: 3px solid #FFC107; padding: 6px 8px; margin-top: 6px; }
         .btn-syntax { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
@@ -532,6 +533,9 @@
                     <div id="syntax-lesion-list" class="syntax-lesions"></div>
                     <button type="button" class="btn-syntax btn-syntax-add" onclick="addSyntaxLesion()">+ Tambah Lesion</button>
                 </div>
+                <div class="form-group" style="grid-column: 1 / -1;"><label>Notes:</label>
+                    <textarea id="syntaxNotes" rows="3" placeholder="Catatan tambahan (ikut tercetak di bawah total score)" style="padding:6px; border:1px solid #ccc; border-radius:4px; font-family:Arial, sans-serif; font-size:12px; resize:vertical;"></textarea>
+                </div>
             </div>
         </div>
 
@@ -828,7 +832,7 @@
                              'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik',
                              'timiTDsistolik', 'timiNadi', 'timiKillip',
                              'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
-                             'syntaxDominansi', 'syntaxDifus'];
+                             'syntaxDominansi', 'syntaxDifus', 'syntaxNotes'];
 
         function saveCalcState() {
             const state = {};
@@ -878,7 +882,7 @@
                             'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
                             'timiTDsistolik', 'timiNadi', 'timiKillip',
                             'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
-                            'syntaxDominansi', 'syntaxDifus'];
+                            'syntaxDominansi', 'syntaxDifus', 'syntaxNotes'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -2004,12 +2008,15 @@
             setText('displaySyntaxTertil', tertil);
             setText('displaySyntaxLesi', syntaxLesions.length);
 
+            // Notes: teks bebas pengguna, di-escape sebelum masuk innerHTML
+            const catatan = (getValue('syntaxNotes') || '').trim()
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             const cetak = `<div class="syntax-print">
                 <div class="syntax-print-grid${syntaxLesions.length > 4 ? ' padat' : ''}">${kartu || '<div style="font-size:11px;">Belum ada <em>lesion</em>.</div>'}</div>
                 <div class="syntax-print-total">
                     Dominance: <strong>${dom === 'L' ? 'left' : 'right'}</strong>${difus > 0 ? ` &nbsp;|&nbsp; Diffuse disease / small vessels: ${difus} segment (+${difus})` : ''}<br>
                     <strong style="font-size:13px;">TOTAL SYNTAX SCORE: ${fmtSyntax(total)}</strong> &nbsp;&mdash;&nbsp; <strong>Tertile: ${tertil}</strong>
-                </div></div>`;
+                </div>${catatan ? `<div class="syntax-print-notes"><strong>Notes</strong>\n${catatan}</div>` : ''}</div>`;
 
             const summary = `<div class="screen-only" style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
                 <strong>SYNTAX Score tertile: ${tertil}</strong></div>`;
