@@ -119,8 +119,8 @@
             .footer-section { justify-content: flex-end; }
             .dpjp-section { margin-left: auto !important; }
 
-            #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content,
-            #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box { display: none !important; }
+            #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content, #calc-syntax-content,
+            #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box, #syntax-output-box { display: none !important; }
 
             body.mode-psi #calc-psi-content { display: block !important; }
             body.mode-psi #psi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -139,6 +139,14 @@
 
             body.mode-grace #calc-grace-content { display: block !important; }
             body.mode-grace #grace-output-box { display: flex !important; border: 2px solid #000 !important; }
+
+            body.mode-syntax #calc-syntax-content { display: block !important; }
+            body.mode-syntax #syntax-output-box { display: flex !important; border: 2px solid #000 !important; }
+            body.mode-syntax #calc-syntax-content .scoring-table { margin-top: 8px; }
+            body.mode-syntax #calc-syntax-content .scoring-table th,
+            body.mode-syntax #calc-syntax-content .scoring-table td { padding: 3px 6px; font-size: 10px; }
+            body.mode-syntax .footer-section { margin-top: 10px; }
+            body.mode-syntax .dpjp-name { margin-top: 45px; }
 
             body.mode-malnutrisi #calc-malnutrisi-content { display: block !important; }
             body.mode-malnutrisi #malnutrisi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -165,6 +173,21 @@
         .page2-patient-header { display: none; font-size: 10px; padding: 6px 10px; border-bottom: 1px solid #999; margin-bottom: 0; }
         .btn-tab-malnutrisi { background: #795548; color: white; }
         .btn-tab-danger { background: #e53935; color: white; margin-left: 12px; }
+
+        /* SYNTAX SCORE */
+        .syntax-lesions { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; }
+        .syntax-lesion { border: 1px solid #b0bec5; border-radius: 6px; background: white; padding: 10px; }
+        .syntax-lesion-head { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #37474f; margin-bottom: 6px; }
+        .syntax-lesion-head .syntax-lesion-score { color: #c62828; }
+        .syntax-sub { font-weight: bold; font-size: 11px; margin: 8px 0 4px; color: #555; }
+        .syntax-seg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px 8px; font-size: 11px; }
+        .syntax-opt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 10px; font-size: 12px; }
+        .syntax-opt-grid select, .syntax-opt-grid input[type="number"] { padding: 4px; border: 1px solid #ccc; border-radius: 4px; }
+        .syntax-co-box { background: #fff8e1; border-left: 3px solid #FFC107; padding: 6px 8px; margin-top: 6px; }
+        .btn-syntax { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .btn-syntax-add { background: #1976D2; color: white; align-self: flex-start; }
+        .btn-syntax-del { background: #ffcdd2; color: #b71c1c; }
+        @media (max-width: 600px) { .syntax-seg-grid { grid-template-columns: repeat(2, 1fr); } .syntax-opt-grid { grid-template-columns: 1fr; } }
         /* --- CSS END --- */
     </style>
 </head>
@@ -183,6 +206,7 @@
             <button onclick="showCalculator('timiua')" id="btn-timiua" class="btn-tab">TIMI UA/NSTEMI</button>
             <button onclick="showCalculator('timistemi')" id="btn-timistemi" class="btn-tab">TIMI STEMI</button>
             <button onclick="showCalculator('grace')" id="btn-grace" class="btn-tab">GRACE Score</button>
+            <button onclick="showCalculator('syntax')" id="btn-syntax" class="btn-tab">SYNTAX Score</button>
             <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
@@ -250,6 +274,13 @@
                 <div class="output-value" id="displayGraceScore">0</div>
                 <div class="output-label" style="font-size:11px;">Risiko RS: <span id="displayGraceInHosp">-</span></div>
                 <div class="output-label" style="font-size:11px;">Risiko 6 bln: <span id="displayGrace6mo">-</span></div>
+            </div>
+
+            <div id="syntax-output-box" class="output-box" style="background:#ffebee; border-color:#c62828;">
+                <div class="output-title" style="color:#c62828;">SYNTAX Score</div>
+                <div class="output-value" id="displaySyntaxScore">0</div>
+                <div class="output-label">Tertil: <span id="displaySyntaxTertil">-</span></div>
+                <div class="output-label" style="font-size:11px;"><span id="displaySyntaxLesi">0</span> lesi</div>
             </div>
         </div>
 
@@ -431,6 +462,27 @@
                     <label><input type="checkbox" class="grace-check" id="grace-st" data-score="30"> Deviasi segmen ST (+30)</label>
                 </div>
             </div>
+
+            <!-- SYNTAX SCORE INPUT GROUP -->
+            <div id="input-syntax-group" style="display:none;">
+                <div class="form-section-title">SYNTAX Score I &ndash; Penilaian Angiografi Koroner</div>
+                <div class="form-group"><label>Dominansi Koroner:</label>
+                    <select id="syntaxDominansi">
+                        <option value="kanan">Dominan kanan</option>
+                        <option value="kiri">Dominan kiri</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Penyakit difus / pembuluh kecil (jumlah segmen):</label>
+                    <input type="number" id="syntaxDifus" min="0" step="1" placeholder="0">
+                </div>
+                <div class="form-group" style="grid-column: span 2; font-size:11px; color:#666; justify-content:center;">
+                    Nilai setiap lesi dengan stenosis &ge;50% pada pembuluh berdiameter &ge;1,5 mm. Segmen berurutan dengan stenosis yang berjarak &lt;3 diameter pembuluh dihitung sebagai satu lesi.
+                </div>
+                <div class="syntax-lesions">
+                    <div id="syntax-lesion-list" class="syntax-lesions"></div>
+                    <button type="button" class="btn-syntax btn-syntax-add" onclick="addSyntaxLesion()">+ Tambah Lesi</button>
+                </div>
+            </div>
         </div>
 
         <!-- CONTENT SECTIONS -->
@@ -442,6 +494,7 @@
         <div id="calc-timiua-content" class="calc-content" style="display:none;"></div>
         <div id="calc-timistemi-content" class="calc-content" style="display:none;"></div>
         <div id="calc-grace-content" class="calc-content" style="display:none;"></div>
+        <div id="calc-syntax-content" class="calc-content" style="display:none;"></div>
 
         <!-- MALNUTRISI CONTENT -->
         <div id="calc-malnutrisi-content" class="calc-content" style="display:none;">
@@ -686,7 +739,7 @@
             document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${mode}`).classList.add('active');
 
-            const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi', 'grace'];
+            const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi', 'grace', 'syntax'];
             allModes.forEach(m => {
                 document.getElementById(`calc-${m}-content`).style.display = 'none';
                 document.getElementById(`${m}-output-box`).style.display = 'none';
@@ -701,6 +754,7 @@
             document.getElementById('input-timiua-group').style.display = (mode === 'timiua') ? 'contents' : 'none';
             document.getElementById('input-timistemi-group').style.display = (mode === 'timistemi') ? 'contents' : 'none';
             document.getElementById('input-grace-group').style.display = (mode === 'grace') ? 'contents' : 'none';
+            document.getElementById('input-syntax-group').style.display = (mode === 'syntax') ? 'contents' : 'none';
 
             updateStats();
         }
@@ -723,7 +777,8 @@
                              'asessmen', 'terapiMedikGizi', 'terapiOral', 'terapiEnteral',
                              'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik',
                              'timiTDsistolik', 'timiNadi', 'timiKillip',
-                             'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip'];
+                             'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
+                             'syntaxDominansi', 'syntaxDifus'];
 
         function saveCalcState() {
             const state = {};
@@ -731,6 +786,7 @@
             document.querySelectorAll('.psi-check, .timiua-check, .timistemi-check, .grace-check').forEach(cb => { if (cb.id) state[cb.id] = cb.checked; });
             state._monev = Array.from(document.querySelectorAll('.monev-check')).map(cb => cb.checked);
             state._t7checks = Array.from(document.querySelectorAll('.t7-check')).map(cb => cb.checked);
+            state._syntaxLesions = syntaxLesions;
             try { sessionStorage.setItem(CALC_CACHE, JSON.stringify(state)); } catch(e) {}
         }
 
@@ -744,6 +800,8 @@
                 if (state._monev) { const boxes = document.querySelectorAll('.monev-check'); state._monev.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 if (state._t7checks) { const boxes = document.querySelectorAll('.t7-check'); state._t7checks.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
+                if (Array.isArray(state._syntaxLesions)) { syntaxLesions = state._syntaxLesions.map(l => Object.assign(newSyntaxLesion(), l)); }
+                renderSyntaxLesions();
                 updateStats();
             } catch(e) {}
         }
@@ -756,6 +814,9 @@
             document.querySelectorAll('.psi-check, .monev-check, .t7-check, .timiua-check, .timistemi-check, .grace-check').forEach(cb => cb.checked = false);
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tglAsesmen').value = today;
+            document.getElementById('syntaxDominansi').value = 'kanan';
+            syntaxLesions = [];
+            renderSyntaxLesions();
             updateStats();
         }
 
@@ -766,7 +827,8 @@
                             'ruang', 'jam', 'tb', 'faktorStres', 'faktorProtein', 'persenLemak',
                             'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
                             'timiTDsistolik', 'timiNadi', 'timiKillip',
-                            'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip'];
+                            'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
+                            'syntaxDominansi', 'syntaxDifus'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -781,6 +843,13 @@
             document.querySelectorAll('.psi-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
             document.querySelectorAll('.timiua-check, .timistemi-check, .grace-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
             document.querySelectorAll('.monev-check').forEach(box => { box.addEventListener('change', updateStats); box.addEventListener('change', saveCalcState); });
+
+            // SYNTAX: lesi dinamis, pakai event delegation
+            const syntaxList = document.getElementById('syntax-lesion-list');
+            syntaxList.addEventListener('input', onSyntaxLesionInput);
+            syntaxList.addEventListener('change', onSyntaxLesionInput);
+            document.getElementById('syntaxDominansi').addEventListener('change', renderSyntaxLesions);
+            renderSyntaxLesions();
 
             renderTabel7Checklist();
             document.querySelectorAll('.t7-check').forEach(box => { box.addEventListener('change', updateChecklistKesimpulan); box.addEventListener('change', saveCalcState); });
@@ -833,6 +902,7 @@
             try { calculateTIMIUA(); } catch(e) {}
             try { calculateTIMISTEMI(); } catch(e) {}
             try { calculateGRACE(); } catch(e) {}
+            try { calculateSYNTAX(); } catch(e) {}
         }
 
         function calculateMalnutrisi() {
@@ -1535,6 +1605,227 @@
 
             document.getElementById('calc-grace-content').innerHTML = detailsTable + summary + note;
         }
+
+        // --- SYNTAX SCORE I (Sianos dkk., EuroIntervention 2005; algoritma syntaxscore.org) ---
+        // Bobot segmen: R = dominan kanan, L = dominan kiri, null = segmen tidak ada
+        const SYNTAX_SEGMENTS = [
+            { id: '1',   nama: 'RCA proksimal',           R: 1,    L: 0 },
+            { id: '2',   nama: 'RCA mid',                 R: 1,    L: 0 },
+            { id: '3',   nama: 'RCA distal',              R: 1,    L: 0 },
+            { id: '4',   nama: 'PDA (dari RCA)',          R: 1,    L: null },
+            { id: '16',  nama: 'Posterolateral (RCA)',    R: 0.5,  L: null },
+            { id: '16a', nama: 'Posterolateral 1 (RCA)',  R: 0.5,  L: null },
+            { id: '16b', nama: 'Posterolateral 2 (RCA)',  R: 0.5,  L: null },
+            { id: '16c', nama: 'Posterolateral 3 (RCA)',  R: 0.5,  L: null },
+            { id: '5',   nama: 'Left main',               R: 5,    L: 6 },
+            { id: '6',   nama: 'LAD proksimal',           R: 3.5,  L: 3.5 },
+            { id: '7',   nama: 'LAD mid',                 R: 2.5,  L: 2.5 },
+            { id: '8',   nama: 'LAD apikal',              R: 1,    L: 1 },
+            { id: '9',   nama: 'Diagonal 1',              R: 1,    L: 1 },
+            { id: '9a',  nama: 'Diagonal 1a',             R: 1,    L: 1 },
+            { id: '10',  nama: 'Diagonal 2',              R: 0.5,  L: 0.5 },
+            { id: '10a', nama: 'Diagonal 2a',             R: 0.5,  L: 0.5 },
+            { id: '11',  nama: 'LCx proksimal',           R: 1.5,  L: 2.5 },
+            { id: '12',  nama: 'Intermediate/anterolateral', R: 1, L: 1 },
+            { id: '12a', nama: 'Obtuse marginal a',       R: 1,    L: 1 },
+            { id: '12b', nama: 'Obtuse marginal b',       R: 1,    L: 1 },
+            { id: '13',  nama: 'LCx distal',              R: 0.5,  L: 1.5 },
+            { id: '14',  nama: 'Posterolateral kiri',     R: 0.5,  L: 1 },
+            { id: '14a', nama: 'Posterolateral kiri a',   R: 0.5,  L: 1 },
+            { id: '14b', nama: 'Posterolateral kiri b',   R: 0.5,  L: 1 },
+            { id: '15',  nama: 'PDA (dari LCx)',          R: null, L: 1 }
+        ];
+
+        // Medina: 1,0,0 / 0,1,0 / 1,1,0 → +1; 1,1,1 / 0,0,1 / 1,0,1 / 0,1,1 → +2
+        const SYNTAX_MEDINA = { '100': 1, '010': 1, '110': 1, '111': 2, '001': 2, '101': 2, '011': 2 };
+
+        let syntaxLesions = [];
+
+        function newSyntaxLesion() {
+            return { segmen: [], oklusi: false, okUmur: false, okStump: false, okBridging: false, okNonVisual: 0, okSideBranch: false,
+                     trifurkasi: '0', bifurkasi: '', angulasi: false,
+                     aortoOstial: false, tortuositas: false, panjang: false, kalsifikasi: false, trombus: false };
+        }
+
+        function addSyntaxLesion() {
+            if (syntaxLesions.length >= 12) { alert('Maksimal 12 lesi.'); return; }
+            syntaxLesions.push(newSyntaxLesion());
+            renderSyntaxLesions();
+            saveCalcState();
+        }
+
+        function removeSyntaxLesion(i) {
+            syntaxLesions.splice(i, 1);
+            renderSyntaxLesions();
+            saveCalcState();
+        }
+
+        function syntaxDominansi() { return getValue('syntaxDominansi') === 'kiri' ? 'L' : 'R'; }
+
+        function fmtSyntax(n) { return Number.isInteger(n) ? String(n) : n.toFixed(1); }
+
+        function renderSyntaxLesions() {
+            const list = document.getElementById('syntax-lesion-list');
+            if (!list) return;
+            const dom = syntaxDominansi();
+            const segs = SYNTAX_SEGMENTS.filter(s => s[dom] !== null);
+            const cb = (i, field, label, checked) =>
+                `<label><input type="checkbox" data-lesion="${i}" data-field="${field}" ${checked ? 'checked' : ''}> ${label}</label>`;
+
+            list.innerHTML = syntaxLesions.map((l, i) => `
+                <div class="syntax-lesion">
+                    <div class="syntax-lesion-head">
+                        <span>Lesi ${i + 1} &mdash; skor <span class="syntax-lesion-score" id="syntaxLesiSkor${i}">0</span></span>
+                        <button type="button" class="btn-syntax btn-syntax-del" onclick="removeSyntaxLesion(${i})">Hapus</button>
+                    </div>
+                    <div class="syntax-sub">Segmen yang terlibat (bobot sesuai dominansi):</div>
+                    <div class="syntax-seg-grid">
+                        ${segs.map(s => `<label><input type="checkbox" data-lesion="${i}" data-field="segmen" value="${s.id}" ${l.segmen.includes(s.id) ? 'checked' : ''}> <strong>${s.id}</strong> ${s.nama} (&times;${s[dom]})</label>`).join('')}
+                    </div>
+                    <div class="syntax-sub">Karakteristik lesi:</div>
+                    <div class="syntax-opt-grid">
+                        ${cb(i, 'oklusi', 'Oklusi total (&times;5, bukan &times;2)', l.oklusi)}
+                        <label>Trifurkasi:
+                            <select data-lesion="${i}" data-field="trifurkasi">
+                                ${[['0', 'Tidak ada'], ['1', '1 segmen sakit (+3)'], ['2', '2 segmen sakit (+4)'], ['3', '3 segmen sakit (+5)'], ['4', '4 segmen sakit (+6)']]
+                                    .map(([v, t]) => `<option value="${v}" ${l.trifurkasi === v ? 'selected' : ''}>${t}</option>`).join('')}
+                            </select>
+                        </label>
+                        <label>Bifurkasi (Medina):
+                            <select data-lesion="${i}" data-field="bifurkasi">
+                                <option value="">Tidak ada</option>
+                                ${Object.keys(SYNTAX_MEDINA).map(k => `<option value="${k}" ${l.bifurkasi === k ? 'selected' : ''}>${k.split('').join(',')} (+${SYNTAX_MEDINA[k]})</option>`).join('')}
+                            </select>
+                        </label>
+                        ${l.bifurkasi ? cb(i, 'angulasi', 'Angulasi bifurkasi &lt;70&deg; (+1)', l.angulasi) : ''}
+                        ${cb(i, 'aortoOstial', 'Stenosis aorto-ostial (+1)', l.aortoOstial)}
+                        ${cb(i, 'tortuositas', 'Tortuositas berat (+2)', l.tortuositas)}
+                        ${cb(i, 'panjang', 'Panjang lesi &gt;20 mm (+1)', l.panjang)}
+                        ${cb(i, 'kalsifikasi', 'Kalsifikasi berat (+2)', l.kalsifikasi)}
+                        ${cb(i, 'trombus', 'Trombus (+1)', l.trombus)}
+                    </div>
+                    ${l.oklusi ? `
+                    <div class="syntax-co-box">
+                        <div class="syntax-sub" style="margin-top:0;">Detail oklusi total:</div>
+                        <div class="syntax-opt-grid">
+                            ${cb(i, 'okUmur', 'Usia oklusi &gt;3 bulan / tidak diketahui (+1)', l.okUmur)}
+                            ${cb(i, 'okStump', '<em>Blunt stump</em> (+1)', l.okStump)}
+                            ${cb(i, 'okBridging', 'Kolateral <em>bridging</em> (+1)', l.okBridging)}
+                            ${cb(i, 'okSideBranch', 'Melibatkan cabang samping (+1)', l.okSideBranch)}
+                            <label>Segmen distal tak tervisualisasi (+1/segmen):
+                                <input type="number" min="0" step="1" style="width:60px;" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual || 0}">
+                            </label>
+                        </div>
+                    </div>` : ''}
+                </div>`).join('') || '<div style="font-size:12px; color:#888;">Belum ada lesi. Klik &ldquo;+ Tambah Lesi&rdquo;.</div>';
+            updateStats();
+        }
+
+        function onSyntaxLesionInput(e) {
+            const el = e.target;
+            const i = parseInt(el.dataset.lesion);
+            const field = el.dataset.field;
+            if (isNaN(i) || !field || !syntaxLesions[i]) return;
+            // Angka diproses saat 'input', checkbox/select saat 'change' (hindari proses ganda)
+            if (el.type === 'number' ? e.type !== 'input' : e.type !== 'change') return;
+            const l = syntaxLesions[i];
+            if (field === 'segmen') {
+                l.segmen = l.segmen.filter(s => s !== el.value);
+                if (el.checked) l.segmen.push(el.value);
+            } else if (el.type === 'checkbox') {
+                l[field] = el.checked;
+            } else if (el.type === 'number') {
+                l[field] = Math.max(0, parseInt(el.value) || 0);
+            } else {
+                l[field] = el.value;
+            }
+            if (field === 'oklusi' || field === 'bifurkasi') renderSyntaxLesions();
+            else updateStats();
+            saveCalcState();
+        }
+
+        function scoreSyntaxLesion(l, dom) {
+            const rincian = [];
+            const segs = SYNTAX_SEGMENTS.filter(s => l.segmen.includes(s.id) && s[dom] !== null);
+            const bobot = segs.reduce((a, s) => a + s[dom], 0);
+            const faktor = l.oklusi ? 5 : 2;
+            let skor = bobot * faktor;
+            rincian.push(`${l.oklusi ? 'Oklusi total' : 'Stenosis 50–99%'}: ${fmtSyntax(bobot)} &times; ${faktor} = ${fmtSyntax(skor)}`);
+
+            const add = (cond, poin, teks) => { if (cond) { skor += poin; rincian.push(`${teks} +${poin}`); } };
+            if (l.oklusi) {
+                add(l.okUmur, 1, 'Usia oklusi &gt;3 bulan/tidak diketahui');
+                add(l.okStump, 1, '<em>Blunt stump</em>');
+                add(l.okBridging, 1, 'Kolateral <em>bridging</em>');
+                add(l.okNonVisual > 0, l.okNonVisual, `${l.okNonVisual} segmen tak tervisualisasi`);
+                add(l.okSideBranch, 1, 'Cabang samping terlibat');
+            }
+            const tri = parseInt(l.trifurkasi) || 0;
+            add(tri > 0, tri + 2, `Trifurkasi, ${tri} segmen sakit`);
+            if (l.bifurkasi && SYNTAX_MEDINA[l.bifurkasi]) {
+                add(true, SYNTAX_MEDINA[l.bifurkasi], `Bifurkasi Medina ${l.bifurkasi.split('').join(',')}`);
+                add(l.angulasi, 1, 'Angulasi &lt;70&deg;');
+            }
+            add(l.aortoOstial, 1, 'Aorto-ostial');
+            add(l.tortuositas, 2, 'Tortuositas berat');
+            add(l.panjang, 1, 'Panjang &gt;20 mm');
+            add(l.kalsifikasi, 2, 'Kalsifikasi berat');
+            add(l.trombus, 1, 'Trombus');
+
+            const segLabel = segs.map(s => `${s.id} (${s.nama})`).join(', ') || '<em>belum dipilih</em>';
+            return { skor, rincian, segLabel };
+        }
+
+        function calculateSYNTAX() {
+            const dom = syntaxDominansi();
+            let total = 0;
+            let detailsTable = `<table class="scoring-table"><thead><tr><th style="width:40px">Lesi</th><th>Segmen</th><th>Rincian</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
+            detailsTable += `<tr><td colspan="4">Dominansi: <strong>${dom === 'L' ? 'kiri' : 'kanan'}</strong></td></tr>`;
+
+            syntaxLesions.forEach((l, i) => {
+                const r = scoreSyntaxLesion(l, dom);
+                total += r.skor;
+                setText(`syntaxLesiSkor${i}`, fmtSyntax(r.skor));
+                detailsTable += `<tr><td>${i + 1}</td><td>${r.segLabel}</td><td>${r.rincian.join('<br>')}</td><td>${fmtSyntax(r.skor)}</td></tr>`;
+            });
+
+            const difus = Math.max(0, parseInt(getValue('syntaxDifus')) || 0);
+            if (difus > 0) {
+                total += difus;
+                detailsTable += `<tr><td colspan="3">Penyakit difus / pembuluh kecil (${difus} segmen &times; 1)</td><td>${difus}</td></tr>`;
+            }
+            detailsTable += `<tr><td colspan="3"><strong>TOTAL SYNTAX SCORE</strong></td><td><strong>${fmtSyntax(total)}</strong></td></tr></tbody></table>`;
+
+            // Tertil SYNTAX: ≤22 rendah, 23–32 menengah, ≥33 tinggi
+            let tertil = '-';
+            if (syntaxLesions.length) {
+                if (total <= 22) tertil = 'Rendah (0–22)';
+                else if (total <= 32) tertil = 'Menengah (23–32)';
+                else tertil = 'Tinggi (≥33)';
+            }
+
+            setText('displaySyntaxScore', fmtSyntax(total));
+            setText('displaySyntaxTertil', tertil);
+            setText('displaySyntaxLesi', syntaxLesions.length);
+
+            const summary = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
+                <strong>Tertil SYNTAX Score: ${tertil}</strong><br>
+                Ini adalah SYNTAX Score I (anatomis); variabel klinis SYNTAX Score II tidak dihitung.
+                Keputusan akhir PCI atau CABG diambil oleh <em>Heart Team</em>.</div>`;
+
+            const rek = `<table class="scoring-table"><thead>
+                <tr><th>Kelas rekomendasi revaskularisasi (ESC/EACTS 2018)</th><th>SYNTAX 0–22</th><th>SYNTAX 23–32</th><th>SYNTAX &ge;33</th></tr></thead><tbody>
+                <tr><td>Penyakit <em>left main</em> &ndash; CABG</td><td>I</td><td>I</td><td>I</td></tr>
+                <tr><td>Penyakit <em>left main</em> &ndash; PCI</td><td>I</td><td>IIa</td><td>III</td></tr>
+                <tr><td>Penyakit 3 pembuluh tanpa DM &ndash; CABG</td><td>I</td><td>I</td><td>I</td></tr>
+                <tr><td>Penyakit 3 pembuluh tanpa DM &ndash; PCI</td><td>I</td><td>III</td><td>III</td></tr>
+                <tr><td>Penyakit 3 pembuluh dengan DM &ndash; CABG</td><td>I</td><td>I</td><td>I</td></tr>
+                <tr><td>Penyakit 3 pembuluh dengan DM &ndash; PCI</td><td>IIb</td><td>III</td><td>III</td></tr>
+                </tbody></table>`;
+
+            document.getElementById('calc-syntax-content').innerHTML = detailsTable + summary + rek;
+        }
+
 
         function getValue(id) { return document.getElementById(id)?.value; }
         function setText(id, txt) { const el = document.getElementById(id); if (el) el.innerText = txt; }
