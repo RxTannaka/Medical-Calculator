@@ -142,6 +142,7 @@
 
             body.mode-syntax #calc-syntax-content { display: block !important; }
             body.mode-syntax #syntax-output-box { display: flex !important; border: 2px solid #000 !important; }
+            body.mode-syntax .syntax-print { display: block !important; }
             body.mode-syntax #calc-syntax-content .scoring-table { margin-top: 8px; }
             body.mode-syntax #calc-syntax-content .scoring-table th,
             body.mode-syntax #calc-syntax-content .scoring-table td { padding: 2px 5px; font-size: 9px; line-height: 1.25; }
@@ -189,6 +190,22 @@
         .syntax-warn { background: #ffebee; border-left: 3px solid #c62828; color: #b71c1c; padding: 6px 8px; margin-top: 6px; font-size: 12px; line-height: 1.4; }
         .syntax-lock-note { font-size: 11px; color: #607d8b; margin: -2px 0 4px; }
         .syntax-seg-grid label.locked { opacity: 0.4; cursor: not-allowed; }
+        .syntax-print { display: none; }
+        .syntax-print-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .syntax-print-card { border: 1px solid #000; border-radius: 4px; padding: 6px; page-break-inside: avoid; break-inside: avoid; }
+        .syntax-print-head { display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin-bottom: 4px; }
+        .syntax-print-body { display: flex; gap: 6px; align-items: flex-start; }
+        .syntax-print-body .syntax-tree { width: 185px; flex-shrink: 0; background: #fff; border: 1px solid #ccc; }
+        .syntax-print-items { flex: 1; font-size: 10px; line-height: 1.25; }
+        .syntax-print-item { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+        .syntax-print-item .syntax-icon { width: 44px; height: 26px; background: #fff; }
+        .syntax-print-item .pt { margin-left: auto; font-weight: bold; white-space: nowrap; }
+        .syntax-print-segs { font-size: 9px; margin-bottom: 4px; }
+        .syntax-print-grid.padat { grid-template-columns: repeat(3, 1fr); }
+        .syntax-print-grid.padat .syntax-print-body { flex-direction: column; align-items: center; }
+        .syntax-print-grid.padat .syntax-print-body .syntax-tree { width: 150px; }
+        .syntax-print-grid.padat .syntax-print-items { width: 100%; }
+        .syntax-print-total { margin-top: 8px; border: 2px solid #000; border-radius: 4px; padding: 6px 10px; font-size: 11px; line-height: 1.5; }
         .syntax-co-box { background: #fff8e1; border-left: 3px solid #FFC107; padding: 6px 8px; margin-top: 6px; }
         .btn-syntax { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .btn-syntax-add { background: #1976D2; color: white; align-self: flex-start; }
@@ -1760,14 +1777,14 @@
             return warn.length ? `<div class="syntax-warn">&#9888; ${warn.join('<br>&#9888; ')}</div>` : '';
         }
 
-        function syntaxTreeSvg(i, l, dom) {
-            const kunci = syntaxSistemTerkunci(l, dom);
+        function syntaxTreeSvg(i, l, dom, cetak = false) {
+            const kunci = cetak ? null : syntaxSistemTerkunci(l, dom);
             const paths = SYNTAX_SEGMENTS.filter(s => s[dom] !== null).map(s => {
                 const t = SYNTAX_TREE[s.id];
                 const sel = l.segmen.includes(s.id);
                 const locked = kunci === syntaxSistem(s.id);
-                const color = sel ? '#c62828' : locked ? '#eceff1' : (s[dom] === 0 ? '#cfd8dc' : '#90a4ae');
-                return `<g ${locked ? 'style="cursor:not-allowed"' : `data-seg="${s.id}"`} data-lesion="${i}"><title>${s.id} ${s.nama} (×${s[dom]})${locked ? ' (terkunci)' : ''}</title>
+                const color = sel ? '#c62828' : locked ? '#eceff1' : (cetak || s[dom] === 0 ? '#cfd8dc' : '#90a4ae');
+                return `<g ${locked || cetak ? 'style="cursor:default"' : `data-seg="${s.id}"`} data-lesion="${i}"><title>${s.id} ${s.nama} (×${s[dom]})${locked ? ' (terkunci)' : ''}</title>
                     <path d="${t.d}" stroke="transparent" stroke-width="14" fill="none"/>
                     <path class="seg-line" d="${t.d}" stroke="${color}" stroke-width="${sel ? 6 : 4}" fill="none" stroke-linecap="round"/>
                     <text x="${t.lx}" y="${t.ly}" font-size="9" font-weight="bold" text-anchor="middle" dominant-baseline="middle"
@@ -1779,7 +1796,7 @@
                 <text x="8" y="14" font-size="9" fill="#607d8b">Right (RCA)</text>
                 <text x="312" y="14" font-size="9" fill="#607d8b" text-anchor="end">Left (LM)</text>
                 ${paths}
-                <text x="8" y="264" font-size="8" fill="#90a4ae">Klik <tspan font-style="italic">segment</tspan> untuk memilih</text>
+                ${cetak ? '' : `<text x="8" y="264" font-size="8" fill="#90a4ae">Klik <tspan font-style="italic">segment</tspan> untuk memilih</text>`}
             </svg>`;
         }
 
@@ -1788,6 +1805,7 @@
         const PINCH = (cx, cy = 18) => `<ellipse cx="${cx}" cy="${cy - 5.5}" rx="6" ry="3.5" fill="#fafafa"/><ellipse cx="${cx}" cy="${cy + 5.5}" rx="6" ry="3.5" fill="#fafafa"/>`;
         const OKL = `${V(5, 26)}<line x1="34" y1="18" x2="55" y2="18" stroke="#e57373" stroke-width="10" stroke-dasharray="2 4" opacity="0.35"/>`;
         const SYNTAX_ICONS = {
+            stenosis: `${V(5, 55)}${PINCH(30)}`,
             oklusi: OKL + `<line x1="30" y1="8" x2="30" y2="28" stroke="#37474f" stroke-width="1.5"/>`,
             trifurkasi: `<g stroke="#e57373" stroke-width="7" stroke-linecap="round" fill="none"><path d="M5 18 L26 18"/><path d="M26 18 L55 5"/><path d="M26 18 L55 18"/><path d="M26 18 L55 31"/></g>${PINCH(16)}`,
             angulasi: `<g stroke="#e57373" stroke-width="7" stroke-linecap="round" fill="none"><path d="M5 24 L26 24 L55 24"/><path d="M26 24 L52 8"/></g><path d="M40 24 A14 14 0 0 0 38 16" stroke="#37474f" fill="none"/><text x="44" y="34" font-size="7" fill="#37474f">&lt;70°</text>`,
@@ -1918,36 +1936,40 @@
             const bobot = segs.reduce((a, s) => a + s[dom], 0);
             const faktor = l.oklusi ? 5 : 2;
             let skor = bobot * faktor;
-            rincian.push(`${l.oklusi ? 'Total occlusion' : 'Stenosis 50–99%'}: ${fmtSyntax(bobot)} &times; ${faktor} = ${fmtSyntax(skor)}`);
+            const dasar = `${l.oklusi ? 'Total occlusion' : 'Stenosis 50–99%'}: ${fmtSyntax(bobot)} &times; ${faktor}`;
+            rincian.push(`${dasar} = ${fmtSyntax(skor)}`);
+            // items: untuk kartu cetak (ikon + teks + poin)
+            const items = [{ ikon: SYNTAX_ICONS[l.oklusi ? 'oklusi' : 'stenosis'], teks: dasar, poin: fmtSyntax(skor) }];
 
-            const add = (cond, poin, teks) => { if (cond) { skor += poin; rincian.push(`${teks} +${poin}`); } };
+            const add = (cond, poin, teks, ikon) => { if (cond) { skor += poin; rincian.push(`${teks} +${poin}`); items.push({ ikon, teks, poin: '+' + poin }); } };
             if (l.oklusi) {
-                add(l.okUmur, 1, 'Age &gt;3 months/unknown');
-                add(l.okStump, 1, 'Blunt stump');
-                add(l.okBridging, 1, 'Bridging collaterals');
-                add(l.okNonVisual > 0, l.okNonVisual, `${l.okNonVisual} non-visualised segment(s)`);
-                add(l.okSideBranch, 1, 'Side branch involvement');
+                add(l.okUmur, 1, 'Age &gt;3 months/unknown', SYNTAX_ICONS.okUmur);
+                add(l.okStump, 1, 'Blunt stump', SYNTAX_ICONS.okStump);
+                add(l.okBridging, 1, 'Bridging collaterals', SYNTAX_ICONS.okBridging);
+                add(l.okNonVisual > 0, l.okNonVisual, `${l.okNonVisual} non-visualised segment(s)`, SYNTAX_ICONS.okNonVisual);
+                add(l.okSideBranch, 1, 'Side branch involvement', SYNTAX_ICONS.okSideBranch);
             }
             const tri = parseInt(l.trifurkasi) || 0;
-            add(tri > 0, tri + 2, `Trifurcation, ${tri} diseased segment(s)`);
+            add(tri > 0, tri + 2, `Trifurcation, ${tri} diseased segment(s)`, SYNTAX_ICONS.trifurkasi);
             if (l.bifurkasi && SYNTAX_MEDINA[l.bifurkasi]) {
-                add(true, SYNTAX_MEDINA[l.bifurkasi], `Bifurcation Medina ${l.bifurkasi.split('').join(',')}`);
-                add(l.angulasi, 1, 'Angulation &lt;70&deg;');
+                add(true, SYNTAX_MEDINA[l.bifurkasi], `Bifurcation Medina ${l.bifurkasi.split('').join(',')}`, medinaIcon(l.bifurkasi));
+                add(l.angulasi, 1, 'Angulation &lt;70&deg;', SYNTAX_ICONS.angulasi);
             }
-            add(l.aortoOstial, 1, 'Aorto-ostial');
-            add(l.tortuositas, 2, 'Severe tortuosity');
-            add(l.panjang, 1, 'Length &gt;20 mm');
-            add(l.kalsifikasi, 2, 'Heavy calcification');
-            add(l.trombus, 1, 'Thrombus');
+            add(l.aortoOstial, 1, 'Aorto-ostial', SYNTAX_ICONS.aortoOstial);
+            add(l.tortuositas, 2, 'Severe tortuosity', SYNTAX_ICONS.tortuositas);
+            add(l.panjang, 1, 'Length &gt;20 mm', SYNTAX_ICONS.panjang);
+            add(l.kalsifikasi, 2, 'Heavy calcification', SYNTAX_ICONS.kalsifikasi);
+            add(l.trombus, 1, 'Thrombus', SYNTAX_ICONS.trombus);
 
             const segLabel = segs.map(s => `${s.id} (${s.nama})`).join(', ') || '<em>belum dipilih</em>';
-            return { skor, rincian, segLabel };
+            return { skor, rincian, segLabel, items };
         }
 
         function calculateSYNTAX() {
             const dom = syntaxDominansi();
             let total = 0;
-            let detailsTable = `<table class="scoring-table"><thead><tr><th style="width:50px">Lesion</th><th>Segment</th><th>Rincian</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
+            let kartu = '';
+            let detailsTable = `<table class="scoring-table screen-only"><thead><tr><th style="width:50px">Lesion</th><th>Segment</th><th>Rincian</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
             detailsTable += `<tr><td colspan="4">Dominance: <strong>${dom === 'L' ? 'left' : 'right'}</strong></td></tr>`;
 
             syntaxLesions.forEach((l, i) => {
@@ -1955,6 +1977,12 @@
                 total += r.skor;
                 setText(`syntaxLesiSkor${i}`, fmtSyntax(r.skor));
                 detailsTable += `<tr><td>${i + 1}</td><td>${r.segLabel}</td><td>${r.rincian.join('<br>')}</td><td>${fmtSyntax(r.skor)}</td></tr>`;
+                kartu += `<div class="syntax-print-card">
+                    <div class="syntax-print-head"><span>Lesion ${i + 1}</span><span>Skor ${fmtSyntax(r.skor)}</span></div>
+                    <div class="syntax-print-segs"><strong>Segment:</strong> ${r.segLabel}</div>
+                    <div class="syntax-print-body">${syntaxTreeSvg(i, l, dom, true)}
+                        <div class="syntax-print-items">${r.items.map(it => `<div class="syntax-print-item">${syntaxIcon(it.ikon)}<span>${it.teks}</span><span class="pt">${it.poin}</span></div>`).join('')}</div>
+                    </div></div>`;
             });
 
             const difus = Math.max(0, parseInt(getValue('syntaxDifus')) || 0);
@@ -1976,14 +2004,21 @@
             setText('displaySyntaxTertil', tertil);
             setText('displaySyntaxLesi', syntaxLesions.length);
 
-            const summary = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
+            const cetak = `<div class="syntax-print">
+                <div class="syntax-print-grid${syntaxLesions.length > 4 ? ' padat' : ''}">${kartu || '<div style="font-size:11px;">Belum ada <em>lesion</em>.</div>'}</div>
+                <div class="syntax-print-total">
+                    Dominance: <strong>${dom === 'L' ? 'left' : 'right'}</strong>${difus > 0 ? ` &nbsp;|&nbsp; Diffuse disease / small vessels: ${difus} segment (+${difus})` : ''}<br>
+                    <strong style="font-size:13px;">TOTAL SYNTAX SCORE: ${fmtSyntax(total)}</strong> &nbsp;&mdash;&nbsp; <strong>Tertile: ${tertil}</strong>
+                </div></div>`;
+
+            const summary = `<div class="screen-only" style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
                 <strong>SYNTAX Score tertile: ${tertil}</strong></div>`;
 
             // PERKI, Pedoman Tata Laksana SKA Edisi ke-5 (2024). Pedoman ini tidak memuat rekomendasi
             // berdasarkan tertil SYNTAX; yang dicantumkan Tabel Rekomendasi 17 (lesi multivesel) dan prinsip pemilihan revaskularisasi.
             const sub = t => `<tr><td colspan="3" style="background:#fff3e0; font-weight:bold;">${t}</td></tr>`;
             const row = (t, k, l) => `<tr><td>${t}</td><td style="text-align:center">${k}</td><td style="text-align:center">${l}</td></tr>`;
-            const rek = `<table class="scoring-table"><thead>
+            const rek = `<div class="screen-only"><table class="scoring-table"><thead>
                 <tr><th>Rekomendasi tata laksana pasien dengan lesi multivesel</th><th style="width:45px">Kelas</th><th style="width:45px">Level</th></tr></thead><tbody>
                 ${row('Direkomendasikan untuk menerapkan strategi revaskularisasi (IKP pada IRA, IKP multivesel atau BPAK) berdasarkan status klinis pasien dan penyakit penyertanya serta kompleksitas dari penyakit sesuai dengan prinsip tata laksana revaskularisasi miokard', 'I', 'B')}
                 ${sub('Lesi multivesel pada pasien SKA dengan syok kardiogenik')}
@@ -2005,9 +2040,9 @@
                 </tbody></table>
                 <div style="margin-top:6px; font-size:10px; color:#555; line-height:1.4;">
                     <strong>Referensi:</strong> Perhimpunan Dokter Spesialis Kardiovaskular Indonesia (PERKI).
-                    Pedoman Tata Laksana Sindrom Koroner Akut. Edisi ke-5. Jakarta: PERKI; 2024. Tabel Rekomendasi 17; Bagian 3.2.1, 5.1.4, dan 5.2.1.</div>`;
+                    Pedoman Tata Laksana Sindrom Koroner Akut. Edisi ke-5. Jakarta: PERKI; 2024. Tabel Rekomendasi 17; Bagian 3.2.1, 5.1.4, dan 5.2.1.</div></div>`;
 
-            document.getElementById('calc-syntax-content').innerHTML = detailsTable + summary + rek;
+            document.getElementById('calc-syntax-content').innerHTML = cetak + detailsTable + summary + rek;
         }
 
 
