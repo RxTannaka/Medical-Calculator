@@ -190,7 +190,14 @@
         .btn-syntax { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .btn-syntax-add { background: #1976D2; color: white; align-self: flex-start; }
         .btn-syntax-del { background: #ffcdd2; color: #b71c1c; }
-        @media (max-width: 600px) { .syntax-seg-grid { grid-template-columns: repeat(2, 1fr); } .syntax-opt-grid { grid-template-columns: 1fr; } }
+        .syntax-seg-wrap { display: flex; gap: 12px; align-items: flex-start; }
+        .syntax-seg-wrap .syntax-seg-grid { flex: 1; grid-template-columns: repeat(2, 1fr); }
+        .syntax-tree { width: 300px; flex-shrink: 0; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 6px; }
+        .syntax-tree [data-seg] { cursor: pointer; }
+        .syntax-tree [data-seg]:hover .seg-line { stroke: #ef9a9a; }
+        .syntax-opt { display: flex; align-items: center; gap: 6px; }
+        .syntax-icon { width: 60px; height: 36px; flex-shrink: 0; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 4px; }
+        @media (max-width: 600px) { .syntax-seg-wrap { flex-direction: column; } .syntax-tree { width: 100%; } .syntax-opt-grid { grid-template-columns: 1fr; } }
         /* --- CSS END --- */
     </style>
 </head>
@@ -851,6 +858,7 @@
             const syntaxList = document.getElementById('syntax-lesion-list');
             syntaxList.addEventListener('input', onSyntaxLesionInput);
             syntaxList.addEventListener('change', onSyntaxLesionInput);
+            syntaxList.addEventListener('click', onSyntaxTreeClick);
             document.getElementById('syntaxDominansi').addEventListener('change', renderSyntaxLesions);
             renderSyntaxLesions();
 
@@ -1667,13 +1675,95 @@
 
         function fmtSyntax(n) { return Number.isInteger(n) ? String(n) : n.toFixed(1); }
 
+        // Diagram pohon koroner skematis (penomoran segmen SYNTAX/AHA). Tampilan anterior sederhana:
+        // sistem kanan di kiri gambar, sistem kiri di kanan gambar.
+        const SYNTAX_TREE = {
+            '1':   { d: 'M140 34 Q95 40 70 75',   lx: 95,  ly: 46 },
+            '2':   { d: 'M70 75 Q45 115 48 155',  lx: 46,  ly: 110 },
+            '3':   { d: 'M48 155 Q55 200 95 222', lx: 54,  ly: 202 },
+            '4':   { d: 'M95 222 Q120 245 138 262', lx: 108, ly: 252 },
+            '16':  { d: 'M95 222 L120 210',       lx: 104, ly: 206 },
+            '16a': { d: 'M120 210 L140 190',      lx: 124, ly: 190 },
+            '16b': { d: 'M120 210 L150 207',      lx: 154, ly: 207 },
+            '16c': { d: 'M120 210 L146 228',      lx: 150, ly: 233 },
+            '5':   { d: 'M172 34 L198 55',        lx: 190, ly: 38 },
+            '6':   { d: 'M198 55 L238 92',        lx: 224, ly: 66 },
+            '7':   { d: 'M238 92 L262 158',       lx: 241, ly: 130 },
+            '8':   { d: 'M262 158 Q268 205 252 252', lx: 270, ly: 222 },
+            '9':   { d: 'M238 92 L288 112',       lx: 272, ly: 118 },
+            '9a':  { d: 'M262 102 L292 86',       lx: 292, ly: 80 },
+            '10':  { d: 'M262 158 L298 172',      lx: 288, ly: 181 },
+            '10a': { d: 'M280 165 L304 148',      lx: 300, ly: 142 },
+            '11':  { d: 'M198 55 L172 102',       lx: 172, ly: 76 },
+            '12':  { d: 'M198 55 L218 118',       lx: 218, ly: 126 },
+            '12a': { d: 'M172 102 L202 136',      lx: 210, ly: 136 },
+            '13':  { d: 'M172 102 L163 160',      lx: 156, ly: 128 },
+            '12b': { d: 'M168 131 L202 160',      lx: 210, ly: 160 },
+            '14':  { d: 'M163 160 L182 196',      lx: 168, ly: 192 },
+            '14a': { d: 'M172 178 L200 188',      lx: 208, ly: 192 },
+            '14b': { d: 'M182 196 L202 216',      lx: 206, ly: 222 },
+            '15':  { d: 'M163 160 Q152 215 168 252', lx: 148, ly: 232 }
+        };
+
+        function syntaxTreeSvg(i, l, dom) {
+            const paths = SYNTAX_SEGMENTS.filter(s => s[dom] !== null).map(s => {
+                const t = SYNTAX_TREE[s.id];
+                const sel = l.segmen.includes(s.id);
+                const color = sel ? '#c62828' : (s[dom] === 0 ? '#cfd8dc' : '#90a4ae');
+                return `<g data-seg="${s.id}" data-lesion="${i}"><title>${s.id} ${s.nama} (×${s[dom]})</title>
+                    <path d="${t.d}" stroke="transparent" stroke-width="14" fill="none"/>
+                    <path class="seg-line" d="${t.d}" stroke="${color}" stroke-width="${sel ? 6 : 4}" fill="none" stroke-linecap="round"/>
+                    <text x="${t.lx}" y="${t.ly}" font-size="9" font-weight="bold" text-anchor="middle" dominant-baseline="middle"
+                        fill="${sel ? '#b71c1c' : '#37474f'}" stroke="#fafafa" stroke-width="3" paint-order="stroke">${s.id}</text></g>`;
+            }).join('');
+            return `<svg class="syntax-tree" viewBox="0 0 320 270" role="img" aria-label="Diagram segmen koroner">
+                <rect x="136" y="4" width="40" height="32" rx="14" fill="#eceff1" stroke="#b0bec5"/>
+                <text x="156" y="21" font-size="9" text-anchor="middle" dominant-baseline="middle" fill="#607d8b">Ao</text>
+                <text x="8" y="14" font-size="9" fill="#607d8b">Kanan (RCA)</text>
+                <text x="312" y="14" font-size="9" fill="#607d8b" text-anchor="end">Kiri (LM)</text>
+                ${paths}
+                <text x="8" y="264" font-size="8" fill="#90a4ae">Klik segmen untuk memilih</text>
+            </svg>`;
+        }
+
+        // Ikon skematis karakteristik lesi (60×36). Pembuluh = garis tebal, stenosis = penyempitan.
+        const V = (x1, x2, w = 10, c = '#e57373') => `<line x1="${x1}" y1="18" x2="${x2}" y2="18" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+        const PINCH = (cx, cy = 18) => `<ellipse cx="${cx}" cy="${cy - 5.5}" rx="6" ry="3.5" fill="#fafafa"/><ellipse cx="${cx}" cy="${cy + 5.5}" rx="6" ry="3.5" fill="#fafafa"/>`;
+        const OKL = `${V(5, 26)}<line x1="34" y1="18" x2="55" y2="18" stroke="#e57373" stroke-width="10" stroke-dasharray="2 4" opacity="0.35"/>`;
+        const SYNTAX_ICONS = {
+            oklusi: OKL + `<line x1="30" y1="8" x2="30" y2="28" stroke="#37474f" stroke-width="1.5"/>`,
+            trifurkasi: `<g stroke="#e57373" stroke-width="7" stroke-linecap="round" fill="none"><path d="M5 18 L26 18"/><path d="M26 18 L55 5"/><path d="M26 18 L55 18"/><path d="M26 18 L55 31"/></g>${PINCH(16)}`,
+            angulasi: `<g stroke="#e57373" stroke-width="7" stroke-linecap="round" fill="none"><path d="M5 24 L26 24 L55 24"/><path d="M26 24 L52 8"/></g><path d="M40 24 A14 14 0 0 0 38 16" stroke="#37474f" fill="none"/><text x="44" y="34" font-size="7" fill="#37474f">&lt;70°</text>`,
+            aortoOstial: `<rect x="0" y="0" width="12" height="36" fill="#eceff1" stroke="#b0bec5"/>${V(12, 55)}${PINCH(17)}`,
+            tortuositas: `<path d="M5 18 C12 2, 20 34, 28 18 S44 2, 55 18" stroke="#e57373" stroke-width="7" fill="none" stroke-linecap="round"/>`,
+            panjang: `${V(5, 14)}${V(14, 46, 4)}${V(46, 55)}<path d="M14 32 L46 32 M14 29 L14 35 M46 29 L46 35" stroke="#37474f"/><text x="30" y="30" font-size="6.5" text-anchor="middle" fill="#37474f">&gt;20 mm</text>`,
+            kalsifikasi: `${V(5, 55)}${PINCH(30)}<g stroke="#455a64" stroke-width="2.5" stroke-dasharray="3 2"><line x1="18" y1="11" x2="42" y2="11"/><line x1="18" y1="25" x2="42" y2="25"/></g>`,
+            trombus: `${V(5, 55)}<path d="M24 15 q4 -4 8 -1 q5 -1 6 3 q-2 4 -7 3 q-5 2 -7 -2 z" fill="#fafafa" stroke="#795548" stroke-width="1"/>`,
+            okUmur: OKL + `<circle cx="44" cy="12" r="8" fill="#fff" stroke="#37474f"/><path d="M44 7 L44 12 L48 14" stroke="#37474f" fill="none"/>`,
+            okStump: `<line x1="5" y1="18" x2="30" y2="18" stroke="#e57373" stroke-width="10"/><line x1="30" y1="12" x2="30" y2="24" stroke="#37474f" stroke-width="1.5"/><text x="42" y="21" font-size="7" fill="#37474f" text-anchor="middle">tumpul</text>`,
+            okBridging: OKL + `<path d="M22 12 C27 2, 33 2, 38 12 M22 24 C27 34, 33 34, 38 24" stroke="#ef5350" stroke-width="1.2" fill="none"/>`,
+            okSideBranch: OKL + `<path d="M26 18 L44 4" stroke="#e57373" stroke-width="5" stroke-linecap="round"/>`,
+            okNonVisual: `${V(5, 22)}<line x1="22" y1="12" x2="22" y2="24" stroke="#37474f" stroke-width="1.5"/><line x1="28" y1="18" x2="55" y2="18" stroke="#90a4ae" stroke-width="8" stroke-dasharray="3 3"/><text x="41" y="10" font-size="9" text-anchor="middle" fill="#37474f">?</text>`
+        };
+
+        // Medina: digit 1 = proksimal pembuluh utama, 2 = distal pembuluh utama, 3 = cabang samping
+        function medinaIcon(code) {
+            const [a, b, c] = (code || '000').split('');
+            return `<g stroke="#e57373" stroke-linecap="round" fill="none"><path d="M5 24 L55 24" stroke-width="8"/><path d="M30 24 L52 6" stroke-width="6"/></g>
+                ${a === '1' ? PINCH(16, 24) : ''}${b === '1' ? PINCH(44, 24) : ''}
+                ${c === '1' ? '<ellipse cx="41" cy="15" rx="5" ry="2.5" fill="#fafafa" transform="rotate(-40 41 15)"/>' : ''}
+                <text x="16" y="35" font-size="6" text-anchor="middle" fill="#37474f">prok</text><text x="44" y="35" font-size="6" text-anchor="middle" fill="#37474f">dist</text><text x="55" y="9" font-size="6" text-anchor="end" fill="#37474f">SB</text>`;
+        }
+
+        const syntaxIcon = (body, title) => `<svg class="syntax-icon" viewBox="0 0 60 36" aria-hidden="true"><title>${title || ''}</title>${body}</svg>`;
+
         function renderSyntaxLesions() {
             const list = document.getElementById('syntax-lesion-list');
             if (!list) return;
             const dom = syntaxDominansi();
             const segs = SYNTAX_SEGMENTS.filter(s => s[dom] !== null);
             const cb = (i, field, label, checked) =>
-                `<label><input type="checkbox" data-lesion="${i}" data-field="${field}" ${checked ? 'checked' : ''}> ${label}</label>`;
+                `<label class="syntax-opt">${SYNTAX_ICONS[field] ? syntaxIcon(SYNTAX_ICONS[field]) : ''}<span><input type="checkbox" data-lesion="${i}" data-field="${field}" ${checked ? 'checked' : ''}> ${label}</span></label>`;
 
             list.innerHTML = syntaxLesions.map((l, i) => `
                 <div class="syntax-lesion">
@@ -1682,23 +1772,26 @@
                         <button type="button" class="btn-syntax btn-syntax-del" onclick="removeSyntaxLesion(${i})">Hapus</button>
                     </div>
                     <div class="syntax-sub">Segmen yang terlibat (bobot sesuai dominansi):</div>
-                    <div class="syntax-seg-grid">
-                        ${segs.map(s => `<label><input type="checkbox" data-lesion="${i}" data-field="segmen" value="${s.id}" ${l.segmen.includes(s.id) ? 'checked' : ''}> <strong>${s.id}</strong> ${s.nama} (&times;${s[dom]})</label>`).join('')}
+                    <div class="syntax-seg-wrap">
+                        ${syntaxTreeSvg(i, l, dom)}
+                        <div class="syntax-seg-grid">
+                            ${segs.map(s => `<label><input type="checkbox" data-lesion="${i}" data-field="segmen" value="${s.id}" ${l.segmen.includes(s.id) ? 'checked' : ''}> <strong>${s.id}</strong> ${s.nama} (&times;${s[dom]})</label>`).join('')}
+                        </div>
                     </div>
                     <div class="syntax-sub">Karakteristik lesi:</div>
                     <div class="syntax-opt-grid">
                         ${cb(i, 'oklusi', 'Oklusi total (&times;5, bukan &times;2)', l.oklusi)}
-                        <label>Trifurkasi:
+                        <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.trifurkasi)}<span>Trifurkasi:<br>
                             <select data-lesion="${i}" data-field="trifurkasi">
                                 ${[['0', 'Tidak ada'], ['1', '1 segmen sakit (+3)'], ['2', '2 segmen sakit (+4)'], ['3', '3 segmen sakit (+5)'], ['4', '4 segmen sakit (+6)']]
                                     .map(([v, t]) => `<option value="${v}" ${l.trifurkasi === v ? 'selected' : ''}>${t}</option>`).join('')}
-                            </select>
+                            </select></span>
                         </label>
-                        <label>Bifurkasi (Medina):
+                        <label class="syntax-opt">${syntaxIcon(medinaIcon(l.bifurkasi))}<span>Bifurkasi (Medina):<br>
                             <select data-lesion="${i}" data-field="bifurkasi">
                                 <option value="">Tidak ada</option>
                                 ${Object.keys(SYNTAX_MEDINA).map(k => `<option value="${k}" ${l.bifurkasi === k ? 'selected' : ''}>${k.split('').join(',')} (+${SYNTAX_MEDINA[k]})</option>`).join('')}
-                            </select>
+                            </select></span>
                         </label>
                         ${l.bifurkasi ? cb(i, 'angulasi', 'Angulasi bifurkasi &lt;70&deg; (+1)', l.angulasi) : ''}
                         ${cb(i, 'aortoOstial', 'Stenosis aorto-ostial (+1)', l.aortoOstial)}
@@ -1715,13 +1808,25 @@
                             ${cb(i, 'okStump', '<em>Blunt stump</em> (+1)', l.okStump)}
                             ${cb(i, 'okBridging', 'Kolateral <em>bridging</em> (+1)', l.okBridging)}
                             ${cb(i, 'okSideBranch', 'Melibatkan cabang samping (+1)', l.okSideBranch)}
-                            <label>Segmen distal tak tervisualisasi (+1/segmen):
-                                <input type="number" min="0" step="1" style="width:60px;" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual || 0}">
+                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>Segmen distal tak tervisualisasi (+1/segmen):
+                                <input type="number" min="0" step="1" style="width:60px;" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual || 0}"></span>
                             </label>
                         </div>
                     </div>` : ''}
                 </div>`).join('') || '<div style="font-size:12px; color:#888;">Belum ada lesi. Klik &ldquo;+ Tambah Lesi&rdquo;.</div>';
             updateStats();
+        }
+
+        // Klik segmen pada diagram = centang/hapus centang segmen tersebut
+        function onSyntaxTreeClick(e) {
+            const g = e.target.closest('[data-seg]');
+            if (!g) return;
+            const l = syntaxLesions[parseInt(g.dataset.lesion)];
+            if (!l) return;
+            const id = g.dataset.seg;
+            l.segmen = l.segmen.includes(id) ? l.segmen.filter(s => s !== id) : [...l.segmen, id];
+            renderSyntaxLesions();
+            saveCalcState();
         }
 
         function onSyntaxLesionInput(e) {
@@ -1742,7 +1847,7 @@
             } else {
                 l[field] = el.value;
             }
-            if (field === 'oklusi' || field === 'bifurkasi') renderSyntaxLesions();
+            if (field === 'oklusi' || field === 'bifurkasi' || field === 'segmen') renderSyntaxLesions();
             else updateStats();
             saveCalcState();
         }
