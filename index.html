@@ -289,8 +289,8 @@
             <div id="syntax-output-box" class="output-box" style="background:#ffebee; border-color:#c62828;">
                 <div class="output-title" style="color:#c62828;">SYNTAX Score</div>
                 <div class="output-value" id="displaySyntaxScore">0</div>
-                <div class="output-label">Tertil: <span id="displaySyntaxTertil">-</span></div>
-                <div class="output-label" style="font-size:11px;"><span id="displaySyntaxLesi">0</span> lesi</div>
+                <div class="output-label">Tertile: <span id="displaySyntaxTertil">-</span></div>
+                <div class="output-label" style="font-size:11px;"><span id="displaySyntaxLesi">0</span> lesion</div>
             </div>
         </div>
 
@@ -475,22 +475,22 @@
 
             <!-- SYNTAX SCORE INPUT GROUP -->
             <div id="input-syntax-group" style="display:none;">
-                <div class="form-section-title">SYNTAX Score I &ndash; Penilaian Angiografi Koroner</div>
-                <div class="form-group"><label>Dominansi Koroner:</label>
+                <div class="form-section-title">SYNTAX Score I &ndash; Coronary Angiography Assessment</div>
+                <div class="form-group"><label>Coronary Dominance:</label>
                     <select id="syntaxDominansi">
-                        <option value="kanan">Dominan kanan</option>
-                        <option value="kiri">Dominan kiri</option>
+                        <option value="kanan">Right dominance</option>
+                        <option value="kiri">Left dominance</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Penyakit difus / pembuluh kecil (jumlah segmen):</label>
+                <div class="form-group"><label>Diffuse disease / small vessels (jumlah segment):</label>
                     <input type="number" id="syntaxDifus" min="0" step="1" placeholder="0">
                 </div>
                 <div class="form-group" style="grid-column: span 2; font-size:11px; color:#666; justify-content:center;">
-                    Nilai setiap lesi dengan stenosis &ge;50% pada pembuluh berdiameter &ge;1,5 mm. Segmen berurutan dengan stenosis yang berjarak &lt;3 diameter pembuluh dihitung sebagai satu lesi.
+                    Nilai setiap <em>lesion</em> dengan <em>diameter stenosis</em> &ge;50% pada <em>vessel</em> &ge;1,5 mm. <em>Serial stenoses</em> yang berjarak &lt;3 <em>reference vessel diameters</em> dihitung sebagai satu <em>lesion</em>.
                 </div>
                 <div class="syntax-lesions">
                     <div id="syntax-lesion-list" class="syntax-lesions"></div>
-                    <button type="button" class="btn-syntax btn-syntax-add" onclick="addSyntaxLesion()">+ Tambah Lesi</button>
+                    <button type="button" class="btn-syntax btn-syntax-add" onclick="addSyntaxLesion()">+ Tambah Lesion</button>
                 </div>
             </div>
         </div>
@@ -1620,31 +1620,31 @@
         // --- SYNTAX SCORE I (Sianos dkk., EuroIntervention 2005; algoritma syntaxscore.org) ---
         // Bobot segmen: R = dominan kanan, L = dominan kiri, null = segmen tidak ada
         const SYNTAX_SEGMENTS = [
-            { id: '1',   nama: 'RCA proksimal',           R: 1,    L: 0 },
-            { id: '2',   nama: 'RCA mid',                 R: 1,    L: 0 },
-            { id: '3',   nama: 'RCA distal',              R: 1,    L: 0 },
-            { id: '4',   nama: 'PDA (dari RCA)',          R: 1,    L: null },
-            { id: '16',  nama: 'Posterolateral (RCA)',    R: 0.5,  L: null },
-            { id: '16a', nama: 'Posterolateral 1 (RCA)',  R: 0.5,  L: null },
-            { id: '16b', nama: 'Posterolateral 2 (RCA)',  R: 0.5,  L: null },
-            { id: '16c', nama: 'Posterolateral 3 (RCA)',  R: 0.5,  L: null },
+            { id: '1',   nama: 'Proximal RCA',            R: 1,    L: 0 },
+            { id: '2',   nama: 'Mid RCA',                 R: 1,    L: 0 },
+            { id: '3',   nama: 'Distal RCA',              R: 1,    L: 0 },
+            { id: '4',   nama: 'PDA (from RCA)',          R: 1,    L: null },
+            { id: '16',  nama: 'Posterolateral branch (RCA)',  R: 0.5,  L: null },
+            { id: '16a', nama: 'First posterolateral (RCA)',  R: 0.5,  L: null },
+            { id: '16b', nama: 'Second posterolateral (RCA)',  R: 0.5,  L: null },
+            { id: '16c', nama: 'Third posterolateral (RCA)',  R: 0.5,  L: null },
             { id: '5',   nama: 'Left main',               R: 5,    L: 6 },
-            { id: '6',   nama: 'LAD proksimal',           R: 3.5,  L: 3.5 },
-            { id: '7',   nama: 'LAD mid',                 R: 2.5,  L: 2.5 },
-            { id: '8',   nama: 'LAD apikal',              R: 1,    L: 1 },
-            { id: '9',   nama: 'Diagonal 1',              R: 1,    L: 1 },
-            { id: '9a',  nama: 'Diagonal 1a',             R: 1,    L: 1 },
-            { id: '10',  nama: 'Diagonal 2',              R: 0.5,  L: 0.5 },
-            { id: '10a', nama: 'Diagonal 2a',             R: 0.5,  L: 0.5 },
-            { id: '11',  nama: 'LCx proksimal',           R: 1.5,  L: 2.5 },
+            { id: '6',   nama: 'Proximal LAD',            R: 3.5,  L: 3.5 },
+            { id: '7',   nama: 'Mid LAD',                 R: 2.5,  L: 2.5 },
+            { id: '8',   nama: 'Apical LAD',              R: 1,    L: 1 },
+            { id: '9',   nama: 'First diagonal',          R: 1,    L: 1 },
+            { id: '9a',  nama: 'Additional first diagonal',  R: 1,    L: 1 },
+            { id: '10',  nama: 'Second diagonal',         R: 0.5,  L: 0.5 },
+            { id: '10a', nama: 'Additional second diagonal',  R: 0.5,  L: 0.5 },
+            { id: '11',  nama: 'Proximal LCx',            R: 1.5,  L: 2.5 },
             { id: '12',  nama: 'Intermediate/anterolateral', R: 1, L: 1 },
             { id: '12a', nama: 'Obtuse marginal a',       R: 1,    L: 1 },
             { id: '12b', nama: 'Obtuse marginal b',       R: 1,    L: 1 },
-            { id: '13',  nama: 'LCx distal',              R: 0.5,  L: 1.5 },
-            { id: '14',  nama: 'Posterolateral kiri',     R: 0.5,  L: 1 },
-            { id: '14a', nama: 'Posterolateral kiri a',   R: 0.5,  L: 1 },
-            { id: '14b', nama: 'Posterolateral kiri b',   R: 0.5,  L: 1 },
-            { id: '15',  nama: 'PDA (dari LCx)',          R: null, L: 1 }
+            { id: '13',  nama: 'Distal LCx',              R: 0.5,  L: 1.5 },
+            { id: '14',  nama: 'Left posterolateral',     R: 0.5,  L: 1 },
+            { id: '14a', nama: 'Left posterolateral a',   R: 0.5,  L: 1 },
+            { id: '14b', nama: 'Left posterolateral b',   R: 0.5,  L: 1 },
+            { id: '15',  nama: 'PDA (from LCx)',          R: null, L: 1 }
         ];
 
         // Medina: 1,0,0 / 0,1,0 / 1,1,0 → +1; 1,1,1 / 0,0,1 / 1,0,1 / 0,1,1 → +2
@@ -1659,7 +1659,7 @@
         }
 
         function addSyntaxLesion() {
-            if (syntaxLesions.length >= 12) { alert('Maksimal 12 lesi.'); return; }
+            if (syntaxLesions.length >= 12) { alert('Maksimal 12 lesion.'); return; }
             syntaxLesions.push(newSyntaxLesion());
             renderSyntaxLesions();
             saveCalcState();
@@ -1716,13 +1716,13 @@
                     <text x="${t.lx}" y="${t.ly}" font-size="9" font-weight="bold" text-anchor="middle" dominant-baseline="middle"
                         fill="${sel ? '#b71c1c' : '#37474f'}" stroke="#fafafa" stroke-width="3" paint-order="stroke">${s.id}</text></g>`;
             }).join('');
-            return `<svg class="syntax-tree" viewBox="0 0 320 270" role="img" aria-label="Diagram segmen koroner">
+            return `<svg class="syntax-tree" viewBox="0 0 320 270" role="img" aria-label="Coronary segment diagram">
                 <rect x="136" y="4" width="40" height="32" rx="14" fill="#eceff1" stroke="#b0bec5"/>
                 <text x="156" y="21" font-size="9" text-anchor="middle" dominant-baseline="middle" fill="#607d8b">Ao</text>
-                <text x="8" y="14" font-size="9" fill="#607d8b">Kanan (RCA)</text>
-                <text x="312" y="14" font-size="9" fill="#607d8b" text-anchor="end">Kiri (LM)</text>
+                <text x="8" y="14" font-size="9" fill="#607d8b">Right (RCA)</text>
+                <text x="312" y="14" font-size="9" fill="#607d8b" text-anchor="end">Left (LM)</text>
                 ${paths}
-                <text x="8" y="264" font-size="8" fill="#90a4ae">Klik segmen untuk memilih</text>
+                <text x="8" y="264" font-size="8" fill="#90a4ae">Klik <tspan font-style="italic">segment</tspan> untuk memilih</text>
             </svg>`;
         }
 
@@ -1740,7 +1740,7 @@
             kalsifikasi: `${V(5, 55)}${PINCH(30)}<g stroke="#455a64" stroke-width="2.5" stroke-dasharray="3 2"><line x1="18" y1="11" x2="42" y2="11"/><line x1="18" y1="25" x2="42" y2="25"/></g>`,
             trombus: `${V(5, 55)}<path d="M24 15 q4 -4 8 -1 q5 -1 6 3 q-2 4 -7 3 q-5 2 -7 -2 z" fill="#fafafa" stroke="#795548" stroke-width="1"/>`,
             okUmur: OKL + `<circle cx="44" cy="12" r="8" fill="#fff" stroke="#37474f"/><path d="M44 7 L44 12 L48 14" stroke="#37474f" fill="none"/>`,
-            okStump: `<line x1="5" y1="18" x2="30" y2="18" stroke="#e57373" stroke-width="10"/><line x1="30" y1="12" x2="30" y2="24" stroke="#37474f" stroke-width="1.5"/><text x="42" y="21" font-size="7" fill="#37474f" text-anchor="middle">tumpul</text>`,
+            okStump: `<line x1="5" y1="18" x2="30" y2="18" stroke="#e57373" stroke-width="10"/><line x1="30" y1="12" x2="30" y2="24" stroke="#37474f" stroke-width="1.5"/><text x="42" y="21" font-size="7" fill="#37474f" text-anchor="middle">blunt</text>`,
             okBridging: OKL + `<path d="M22 12 C27 2, 33 2, 38 12 M22 24 C27 34, 33 34, 38 24" stroke="#ef5350" stroke-width="1.2" fill="none"/>`,
             okSideBranch: OKL + `<path d="M26 18 L44 4" stroke="#e57373" stroke-width="5" stroke-linecap="round"/>`,
             okNonVisual: `${V(5, 22)}<line x1="22" y1="12" x2="22" y2="24" stroke="#37474f" stroke-width="1.5"/><line x1="28" y1="18" x2="55" y2="18" stroke="#90a4ae" stroke-width="8" stroke-dasharray="3 3"/><text x="41" y="10" font-size="9" text-anchor="middle" fill="#37474f">?</text>`
@@ -1752,7 +1752,7 @@
             return `<g stroke="#e57373" stroke-linecap="round" fill="none"><path d="M5 24 L55 24" stroke-width="8"/><path d="M30 24 L52 6" stroke-width="6"/></g>
                 ${a === '1' ? PINCH(16, 24) : ''}${b === '1' ? PINCH(44, 24) : ''}
                 ${c === '1' ? '<ellipse cx="41" cy="15" rx="5" ry="2.5" fill="#fafafa" transform="rotate(-40 41 15)"/>' : ''}
-                <text x="16" y="35" font-size="6" text-anchor="middle" fill="#37474f">prok</text><text x="44" y="35" font-size="6" text-anchor="middle" fill="#37474f">dist</text><text x="55" y="9" font-size="6" text-anchor="end" fill="#37474f">SB</text>`;
+                <text x="16" y="35" font-size="6" text-anchor="middle" fill="#37474f">prox</text><text x="44" y="35" font-size="6" text-anchor="middle" fill="#37474f">dist</text><text x="55" y="9" font-size="6" text-anchor="end" fill="#37474f">SB</text>`;
         }
 
         const syntaxIcon = (body, title) => `<svg class="syntax-icon" viewBox="0 0 60 36" aria-hidden="true"><title>${title || ''}</title>${body}</svg>`;
@@ -1768,52 +1768,52 @@
             list.innerHTML = syntaxLesions.map((l, i) => `
                 <div class="syntax-lesion">
                     <div class="syntax-lesion-head">
-                        <span>Lesi ${i + 1} &mdash; skor <span class="syntax-lesion-score" id="syntaxLesiSkor${i}">0</span></span>
+                        <span>Lesion ${i + 1} &mdash; skor <span class="syntax-lesion-score" id="syntaxLesiSkor${i}">0</span></span>
                         <button type="button" class="btn-syntax btn-syntax-del" onclick="removeSyntaxLesion(${i})">Hapus</button>
                     </div>
-                    <div class="syntax-sub">Segmen yang terlibat (bobot sesuai dominansi):</div>
+                    <div class="syntax-sub">Segments involved (weight by dominance):</div>
                     <div class="syntax-seg-wrap">
                         ${syntaxTreeSvg(i, l, dom)}
                         <div class="syntax-seg-grid">
                             ${segs.map(s => `<label><input type="checkbox" data-lesion="${i}" data-field="segmen" value="${s.id}" ${l.segmen.includes(s.id) ? 'checked' : ''}> <strong>${s.id}</strong> ${s.nama} (&times;${s[dom]})</label>`).join('')}
                         </div>
                     </div>
-                    <div class="syntax-sub">Karakteristik lesi:</div>
+                    <div class="syntax-sub">Lesion characteristics:</div>
                     <div class="syntax-opt-grid">
-                        ${cb(i, 'oklusi', 'Oklusi total (&times;5, bukan &times;2)', l.oklusi)}
-                        <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.trifurkasi)}<span>Trifurkasi:<br>
+                        ${cb(i, 'oklusi', 'Total occlusion (&times;5 instead of &times;2)', l.oklusi)}
+                        <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.trifurkasi)}<span>Trifurcation:<br>
                             <select data-lesion="${i}" data-field="trifurkasi">
-                                ${[['0', 'Tidak ada'], ['1', '1 segmen sakit (+3)'], ['2', '2 segmen sakit (+4)'], ['3', '3 segmen sakit (+5)'], ['4', '4 segmen sakit (+6)']]
+                                ${[['0', 'None'], ['1', '1 diseased segment (+3)'], ['2', '2 diseased segments (+4)'], ['3', '3 diseased segments (+5)'], ['4', '4 diseased segments (+6)']]
                                     .map(([v, t]) => `<option value="${v}" ${l.trifurkasi === v ? 'selected' : ''}>${t}</option>`).join('')}
                             </select></span>
                         </label>
-                        <label class="syntax-opt">${syntaxIcon(medinaIcon(l.bifurkasi))}<span>Bifurkasi (Medina):<br>
+                        <label class="syntax-opt">${syntaxIcon(medinaIcon(l.bifurkasi))}<span>Bifurcation (Medina):<br>
                             <select data-lesion="${i}" data-field="bifurkasi">
-                                <option value="">Tidak ada</option>
+                                <option value="">None</option>
                                 ${Object.keys(SYNTAX_MEDINA).map(k => `<option value="${k}" ${l.bifurkasi === k ? 'selected' : ''}>${k.split('').join(',')} (+${SYNTAX_MEDINA[k]})</option>`).join('')}
                             </select></span>
                         </label>
-                        ${l.bifurkasi ? cb(i, 'angulasi', 'Angulasi bifurkasi &lt;70&deg; (+1)', l.angulasi) : ''}
-                        ${cb(i, 'aortoOstial', 'Stenosis aorto-ostial (+1)', l.aortoOstial)}
-                        ${cb(i, 'tortuositas', 'Tortuositas berat (+2)', l.tortuositas)}
-                        ${cb(i, 'panjang', 'Panjang lesi &gt;20 mm (+1)', l.panjang)}
-                        ${cb(i, 'kalsifikasi', 'Kalsifikasi berat (+2)', l.kalsifikasi)}
-                        ${cb(i, 'trombus', 'Trombus (+1)', l.trombus)}
+                        ${l.bifurkasi ? cb(i, 'angulasi', 'Bifurcation angulation &lt;70&deg; (+1)', l.angulasi) : ''}
+                        ${cb(i, 'aortoOstial', 'Aorto-ostial stenosis (+1)', l.aortoOstial)}
+                        ${cb(i, 'tortuositas', 'Severe tortuosity (+2)', l.tortuositas)}
+                        ${cb(i, 'panjang', 'Length &gt;20 mm (+1)', l.panjang)}
+                        ${cb(i, 'kalsifikasi', 'Heavy calcification (+2)', l.kalsifikasi)}
+                        ${cb(i, 'trombus', 'Thrombus (+1)', l.trombus)}
                     </div>
                     ${l.oklusi ? `
                     <div class="syntax-co-box">
-                        <div class="syntax-sub" style="margin-top:0;">Detail oklusi total:</div>
+                        <div class="syntax-sub" style="margin-top:0;">Total occlusion details:</div>
                         <div class="syntax-opt-grid">
-                            ${cb(i, 'okUmur', 'Usia oklusi &gt;3 bulan / tidak diketahui (+1)', l.okUmur)}
-                            ${cb(i, 'okStump', '<em>Blunt stump</em> (+1)', l.okStump)}
-                            ${cb(i, 'okBridging', 'Kolateral <em>bridging</em> (+1)', l.okBridging)}
-                            ${cb(i, 'okSideBranch', 'Melibatkan cabang samping (+1)', l.okSideBranch)}
-                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>Segmen distal tak tervisualisasi (+1/segmen):
+                            ${cb(i, 'okUmur', 'Age &gt;3 months / unknown (+1)', l.okUmur)}
+                            ${cb(i, 'okStump', 'Blunt stump (+1)', l.okStump)}
+                            ${cb(i, 'okBridging', 'Bridging collaterals (+1)', l.okBridging)}
+                            ${cb(i, 'okSideBranch', 'Side branch involvement (+1)', l.okSideBranch)}
+                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>Non-visualised distal segments (+1/segment):
                                 <input type="number" min="0" step="1" style="width:60px;" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual || 0}"></span>
                             </label>
                         </div>
                     </div>` : ''}
-                </div>`).join('') || '<div style="font-size:12px; color:#888;">Belum ada lesi. Klik &ldquo;+ Tambah Lesi&rdquo;.</div>';
+                </div>`).join('') || '<div style="font-size:12px; color:#888;">Belum ada <em>lesion</em>. Klik &ldquo;+ Tambah Lesion&rdquo;.</div>';
             updateStats();
         }
 
@@ -1858,27 +1858,27 @@
             const bobot = segs.reduce((a, s) => a + s[dom], 0);
             const faktor = l.oklusi ? 5 : 2;
             let skor = bobot * faktor;
-            rincian.push(`${l.oklusi ? 'Oklusi total' : 'Stenosis 50–99%'}: ${fmtSyntax(bobot)} &times; ${faktor} = ${fmtSyntax(skor)}`);
+            rincian.push(`${l.oklusi ? 'Total occlusion' : 'Stenosis 50–99%'}: ${fmtSyntax(bobot)} &times; ${faktor} = ${fmtSyntax(skor)}`);
 
             const add = (cond, poin, teks) => { if (cond) { skor += poin; rincian.push(`${teks} +${poin}`); } };
             if (l.oklusi) {
-                add(l.okUmur, 1, 'Usia oklusi &gt;3 bulan/tidak diketahui');
-                add(l.okStump, 1, '<em>Blunt stump</em>');
-                add(l.okBridging, 1, 'Kolateral <em>bridging</em>');
-                add(l.okNonVisual > 0, l.okNonVisual, `${l.okNonVisual} segmen tak tervisualisasi`);
-                add(l.okSideBranch, 1, 'Cabang samping terlibat');
+                add(l.okUmur, 1, 'Age &gt;3 months/unknown');
+                add(l.okStump, 1, 'Blunt stump');
+                add(l.okBridging, 1, 'Bridging collaterals');
+                add(l.okNonVisual > 0, l.okNonVisual, `${l.okNonVisual} non-visualised segment(s)`);
+                add(l.okSideBranch, 1, 'Side branch involvement');
             }
             const tri = parseInt(l.trifurkasi) || 0;
-            add(tri > 0, tri + 2, `Trifurkasi, ${tri} segmen sakit`);
+            add(tri > 0, tri + 2, `Trifurcation, ${tri} diseased segment(s)`);
             if (l.bifurkasi && SYNTAX_MEDINA[l.bifurkasi]) {
-                add(true, SYNTAX_MEDINA[l.bifurkasi], `Bifurkasi Medina ${l.bifurkasi.split('').join(',')}`);
-                add(l.angulasi, 1, 'Angulasi &lt;70&deg;');
+                add(true, SYNTAX_MEDINA[l.bifurkasi], `Bifurcation Medina ${l.bifurkasi.split('').join(',')}`);
+                add(l.angulasi, 1, 'Angulation &lt;70&deg;');
             }
             add(l.aortoOstial, 1, 'Aorto-ostial');
-            add(l.tortuositas, 2, 'Tortuositas berat');
-            add(l.panjang, 1, 'Panjang &gt;20 mm');
-            add(l.kalsifikasi, 2, 'Kalsifikasi berat');
-            add(l.trombus, 1, 'Trombus');
+            add(l.tortuositas, 2, 'Severe tortuosity');
+            add(l.panjang, 1, 'Length &gt;20 mm');
+            add(l.kalsifikasi, 2, 'Heavy calcification');
+            add(l.trombus, 1, 'Thrombus');
 
             const segLabel = segs.map(s => `${s.id} (${s.nama})`).join(', ') || '<em>belum dipilih</em>';
             return { skor, rincian, segLabel };
@@ -1887,8 +1887,8 @@
         function calculateSYNTAX() {
             const dom = syntaxDominansi();
             let total = 0;
-            let detailsTable = `<table class="scoring-table"><thead><tr><th style="width:40px">Lesi</th><th>Segmen</th><th>Rincian</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
-            detailsTable += `<tr><td colspan="4">Dominansi: <strong>${dom === 'L' ? 'kiri' : 'kanan'}</strong></td></tr>`;
+            let detailsTable = `<table class="scoring-table"><thead><tr><th style="width:50px">Lesion</th><th>Segment</th><th>Rincian</th><th style="width:50px">Skor</th></tr></thead><tbody>`;
+            detailsTable += `<tr><td colspan="4">Dominance: <strong>${dom === 'L' ? 'left' : 'right'}</strong></td></tr>`;
 
             syntaxLesions.forEach((l, i) => {
                 const r = scoreSyntaxLesion(l, dom);
@@ -1900,16 +1900,16 @@
             const difus = Math.max(0, parseInt(getValue('syntaxDifus')) || 0);
             if (difus > 0) {
                 total += difus;
-                detailsTable += `<tr><td colspan="3">Penyakit difus / pembuluh kecil (${difus} segmen &times; 1)</td><td>${difus}</td></tr>`;
+                detailsTable += `<tr><td colspan="3">Diffuse disease / small vessels (${difus} segment &times; 1)</td><td>${difus}</td></tr>`;
             }
             detailsTable += `<tr><td colspan="3"><strong>TOTAL SYNTAX SCORE</strong></td><td><strong>${fmtSyntax(total)}</strong></td></tr></tbody></table>`;
 
-            // Tertil SYNTAX: ≤22 rendah, 23–32 menengah, ≥33 tinggi
+            // Tertile SYNTAX: ≤22 low, 23–32 intermediate, ≥33 high
             let tertil = '-';
             if (syntaxLesions.length) {
-                if (total <= 22) tertil = 'Rendah (0–22)';
-                else if (total <= 32) tertil = 'Menengah (23–32)';
-                else tertil = 'Tinggi (≥33)';
+                if (total <= 22) tertil = 'Low (0–22)';
+                else if (total <= 32) tertil = 'Intermediate (23–32)';
+                else tertil = 'High (≥33)';
             }
 
             setText('displaySyntaxScore', fmtSyntax(total));
@@ -1917,9 +1917,9 @@
             setText('displaySyntaxLesi', syntaxLesions.length);
 
             const summary = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
-                <strong>Tertil SYNTAX Score: ${tertil}</strong><br>
-                Ini adalah SYNTAX Score I (anatomis); variabel klinis SYNTAX Score II tidak dihitung.
-                Skor ini menggambarkan kompleksitas anatomi koroner sebagai bahan pertimbangan <em>Heart Team</em>.</div>`;
+                <strong>SYNTAX Score tertile: ${tertil}</strong><br>
+                Ini adalah SYNTAX Score I (<em>anatomical</em>); variabel klinis SYNTAX Score II tidak dihitung.
+                Skor ini menggambarkan <em>coronary anatomical complexity</em> sebagai bahan pertimbangan <em>Heart Team</em>.</div>`;
 
             // PERKI, Pedoman Tata Laksana SKA Edisi ke-5 (2024). Pedoman ini tidak memuat rekomendasi
             // berdasarkan tertil SYNTAX; yang dicantumkan Tabel Rekomendasi 17 (lesi multivesel) dan prinsip pemilihan revaskularisasi.
