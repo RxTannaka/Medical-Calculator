@@ -1701,14 +1701,38 @@
         function syntaxMigrasi(l) {
             if (l.okSideBranch === true) l.okSideBranch = 'both';
             if (l.okSideBranch === false) l.okSideBranch = '';
+            delete l.okNonVisual; // isian jumlah lama diganti pilihan segment
             return l;
+        }
+
+        // Lanjutan pembuluh utama ke distal (untuk "first segment beyond the T.O. visualised").
+        // Opsi = 'none' + segment lesion + segment distal; tiap segment distal sebelum yang pertama terlihat = +1.
+        function syntaxLanjutan(id, dom) {
+            const next = { '1': '2', '2': '3', '3': dom === 'R' ? '4' : null, '5': '6', '6': '7', '7': '8', '11': '13', '13': '14' };
+            const rantai = [];
+            for (let n = next[id]; n; n = next[n]) rantai.push(n);
+            return rantai;
+        }
+
+        // Segment lesion yang paling distal (rantai lanjutannya tidak berisi segment lesion lain)
+        function syntaxRantaiDistal(l, dom) {
+            const segs = syntaxSegValid(l, dom);
+            const ujung = segs.find(id => !syntaxLanjutan(id, dom).some(n => segs.includes(n)));
+            return ujung ? syntaxLanjutan(ujung, dom).filter(n => SYNTAX_SEGMENTS.find(s => s.id === n)[dom] !== null) : [];
+        }
+
+        function syntaxNonVisual(l, dom) {
+            const rantai = syntaxRantaiDistal(l, dom);
+            if (l.okFirstVisible === 'none') return rantai.length;
+            const k = rantai.indexOf(l.okFirstVisible);
+            return k > 0 ? k : 0;
         }
 
         // Side branch pada lokasi T.O. (pilihan sama dengan kalkulator syntaxscore.org); semua "Yes" = +1
         const SYNTAX_SIDE_BRANCH = [['no', 'No'], ['lt', 'Yes, all side branches &lt;1.5 mm'], ['ge', 'Yes, all side branches &ge;1.5 mm'], ['both', 'Yes, both &lt;1.5 mm and &ge;1.5 mm']];
 
         function newSyntaxLesion() {
-            return { segmen: [], oklusi: false, okUmur: false, okStump: false, okBridging: false, okNonVisual: '', okSideBranch: '',
+            return { segmen: [], oklusi: false, okUmur: false, okStump: false, okBridging: false, okFirstVisible: '', okSideBranch: '',
                      trifurkasi: '0', bifurkasi: '', angulasi: false,
                      aortoOstial: false, tortuositas: false, panjang: false, kalsifikasi: false, trombus: false };
         }
@@ -1791,7 +1815,10 @@
             });
             const ingat = [];
             if (l.oklusi && l.okSideBranch === '') ingat.push('<em>Side branch</em> pada <em>total occlusion</em> belum dijawab.');
-            if (l.oklusi && l.okNonVisual === '') ingat.push('<em>First segment beyond the T.O. visualised by contrast</em> belum dijawab (isi 0 bila segmen distal langsung terlihat).');
+            if (l.oklusi && l.okFirstVisible === '') ingat.push('<em>First segment beyond the T.O. visualised by contrast</em> belum dijawab.');
+            if (l.oklusi && l.okFirstVisible && l.okFirstVisible !== 'none' && !syntaxSegValid(l, dom).concat(syntaxRantaiDistal(l, dom)).includes(l.okFirstVisible)) {
+                ingat.push(`Pilihan <em>first segment visualised</em> (${l.okFirstVisible}) tidak lagi sesuai dengan <em>segment</em> lesion; pilih ulang.`);
+            }
             return (warn.length ? `<div class="syntax-warn">&#9888; ${warn.join('<br>&#9888; ')}</div>` : '')
                 + (ingat.length ? `<div class="syntax-ingat">&#9998; ${ingat.join('<br>&#9998; ')}</div>` : '');
         }
@@ -1910,8 +1937,12 @@
                                     ${SYNTAX_SIDE_BRANCH.map(([v, t]) => `<option value="${v}" ${l.okSideBranch === v ? 'selected' : ''}>${t}</option>`).join('')}
                                 </select></span>
                             </label>
-                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>First segment beyond the T.O. visualised by contrast &ndash; jumlah <em>segment</em> tak tervisualisasi (+1/<em>segment</em>):
-                                <input type="number" min="0" step="1" style="width:60px;" placeholder="?" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual}"></span>
+                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>First segment beyond the T.O. visualised by antegrade or retrograde contrast:<br>
+                                <select data-lesion="${i}" data-field="okFirstVisible">
+                                    <option value="" ${l.okFirstVisible === '' ? 'selected' : ''}>&mdash; pilih &mdash;</option>
+                                    <option value="none" ${l.okFirstVisible === 'none' ? 'selected' : ''}>none</option>
+                                    ${[...syntaxSegValid(l, dom), ...syntaxRantaiDistal(l, dom)].map(id => `<option value="${id}" ${l.okFirstVisible === id ? 'selected' : ''}>Segment ${id}</option>`).join('')}
+                                </select></span>
                             </label>
                         </div>
                     </div>` : ''}
@@ -1950,7 +1981,7 @@
             } else {
                 l[field] = el.value;
             }
-            if (['oklusi', 'bifurkasi', 'trifurkasi', 'segmen', 'okSideBranch'].includes(field)) renderSyntaxLesions();
+            if (['oklusi', 'bifurkasi', 'trifurkasi', 'segmen', 'okSideBranch', 'okFirstVisible'].includes(field)) renderSyntaxLesions();
             else updateStats();
             saveCalcState();
         }
@@ -1971,8 +2002,8 @@
                 add(l.okUmur, 1, 'Age &gt;3 months/unknown', SYNTAX_ICONS.okUmur);
                 add(l.okStump, 1, 'Blunt stump', SYNTAX_ICONS.okStump);
                 add(l.okBridging, 1, 'Bridging collaterals', SYNTAX_ICONS.okBridging);
-                const nonVis = parseInt(l.okNonVisual) || 0;
-                add(nonVis > 0, nonVis, `First segment beyond T.O. not visualised: ${nonVis} segment(s)`, SYNTAX_ICONS.okNonVisual);
+                const nonVis = syntaxNonVisual(l, dom);
+                add(nonVis > 0, nonVis, `First segment beyond the T.O. visualised: ${l.okFirstVisible === 'none' ? 'none' : 'segment ' + l.okFirstVisible}`, SYNTAX_ICONS.okNonVisual);
                 const sb = SYNTAX_SIDE_BRANCH.find(([v]) => v === l.okSideBranch && v !== 'no');
                 add(!!sb, 1, sb ? `Side branch: ${sb[1]}` : '', SYNTAX_ICONS.okSideBranch);
             }
