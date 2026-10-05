@@ -187,6 +187,7 @@
         .syntax-seg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px 8px; font-size: 11px; }
         .syntax-opt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 10px; font-size: 12px; }
         .syntax-opt-grid select, .syntax-opt-grid input[type="number"] { padding: 4px; border: 1px solid #ccc; border-radius: 4px; }
+        .syntax-ingat { background: #fff8e1; border-left: 3px solid #f9a825; color: #6d4c00; padding: 6px 8px; margin-top: 6px; font-size: 12px; line-height: 1.4; }
         .syntax-warn { background: #ffebee; border-left: 3px solid #c62828; color: #b71c1c; padding: 6px 8px; margin-top: 6px; font-size: 12px; line-height: 1.4; }
         .syntax-lock-note { font-size: 11px; color: #607d8b; margin: -2px 0 4px; }
         .syntax-seg-grid label.locked { opacity: 0.4; cursor: not-allowed; }
@@ -854,7 +855,7 @@
                 if (state._monev) { const boxes = document.querySelectorAll('.monev-check'); state._monev.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 if (state._t7checks) { const boxes = document.querySelectorAll('.t7-check'); state._t7checks.forEach((v, i) => { if (boxes[i]) boxes[i].checked = v; }); }
                 document.querySelectorAll('.malnutrisi-textarea').forEach(ta => { if (ta.value) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; } });
-                if (Array.isArray(state._syntaxLesions)) { syntaxLesions = state._syntaxLesions.map(l => Object.assign(newSyntaxLesion(), l)); }
+                if (Array.isArray(state._syntaxLesions)) { syntaxLesions = state._syntaxLesions.map(l => syntaxMigrasi(Object.assign(newSyntaxLesion(), l))); }
                 renderSyntaxLesions();
                 updateStats();
             } catch(e) {}
@@ -1696,8 +1697,18 @@
 
         let syntaxLesions = [];
 
+        // Data lama: okSideBranch boolean → pilihan
+        function syntaxMigrasi(l) {
+            if (l.okSideBranch === true) l.okSideBranch = 'both';
+            if (l.okSideBranch === false) l.okSideBranch = '';
+            return l;
+        }
+
+        // Side branch pada lokasi T.O. (pilihan sama dengan kalkulator syntaxscore.org); semua "Yes" = +1
+        const SYNTAX_SIDE_BRANCH = [['no', 'No'], ['lt', 'Yes, all side branches &lt;1.5 mm'], ['ge', 'Yes, all side branches &ge;1.5 mm'], ['both', 'Yes, both &lt;1.5 mm and &ge;1.5 mm']];
+
         function newSyntaxLesion() {
-            return { segmen: [], oklusi: false, okUmur: false, okStump: false, okBridging: false, okNonVisual: 0, okSideBranch: false,
+            return { segmen: [], oklusi: false, okUmur: false, okStump: false, okBridging: false, okNonVisual: '', okSideBranch: '',
                      trifurkasi: '0', bifurkasi: '', angulasi: false,
                      aortoOstial: false, tortuositas: false, panjang: false, kalsifikasi: false, trombus: false };
         }
@@ -1778,7 +1789,11 @@
                 const lain = syntaxLesions.map((x, j) => (j !== i && syntaxSegValid(x, dom).includes(id)) ? j + 1 : null).filter(Boolean);
                 if (lain.length) warn.push(`<em>Segment</em> ${id} juga dipakai di <em>Lesion</em> ${lain.join(', ')}; bobotnya terhitung lebih dari sekali.`);
             });
-            return warn.length ? `<div class="syntax-warn">&#9888; ${warn.join('<br>&#9888; ')}</div>` : '';
+            const ingat = [];
+            if (l.oklusi && l.okSideBranch === '') ingat.push('<em>Side branch</em> pada <em>total occlusion</em> belum dijawab.');
+            if (l.oklusi && l.okNonVisual === '') ingat.push('<em>First segment beyond the T.O. visualised by contrast</em> belum dijawab (isi 0 bila segmen distal langsung terlihat).');
+            return (warn.length ? `<div class="syntax-warn">&#9888; ${warn.join('<br>&#9888; ')}</div>` : '')
+                + (ingat.length ? `<div class="syntax-ingat">&#9998; ${ingat.join('<br>&#9998; ')}</div>` : '');
         }
 
         function syntaxTreeSvg(i, l, dom, cetak = false) {
@@ -1889,9 +1904,14 @@
                             ${cb(i, 'okUmur', 'Age &gt;3 months / unknown (+1)', l.okUmur)}
                             ${cb(i, 'okStump', 'Blunt stump (+1)', l.okStump)}
                             ${cb(i, 'okBridging', 'Bridging collaterals (+1)', l.okBridging)}
-                            ${cb(i, 'okSideBranch', 'Side branch involvement (+1)', l.okSideBranch)}
-                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>Non-visualised distal segments (+1/segment):
-                                <input type="number" min="0" step="1" style="width:60px;" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual || 0}"></span>
+                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okSideBranch)}<span>Side branch at the T.O. (+1 bila <em>yes</em>):<br>
+                                <select data-lesion="${i}" data-field="okSideBranch">
+                                    <option value="" ${l.okSideBranch === '' ? 'selected' : ''}>&mdash; pilih &mdash;</option>
+                                    ${SYNTAX_SIDE_BRANCH.map(([v, t]) => `<option value="${v}" ${l.okSideBranch === v ? 'selected' : ''}>${t}</option>`).join('')}
+                                </select></span>
+                            </label>
+                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>First segment beyond the T.O. visualised by contrast &ndash; jumlah <em>segment</em> tak tervisualisasi (+1/<em>segment</em>):
+                                <input type="number" min="0" step="1" style="width:60px;" placeholder="?" data-lesion="${i}" data-field="okNonVisual" value="${l.okNonVisual}"></span>
                             </label>
                         </div>
                     </div>` : ''}
@@ -1917,6 +1937,7 @@
             const field = el.dataset.field;
             if (isNaN(i) || !field || !syntaxLesions[i]) return;
             // Angka diproses saat 'input', checkbox/select saat 'change' (hindari proses ganda)
+            if (el.type === 'number' && e.type === 'change') { renderSyntaxLesions(); return; }
             if (el.type === 'number' ? e.type !== 'input' : e.type !== 'change') return;
             const l = syntaxLesions[i];
             if (field === 'segmen') {
@@ -1925,11 +1946,11 @@
             } else if (el.type === 'checkbox') {
                 l[field] = el.checked;
             } else if (el.type === 'number') {
-                l[field] = Math.max(0, parseInt(el.value) || 0);
+                l[field] = el.value === '' ? '' : Math.max(0, parseInt(el.value) || 0);
             } else {
                 l[field] = el.value;
             }
-            if (['oklusi', 'bifurkasi', 'trifurkasi', 'segmen'].includes(field)) renderSyntaxLesions();
+            if (['oklusi', 'bifurkasi', 'trifurkasi', 'segmen', 'okSideBranch'].includes(field)) renderSyntaxLesions();
             else updateStats();
             saveCalcState();
         }
@@ -1950,8 +1971,10 @@
                 add(l.okUmur, 1, 'Age &gt;3 months/unknown', SYNTAX_ICONS.okUmur);
                 add(l.okStump, 1, 'Blunt stump', SYNTAX_ICONS.okStump);
                 add(l.okBridging, 1, 'Bridging collaterals', SYNTAX_ICONS.okBridging);
-                add(l.okNonVisual > 0, l.okNonVisual, `${l.okNonVisual} non-visualised segment(s)`, SYNTAX_ICONS.okNonVisual);
-                add(l.okSideBranch, 1, 'Side branch involvement', SYNTAX_ICONS.okSideBranch);
+                const nonVis = parseInt(l.okNonVisual) || 0;
+                add(nonVis > 0, nonVis, `First segment beyond T.O. not visualised: ${nonVis} segment(s)`, SYNTAX_ICONS.okNonVisual);
+                const sb = SYNTAX_SIDE_BRANCH.find(([v]) => v === l.okSideBranch && v !== 'no');
+                add(!!sb, 1, sb ? `Side branch: ${sb[1]}` : '', SYNTAX_ICONS.okSideBranch);
             }
             const tri = parseInt(l.trifurkasi) || 0;
             add(tri > 0, tri + 2, `Trifurcation, ${tri} diseased segment(s)`, SYNTAX_ICONS.trifurkasi);
