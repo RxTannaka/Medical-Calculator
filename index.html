@@ -1815,8 +1815,9 @@
             });
             const ingat = [];
             if (l.oklusi && l.okSideBranch === '') ingat.push('<em>Side branch</em> pada <em>total occlusion</em> belum dijawab.');
-            if (l.oklusi && l.okFirstVisible === '') ingat.push('<em>First segment beyond the T.O. visualised by contrast</em> belum dijawab.');
-            if (l.oklusi && l.okFirstVisible && l.okFirstVisible !== 'none' && !syntaxSegValid(l, dom).concat(syntaxRantaiDistal(l, dom)).includes(l.okFirstVisible)) {
+            const adaDistal = syntaxRantaiDistal(l, dom).length > 0; // lesi di cabang: pertanyaan tidak ada (0 poin)
+            if (l.oklusi && adaDistal && l.okFirstVisible === '') ingat.push('<em>First segment beyond the T.O. visualised by contrast</em> belum dijawab.');
+            if (l.oklusi && adaDistal && l.okFirstVisible && l.okFirstVisible !== 'none' && !syntaxSegValid(l, dom).concat(syntaxRantaiDistal(l, dom)).includes(l.okFirstVisible)) {
                 ingat.push(`Pilihan <em>first segment visualised</em> (${l.okFirstVisible}) tidak lagi sesuai dengan <em>segment</em> lesion; pilih ulang.`);
             }
             return (warn.length ? `<div class="syntax-warn">&#9888; ${warn.join('<br>&#9888; ')}</div>` : '')
@@ -1937,13 +1938,12 @@
                                     ${SYNTAX_SIDE_BRANCH.map(([v, t]) => `<option value="${v}" ${l.okSideBranch === v ? 'selected' : ''}>${t}</option>`).join('')}
                                 </select></span>
                             </label>
-                            <label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>First segment beyond the T.O. visualised by antegrade or retrograde contrast:<br>
+                            ${syntaxRantaiDistal(l, dom).length ? `<label class="syntax-opt">${syntaxIcon(SYNTAX_ICONS.okNonVisual)}<span>First segment beyond the T.O. visualised by antegrade or retrograde contrast:<br>
                                 <select data-lesion="${i}" data-field="okFirstVisible">
                                     <option value="" ${l.okFirstVisible === '' ? 'selected' : ''}>&mdash; pilih &mdash;</option>
                                     <option value="none" ${l.okFirstVisible === 'none' ? 'selected' : ''}>none</option>
                                     ${[...syntaxSegValid(l, dom), ...syntaxRantaiDistal(l, dom)].map(id => `<option value="${id}" ${l.okFirstVisible === id ? 'selected' : ''}>Segment ${id}</option>`).join('')}
-                                </select></span>
-                            </label>
+                                </select></span></label>` : ''}
                         </div>
                     </div>` : ''}
                 </div>`).join('') || '<div style="font-size:12px; color:#888;">Belum ada <em>lesion</em>. Klik &ldquo;+ Tambah Lesion&rdquo;.</div>';
