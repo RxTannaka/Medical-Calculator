@@ -116,8 +116,10 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
     .screen-only { display: none !important; }
     .patient-total-wrapper { border: 1px solid #000; }
     /* Hemat ruang agar semua kalkulator muat 1 lembar A4, juga saat peramban menambah header/footer cetak */
-    .header-container { margin-bottom: 2px; }
-    .header-image { max-height: 30mm; width: auto; }
+    /* Kop surat selebar halaman; area putih di atas/bawah gambar (±16% tinggi) dipotong.
+       Margin % dihitung dari lebar: 103/2482 ≈ 4,1% (atas), 101/2482 ≈ 4,0% (bawah) */
+    .header-container { margin-bottom: 4px; overflow: hidden; }
+    .header-image { width: 100%; max-width: 100%; height: auto; margin: -3.8% 0 -3.7%; }
     .patient-total-wrapper { padding: 6px 12px; margin-bottom: 8px; gap: 12px; }
     .info-line { margin-bottom: 1px; padding-bottom: 1px; font-size: 12px; }
     .output-box { padding: 6px 10px; }
