@@ -110,11 +110,20 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 
 /* PRINT RULES */
 @media print {
-    @page { size: A4; margin: 10mm; }
+    @page { size: A4; margin: 8mm 10mm; }
     body { background: white; padding: 0; }
     .container { width: 100%; max-width: 100%; box-shadow: none; border: none; padding: 0; margin: 0; }
     .screen-only { display: none !important; }
     .patient-total-wrapper { border: 1px solid #000; }
+    /* Hemat ruang agar semua kalkulator muat 1 lembar A4, juga saat peramban menambah header/footer cetak */
+    .header-container { margin-bottom: 2px; }
+    .header-image { max-height: 30mm; width: auto; }
+    .patient-total-wrapper { padding: 6px 12px; margin-bottom: 8px; gap: 12px; }
+    .info-line { margin-bottom: 1px; padding-bottom: 1px; font-size: 12px; }
+    .output-box { padding: 6px 10px; }
+    .footer-section { margin-top: 8px; }
+    .dpjp-section p { margin: 2px 0; }
+    .dpjp-name { margin-top: 42px; }
     .footer-section { justify-content: flex-end; }
     .dpjp-section { margin-left: auto !important; }
 
@@ -205,10 +214,10 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 .syntax-print-card { border: 1px solid #000; border-radius: 4px; padding: 6px; page-break-inside: avoid; break-inside: avoid; }
 .syntax-print-head { display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin-bottom: 4px; }
 .syntax-print-body { display: flex; gap: 6px; align-items: flex-start; }
-.syntax-print-body .syntax-tree { width: 185px; flex-shrink: 0; background: #fff; border: 1px solid #ccc; }
+.syntax-print-body .syntax-tree { width: 150px; flex-shrink: 0; background: #fff; border: 1px solid #ccc; }
 .syntax-print-items { flex: 1; font-size: 10px; line-height: 1.25; }
 .syntax-print-item { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
-.syntax-print-item .syntax-icon { width: 44px; height: 26px; background: #fff; }
+.syntax-print-item .syntax-icon { width: 38px; height: 23px; background: #fff; }
 .syntax-print-item .pt { margin-left: auto; font-weight: bold; white-space: nowrap; }
 .syntax-print-segs { font-size: 9px; margin-bottom: 4px; }
 .syntax-print-grid.padat { grid-template-columns: repeat(3, 1fr); }
