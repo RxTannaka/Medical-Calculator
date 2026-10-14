@@ -14,7 +14,7 @@ Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasi
 | **TIMI STEMI** | Skor TIMI dan mortalitas 30 hari |
 | **GRACE Score** | Stratifikasi risiko kematian di rumah sakit dan 6 bulan menurut PERKI |
 | **SYNTAX Score** | SYNTAX Score I (anatomis), dinilai per lesi |
-| **NIHSS** | *NIH Stroke Scale*: 15 item, total 0–42, dengan kategori keparahan stroke |
+| **NIHSS** | *National Institutes of Health Stroke Scale* sesuai PNPK Tata Laksana Stroke 2026: 15 item, total 0–42, kategori defisit neurologis, penilaian saat masuk dan keluar RS beserta perubahan skornya |
 
 ### Catatan SYNTAX Score
 - Segmen dipilih dengan mengklik diagram koroner atau mencentang daftar. Bobot segmen mengikuti dominansi kanan atau kiri.
@@ -60,6 +60,7 @@ js/nihss.js         NIHSS
 - Morrow DA, dkk. *TIMI risk score for ST-elevation myocardial infarction.* Circulation. 2000;102:2031–7.
 - Brott T, dkk. *Measurements of acute cerebral infarction: a clinical examination scale.* Stroke. 1989;20:864–70.
 - Sianos G, dkk. *The SYNTAX Score: an angiographic tool grading the complexity of coronary artery disease.* EuroIntervention. 2005;1:219–27.
+- Kementerian Kesehatan RI. *Pedoman Nasional Pelayanan Klinis Tata Laksana Stroke.* KMK No. HK.01.07/MENKES/304/2026. Jakarta: Kemenkes RI; 2026.
 - Perhimpunan Dokter Spesialis Kardiovaskular Indonesia (PERKI). *Pedoman Tata Laksana Sindrom Koroner Akut.* Edisi ke-5. Jakarta: PERKI; 2024.
 
 ## Penafian
