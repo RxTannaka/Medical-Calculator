@@ -48,32 +48,41 @@ const NIHSS_MOTOR = {
 
 const nihssOpsi = item => typeof item.opsi === 'string' ? NIHSS_MOTOR[item.opsi] : item.opsi;
 
-// Dua penilaian: saat masuk dan saat keluar RS. ID item = prefix + nomor item
-// (masuk memakai ID lama 'nihss1a' dst. agar data tersimpan tetap terbaca).
-const NIHSS_PENILAIAN = [
-    { key: 'masuk', label: 'Masuk RS', pref: 'nihss', tgl: 'nihssTglMasuk' },
-    { key: 'keluar', label: 'Keluar RS', pref: 'nihssK', tgl: 'nihssTglKeluar' }
-];
+// Dua jenis assessment, satu lembar per assessment (tidak dibandingkan).
+// Data keduanya tetap disimpan terpisah; dropdown nihssJenis menentukan yang tampil, dihitung, dan dicetak.
+// Assessment awal memakai ID lama 'nihss1a' dst. agar data tersimpan tetap terbaca.
+const NIHSS_PENILAIAN = {
+    awal:  { judul: 'Assessment Awal', pref: 'nihss',  tgl: 'nihssTglMasuk',  tglLabel: 'Tanggal Assessment Awal' },
+    akhir: { judul: 'Assessment Akhir (Discharge)', pref: 'nihssK', tgl: 'nihssTglKeluar', tglLabel: 'Tanggal Discharge' }
+};
+
+const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
 
 // Isian dibuat di sini (berkas dimuat di akhir <body>, sebelum DOMContentLoaded),
 // sehingga common.js bisa memasang listener dan memulihkan nilai seperti isian lain.
 (function renderNIHSSInputs() {
     const box = document.getElementById('nihss-items');
     if (!box) return;
-    const sel = (id, item) => `<select id="${id}">
+    const sel = (id, item, jenis) => `<select id="${id}" class="nihss-${jenis}">
                 <option value="">&mdash; pilih &mdash;</option>
                 ${nihssOpsi(item).map(([v, t]) => `<option value="${v}">${v === 'UN' ? '' : v + ' = '}${t.replace(/<[^>]+>/g, '')}</option>`).join('')}
             </select>`;
     box.innerHTML = `
-        <div class="nihss-row nihss-head"><span>Parameter yang dinilai</span>
-            ${NIHSS_PENILAIAN.map(p => `<span>${p.label}<br><input type="date" id="${p.tgl}" title="Tanggal penilaian ${p.label}"></span>`).join('')}
+        <div class="nihss-row nihss-head">
+            <label>Jenis Assessment:
+                <select id="nihssJenis">
+                    <option value="awal">Assessment Awal</option>
+                    <option value="akhir">Assessment Akhir (Discharge)</option>
+                </select>
+            </label>
+            ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => `<label class="nihss-${k}">${p.tglLabel}:<input type="date" id="${p.tgl}"></label>`).join('')}
         </div>` + NIHSS_ITEMS.map(item => `
         <div class="nihss-row"><label>${item.no}. ${item.nama}</label>
-            ${NIHSS_PENILAIAN.map(p => sel(p.pref + item.no, item)).join('')}
+            ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
         </div>`).join('');
 })();
 
-// Hitung satu penilaian
+// Hitung satu assessment
 function nihssHitung(pref) {
     let total = 0, terisi = 0;
     const baris = NIHSS_ITEMS.map(item => {
@@ -98,36 +107,33 @@ function nihssKategori(h) {
 
 function calculateNIHSS() {
     const n = NIHSS_ITEMS.length;
-    const hasil = NIHSS_PENILAIAN.map(p => Object.assign({ p, tgl: formatDateIndo(getValue(p.tgl)) }, nihssHitung(p.pref)));
-    const [masuk, keluar] = hasil;
-    const tampil = hasil.filter(h => h.terisi > 0);
-    const kolom = tampil.length ? tampil : [masuk];
+    const jenis = nihssJenis();
+    const p = NIHSS_PENILAIAN[jenis];
+    const box = document.getElementById('nihss-items');
+    if (box) box.dataset.jenis = jenis; // CSS menyembunyikan isian assessment yang tidak aktif
 
-    // Kotak hasil
-    hasil.forEach(h => {
-        setText(`displayNihss${h.p.key === 'masuk' ? 'Masuk' : 'Keluar'}`, h.terisi ? `${h.total} — ${nihssKategori(h)}` : '-');
-    });
-    const beda = (masuk.terisi && keluar.terisi) ? keluar.total - masuk.total : null;
-    setText('displayNihssPerubahan', beda === null ? '-' : (beda > 0 ? '+' : beda < 0 ? '−' : '') + Math.abs(beda));
+    const h = nihssHitung(p.pref);
+    const tgl = formatDateIndo(getValue(p.tgl));
+    const kategori = nihssKategori(h);
 
-    // Tabel rincian (kolom keluar hanya bila sudah diisi)
-    let tabel = `<table class="scoring-table"><thead><tr><th style="width:28px" rowspan="2">No</th><th rowspan="2">Parameter yang dinilai</th>
-        ${kolom.map(h => `<th colspan="2">${h.p.label}${h.tgl !== '-' ? ` (${h.tgl})` : ''}</th>`).join('')}</tr>
-        <tr>${kolom.map(() => `<th>Skala</th><th style="width:40px">Skor</th>`).join('')}</tr></thead><tbody>`;
+    setText('displayNihssJudul', p.judul);
+    setText('displayNihssScore', h.total);
+    setText('displayNihssKategori', kategori);
+    setText('displayNihssTgl', `${p.tglLabel}: ${tgl}`);
+
+    let tabel = `<div class="nihss-judul">NIHSS &ndash; ${p.judul} &nbsp;|&nbsp; ${p.tglLabel}: ${tgl}</div>
+        <table class="scoring-table"><thead><tr><th style="width:28px">No</th><th>Parameter yang dinilai</th><th>Skala</th><th style="width:40px">Skor</th></tr></thead><tbody>`;
     NIHSS_ITEMS.forEach((item, k) => {
-        tabel += `<tr><td>${item.no}</td><td>${item.nama}</td>${kolom.map(h => `<td>${h.baris[k].temuan}</td><td>${h.baris[k].skor}</td>`).join('')}</tr>`;
+        tabel += `<tr><td>${item.no}</td><td>${item.nama}</td><td>${h.baris[k].temuan}</td><td>${h.baris[k].skor}</td></tr>`;
     });
-    tabel += `<tr><td colspan="2"><strong>TOTAL NIHSS</strong></td>${kolom.map(h => `<td>${nihssKategori(h)}</td><td><strong>${h.total}</strong></td>`).join('')}</tr></tbody></table>`;
+    tabel += `<tr><td colspan="3"><strong>TOTAL NIHSS</strong></td><td><strong>${h.total}</strong></td></tr></tbody></table>`;
 
-    const ingat = hasil.filter(h => h.terisi > 0 && h.terisi < n)
-        .map(h => `${h.p.label}: ${n - h.terisi} item belum dinilai; total belum final.`);
-    const peringatan = ingat.length
-        ? `<div class="screen-only" style="margin-top:8px; padding:8px; background:#fff8e1; border-left:3px solid #f9a825; font-size:12px;">&#9998; ${ingat.join('<br>&#9998; ')}</div>`
+    const peringatan = (h.terisi > 0 && h.terisi < n)
+        ? `<div class="screen-only" style="margin-top:8px; padding:8px; background:#fff8e1; border-left:3px solid #f9a825; font-size:12px;">&#9998; ${n - h.terisi} item belum dinilai; total belum final.</div>`
         : '';
 
     const ringkas = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
-        ${hasil.map(h => `<strong>${h.p.label}:</strong> ${h.terisi ? `NIHSS ${h.total} &mdash; ${nihssKategori(h)}` : 'belum dinilai'}`).join(' &nbsp;|&nbsp; ')}
-        ${beda !== null ? `<br><strong>Perubahan (keluar &minus; masuk): ${beda > 0 ? '+' : beda < 0 ? '&minus;' : ''}${Math.abs(beda)}</strong>` : ''}
+        <strong>NIHSS ${p.judul}: ${h.total} &mdash; ${kategori}</strong>
         <br><span style="font-size:11px; color:#555;">Keterangan: skor &lt;5 defisit neurologis ringan; 5–14 sedang; 15–24 berat; 25–42 sangat berat. UN (tidak dapat dinilai) tidak menambah skor. Sumber: PNPK Tata Laksana Stroke, KMK HK.01.07/MENKES/304/2026.</span></div>`;
 
     document.getElementById('calc-nihss-content').innerHTML = tabel + peringatan + ringkas;

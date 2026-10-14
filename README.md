@@ -14,7 +14,7 @@ Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasi
 | **TIMI STEMI** | Skor TIMI dan mortalitas 30 hari |
 | **GRACE Score** | Stratifikasi risiko kematian di rumah sakit dan 6 bulan menurut PERKI |
 | **SYNTAX Score** | SYNTAX Score I (anatomis), dinilai per lesi |
-| **NIHSS** | *National Institutes of Health Stroke Scale* sesuai PNPK Tata Laksana Stroke 2026: 15 item, total 0–42, kategori defisit neurologis, penilaian saat masuk dan keluar RS beserta perubahan skornya |
+| **NIHSS** | *National Institutes of Health Stroke Scale* sesuai PNPK Tata Laksana Stroke 2026: 15 item, total 0–42, kategori defisit neurologis. Pilih *Assessment Awal* atau *Assessment Akhir (Discharge)*; masing-masing punya tanggal sendiri dan dicetak satu lembar per assessment |
 
 ### Catatan SYNTAX Score
 - Segmen dipilih dengan mengklik diagram koroner atau mencentang daftar. Bobot segmen mengikuti dominansi kanan atau kiri.
