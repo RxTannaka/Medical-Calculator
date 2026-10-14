@@ -3,31 +3,34 @@
 // value 'UN' = untestable (amputasi/fusi sendi, intubasi): tidak menambah skor
 // Teks item dan skala mengikuti Tabel 3 PNPK Tata Laksana Stroke (KMK HK.01.07/MENKES/304/2026).
 // Item 6: penomoran skala di tabel PNPK bergeser satu baris; dipakai urutan baku NIHSS (sama dengan item 5).
+const PETUNJUK_LENGAN = 'Angkat lengan 45° bila berbaring atau 90° bila duduk. Bila afasia, beri perintah dengan pantomim atau peragaan.';
+const PETUNJUK_TUNGKAI = 'Pasien berbaring terlentang, angkat tungkai 30°.';
+
 const NIHSS_ITEMS = [
     { id: 'nihss1a', no: '1a', nama: 'Tingkat kesadaran', opsi: [
         [0, 'Sadar penuh'], [1, 'Somnolen'], [2, 'Stupor'], [3, 'Koma']] },
-    { id: 'nihss1b', no: '1b', nama: 'Menjawab pertanyaan (bulan dan usia pasien)', opsi: [
+    { id: 'nihss1b', no: '1b', nama: 'Menjawab pertanyaan', petunjuk: 'Tanyakan bulan dan usia pasien. Yang dinilai jawaban pertama; pemeriksa tidak boleh membantu secara verbal maupun nonverbal.', opsi: [
         [0, 'Benar semua (2 pertanyaan)'], [1, '1 benar / ETT / disartria'], [2, 'Salah semua / afasia / stupor / koma']] },
-    { id: 'nihss1c', no: '1c', nama: 'Mengikuti perintah (membuka-menutup mata, menggenggam-melepas tangan)', opsi: [
+    { id: 'nihss1c', no: '1c', nama: 'Mengikuti perintah', petunjuk: 'Berikan 2 perintah sederhana: membuka dan menutup mata, menggenggam tangan dan melepaskannya (atau 2 perintah lain).', opsi: [
         [0, 'Mampu melakukan 2 perintah'], [1, 'Mampu melakukan 1 perintah'], [2, 'Tidak mampu melakukan perintah']] },
-    { id: 'nihss2', no: '2', nama: 'Gaze: gerakan mata konjugat horizontal', opsi: [
+    { id: 'nihss2', no: '2', nama: 'Gaze', petunjuk: 'Gerakan mata konjugat horizontal.', opsi: [
         [0, 'Normal'], [1, 'Abnormal pada 1 mata'], [2, 'Deviasi konjugat kuat atau paresis konjugat pada 2 mata']] },
-    { id: 'nihss3', no: '3', nama: 'Visual: lapang pandang pada tes konfrontasi', opsi: [
+    { id: 'nihss3', no: '3', nama: 'Visual', petunjuk: 'Lapang pandang pada tes konfrontasi.', opsi: [
         [0, 'Tidak ada gangguan'], [1, 'Kuadrianopsia'], [2, 'Hemianopia total'], [3, 'Hemianopia bilateral / buta kortikal']] },
-    { id: 'nihss4', no: '4', nama: 'Paresis wajah', opsi: [
+    { id: 'nihss4', no: '4', nama: 'Paresis wajah', petunjuk: 'Anjurkan pasien menyeringai atau mengangkat alis dan menutup mata.', opsi: [
         [0, 'Normal'], [1, 'Paresis wajah ringan (lipatan nasolabial datar, senyum asimetris)'],
         [2, 'Paresis wajah parsial (paresis wajah bawah total atau hampir total)'], [3, 'Paresis wajah total (sesisi atau 2 sisi)']] },
-    { id: 'nihss5a', no: '5a', nama: 'Motorik lengan kiri', opsi: 'lengan' },
-    { id: 'nihss5b', no: '5b', nama: 'Motorik lengan kanan', opsi: 'lengan' },
-    { id: 'nihss6a', no: '6a', nama: 'Motorik tungkai kiri', opsi: 'tungkai' },
-    { id: 'nihss6b', no: '6b', nama: 'Motorik tungkai kanan', opsi: 'tungkai' },
-    { id: 'nihss7', no: '7', nama: 'Ataksia anggota badan (tes jari-hidung)', opsi: [
+    { id: 'nihss5a', no: '5a', nama: 'Motorik lengan kiri', opsi: 'lengan', petunjuk: PETUNJUK_LENGAN },
+    { id: 'nihss5b', no: '5b', nama: 'Motorik lengan kanan', opsi: 'lengan', petunjuk: PETUNJUK_LENGAN },
+    { id: 'nihss6a', no: '6a', nama: 'Motorik tungkai kiri', opsi: 'tungkai', petunjuk: PETUNJUK_TUNGKAI },
+    { id: 'nihss6b', no: '6b', nama: 'Motorik tungkai kanan', opsi: 'tungkai', petunjuk: PETUNJUK_TUNGKAI },
+    { id: 'nihss7', no: '7', nama: 'Ataksia anggota badan', petunjuk: 'Menggunakan tes jari-hidung.', opsi: [
         [0, 'Tidak ada ataksia'], [1, 'Ataksia pada satu ekstremitas'], [2, 'Ataksia pada dua atau lebih ekstremitas'],
         ['UN', 'UN – tidak dapat dinilai (amputasi/fusi sendi)']] },
-    { id: 'nihss8', no: '8', nama: 'Sensorik', opsi: [
+    { id: 'nihss8', no: '8', nama: 'Sensorik', petunjuk: 'Tes pada tungkai, lengan, badan, dan wajah. Pasien afasia diberi nilai 1; pasien stupor atau koma diberi nilai 2.', opsi: [
         [0, 'Normal'], [1, 'Gangguan sensori ringan hingga sedang (nyeri berkurang, masih merasa bila disentuh)'],
         [2, 'Gangguan sensori berat atau total']] },
-    { id: 'nihss9', no: '9', nama: 'Kemampuan berbahasa', opsi: [
+    { id: 'nihss9', no: '9', nama: 'Kemampuan berbahasa', petunjuk: 'Minta pasien menjelaskan gambar atau membaca tulisan. Bila buta, letakkan benda di tangan pasien dan minta menjelaskannya.', opsi: [
         [0, 'Normal'], [1, 'Afasia ringan hingga sedang'], [2, 'Afasia berat'], [3, '<em>Mute</em>, afasia global, koma']] },
     { id: 'nihss10', no: '10', nama: 'Disartria', opsi: [
         [0, 'Normal'], [1, 'Disartria ringan'], [2, 'Disartria berat'], ['UN', 'UN – tidak dapat dinilai (intubasi/hambatan fisik)']] },
@@ -63,10 +66,16 @@ const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
 (function renderNIHSSInputs() {
     const box = document.getElementById('nihss-items');
     if (!box) return;
-    const sel = (id, item, jenis) => `<select id="${id}" class="nihss-${jenis}">
-                <option value="">&mdash; pilih &mdash;</option>
-                ${nihssOpsi(item).map(([v, t]) => `<option value="${v}">${v === 'UN' ? '' : v + ' = '}${t.replace(/<[^>]+>/g, '')}</option>`).join('')}
-            </select>`;
+    // <select> tersembunyi = sumber nilai (disimpan/dipulihkan common.js); yang tampil daftar pilihan yang bisa diketuk
+    const sel = (id, item, jenis) => `<div class="nihss-${jenis}">
+            <select id="${id}" class="nihss-hidden" tabindex="-1" aria-hidden="true">
+                <option value=""></option>
+                ${nihssOpsi(item).map(([v]) => `<option value="${v}"></option>`).join('')}
+            </select>
+            <div class="nihss-opsi" role="radiogroup">
+                ${nihssOpsi(item).map(([v, t]) => `<button type="button" class="nihss-pil" role="radio" aria-checked="false" data-for="${id}" data-v="${v}">
+                    <span>${t}</span><span class="nihss-poin">${v === 'UN' ? 'UN' : (v === 0 ? '0' : '+' + v)}</span></button>`).join('')}
+            </div></div>`;
     box.innerHTML = `
         <div class="nihss-row nihss-head">
             <label>Jenis Assessment:
@@ -76,11 +85,31 @@ const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
                 </select>
             </label>
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => `<label class="nihss-${k}">${p.tglLabel}:<input type="date" id="${p.tgl}"></label>`).join('')}
-        </div>` + NIHSS_ITEMS.map(item => `
-        <div class="nihss-row"><label>${item.no}. ${item.nama}</label>
+        </div>` + `<div class="nihss-kartu-grid">` + NIHSS_ITEMS.map(item => `
+        <div class="nihss-kartu">
+            <div class="nihss-kartu-judul">${item.no}. ${item.nama}</div>
+            ${item.petunjuk ? `<div class="nihss-petunjuk">${item.petunjuk}</div>` : ''}
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
-        </div>`).join('');
+        </div>`).join('') + `</div>`;
+
+    // Ketuk pilihan = isi <select>; ketuk lagi pilihan yang sama = kosongkan
+    box.addEventListener('click', e => {
+        const btn = e.target.closest('.nihss-pil');
+        if (!btn) return;
+        const s = document.getElementById(btn.dataset.for);
+        s.value = (s.value === btn.dataset.v) ? '' : btn.dataset.v;
+        s.dispatchEvent(new Event('change', { bubbles: true }));
+    });
 })();
+
+// Sorot pilihan sesuai nilai <select> (dipanggil tiap hitung ulang, termasuk setelah pulih/hapus data)
+function nihssSorot() {
+    document.querySelectorAll('#nihss-items .nihss-pil').forEach(btn => {
+        const aktif = getValue(btn.dataset.for) === btn.dataset.v;
+        btn.classList.toggle('aktif', aktif);
+        btn.setAttribute('aria-checked', aktif ? 'true' : 'false');
+    });
+}
 
 // Hitung satu assessment
 function nihssHitung(pref) {
@@ -111,6 +140,7 @@ function calculateNIHSS() {
     const p = NIHSS_PENILAIAN[jenis];
     const box = document.getElementById('nihss-items');
     if (box) box.dataset.jenis = jenis; // CSS menyembunyikan isian assessment yang tidak aktif
+    nihssSorot();
 
     const h = nihssHitung(p.pref);
     const tgl = formatDateIndo(getValue(p.tgl));

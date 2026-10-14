@@ -230,9 +230,22 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 .nihss-head label { display: flex; flex-direction: column; gap: 3px; }
 .nihss-judul { font-weight: bold; font-size: 13px; margin-top: 10px; color: #4527a0; }
 .nihss-row label { font-weight: bold; font-size: 11px; }
+.nihss-hidden { display: none; }
+.nihss-kartu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 6px; }
+.nihss-kartu { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; }
+.nihss-kartu-judul { font-weight: bold; font-size: 13px; color: #263238; }
+.nihss-petunjuk { font-size: 11px; color: #78909c; margin-top: 2px; }
+.nihss-opsi { margin-top: 8px; border: 1px solid #cfd8dc; border-radius: 8px; overflow: hidden; }
+.nihss-pil { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border: none; border-top: 1px solid #e0e0e0;
+             background: #f5f5f5; font: inherit; font-size: 12px; font-weight: bold; color: #37474f; text-align: left; cursor: pointer; }
+.nihss-pil:first-child { border-top: none; }
+.nihss-pil:hover { background: #eceff1; }
+.nihss-pil.aktif { background: #37796a; color: #fff; }
+.nihss-poin { flex-shrink: 0; color: #607d8b; }
+.nihss-pil.aktif .nihss-poin { color: #e0f2f1; }
 .nihss-row select, .nihss-row input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%; min-width: 0; }
 .nihss-head { font-weight: bold; color: #4527a0; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
-@media screen and (max-width: 600px) { #calc-nihss-content .scoring-table { display: block; overflow-x: auto; } .nihss-row { grid-template-columns: 1fr; } }
+@media screen and (max-width: 600px) { #calc-nihss-content .scoring-table { display: block; overflow-x: auto; } .nihss-row, .nihss-kartu-grid { grid-template-columns: 1fr; } }
 
 /* Berat badan hanya untuk kalkulator yang memakainya */
 .bb-group { display: none; }
