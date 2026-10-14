@@ -107,6 +107,9 @@ function nihssWarna(v, maks) {
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
         </div>`).join('') + `</div>`;
 
+    // Tanggal assessment awal bawaan = hari ini (ditimpa data tersimpan bila ada)
+    document.getElementById('nihssTglMasuk').value = new Date().toISOString().split('T')[0];
+
     // Ketuk pilihan = isi <select>; ketuk lagi pilihan yang sama = kosongkan
     box.addEventListener('click', e => {
         const btn = e.target.closest('.nihss-pil');
@@ -173,6 +176,9 @@ function calculateNIHSS() {
     setText('displayNihssScore', h.total);
     setText('displayNihssKategori', kategori);
     setText('displayNihssTgl', `${p.tglLabel}: ${tgl}`);
+    // Baris tanggal di data pasien (tampil hanya di mode NIHSS, lewat CSS)
+    setText('displayNihssTglLabel', jenis === 'akhir' ? 'Tgl Discharge' : 'Tgl Assessment Awal');
+    setText('displayNihssTglHeader', tgl);
 
     let tabel = `<div class="nihss-judul">NIHSS &ndash; ${p.judul} &nbsp;|&nbsp; ${p.tglLabel}: ${tgl}</div>
         <table class="scoring-table"><thead><tr><th style="width:28px">No</th><th>Parameter yang dinilai</th><th>Skala</th><th style="width:40px">Skor</th></tr></thead><tbody>`;
