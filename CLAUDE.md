@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-An Indonesian-language clinical calculator for Murni Teguh Memorial Hospital. It bundles eight bedside calculators in one printable page and is meant to be filled in on screen, then printed to A4 as the patient record.
+An Indonesian-language clinical calculator for Murni Teguh Memorial Hospital. It bundles nine bedside calculators in one printable page and is meant to be filled in on screen, then printed to A4 as the patient record.
 
 ## Running and building
 
@@ -14,15 +14,15 @@ Code is split by calculator; it is still one page and still opens straight from 
 - `index.html` — markup only (tabs, patient form, every mode's input group/output box/content section).
 - `css/style.css` — all styles, including the load-bearing `@media print` block and the phone layout (`@media screen and (max-width: 600px)`).
 - `js/common.js` — loaded **first**: `showCalculator`, `CALC_FIELDS`/save/restore/clear, the `DOMContentLoaded` wiring, `updateStats`, `getValue`/`setText`, `printAndDownload`.
-- `js/psi.js`, `natrium.js`, `kalium.js`, `malnutrisi.js`, `timi.js` (STEMI + UA/NSTEMI), `grace.js`, `syntax.js` — one per calculator, loaded after `common.js`.
+- `js/psi.js`, `natrium.js`, `kalium.js`, `malnutrisi.js`, `timi.js` (STEMI + UA/NSTEMI), `grace.js`, `syntax.js`, `nihss.js` — one per calculator, loaded after `common.js`.
 
 All scripts share the global scope, so top-level `const`/`let` in one file are visible in the others at runtime. Only reference another file's names inside functions (run after load), never at a file's top level.
 
 ## Architecture
 
-The whole app is driven by one piece of global state: `currentMode` and the matching `document.body.className = 'mode-' + mode`. Almost all show/hide behaviour (on screen and in print) is pure CSS keyed off `body.mode-psi | mode-natrium | mode-kalium | mode-malnutrisi | mode-timiua | mode-timistemi | mode-grace | mode-syntax`.
+The whole app is driven by one piece of global state: `currentMode` and the matching `document.body.className = 'mode-' + mode`. Almost all show/hide behaviour (on screen and in print) is pure CSS keyed off `body.mode-psi | mode-natrium | mode-kalium | mode-malnutrisi | mode-timiua | mode-timistemi | mode-grace | mode-syntax | mode-nihss`.
 
-**Eight modes**, switched by the tab buttons via `showCalculator(mode)`:
+**Nine modes**, switched by the tab buttons via `showCalculator(mode)`:
 1. **PSI Score** (Pneumonia Severity Index) — `calculatePSI()`
 2. **Koreksi Natrium** (sodium correction) — `calculateNatrium()`
 3. **Koreksi Kalium** (potassium correction) — `calculateKalium()`
@@ -30,6 +30,7 @@ The whole app is driven by one piece of global state: `currentMode` and the matc
 5. **TIMI UA/NSTEMI** — `calculateTIMIUA()`; 6. **TIMI STEMI** — `calculateTIMISTEMI()`
 7. **GRACE Score** (PERKI bands) — `calculateGRACE()`
 8. **SYNTAX Score I** — `calculateSYNTAX()`
+9. **NIHSS** — `calculateNIHSS()`
 
 **Shared structure.** A single patient-info form (Nama, No. MR, Tgl Lahir, Jenis Kelamin, Tgl Assessment, BB) is shared across all modes. BB (`.bb-group`) is shown only on the tabs that read it — Natrium, Kalium, Malnutrisi, TIMI STEMI — via CSS; extend that selector if another calculator starts using `bb`. Each mode then adds its own input group (`#input-<mode>-group`), toggled with `display: contents | none`. Each mode has an output box (`#<mode>-output-box`) and a content section (`#calc-<mode>-content`).
 
@@ -49,6 +50,8 @@ The whole app is driven by one piece of global state: `currentMode` and the matc
 - **Malnutrisi:** nutritional targets use **Ideal Body Weight** (`calculateIBW` — Hamwi / Devine / Broca) when a formula is selected, otherwise actual BB. The diagnosis (MALNUTRISI SEDANG / BERAT) is derived in `updateChecklistKesimpulan` from the Tabel 7 checklist (`.t7-check`, data sourced from the `TABEL7_DATA` constant in `js/malnutrisi.js`): ≥2 checks → sedang; ≥2 of those being "berat" → berat. The result propagates to the output box, the skrining row, and the kesimpulan.
 
 - **SYNTAX Score I:** lesions are dynamic. They live in the JS array `syntaxLesions` (not in `CALC_FIELDS`), render through `renderSyntaxLesions()`, are edited through event delegation (`onSyntaxLesionInput`), and persist as `state._syntaxLesions`. Segment weights for right/left dominance are in `SYNTAX_SEGMENTS`. Lesion score = sum of segment weights × 2 (or × 5 for a total occlusion) plus adverse characteristics. Tertiles: ≤22 / 23–32 / ≥33. A lesion is confined to one system: once it has an RCA segment (`SYNTAX_RCA`: 1–4, 16–16c) the left-system segments are locked, and vice versa (`syntaxSistemTerkunci`); `syntaxPeringatan` warns on mixed-system lesions (e.g. old saved state) and on a segment used in more than one lesion, and on bifurcation + trifurcation chosen together; a yellow reminder (`.syntax-ingat`) shows while a total occlusion has the side-branch select (`SYNTAX_SIDE_BRANCH`, any "yes" = +1) or the "first segment beyond the T.O. visualised" choice unanswered (`''` = unanswered). That choice (`okFirstVisible`) mirrors the official app: options are `none`, the lesion's own segments, and the downstream main-vessel chain (`syntaxLanjutan`, dominance-aware); +1 per downstream segment before the first visualised one (`syntaxNonVisual`; `none` = whole chain). Lesions with no downstream chain (side branches, segment 8, etc.) do not get the question at all and score 0, as in the official app (confirmed by the user, as was "Segment 8" for a segment-7 T.O. = 0). Verified against syntaxscore.org on a 4-lesion case (total 36.5). Scoring itself is never blocked. Print shows per-lesion cards (`.syntax-print`: non-interactive tree via `syntaxTreeSvg(..., cetak=true)` + characteristic icons from `scoreSyntaxLesion().items`) and the total; the detail table and PERKI recommendations are `.screen-only`. More than 4 lesions switches the cards to a 3-column `.padat` layout to keep one A4 page. Free-text `syntaxNotes` (persisted via CALC_FIELDS) prints, HTML-escaped, in a "Notes" box between the total and the signature, only when filled. The printed recommendation block summarises PERKI Pedoman Tata Laksana SKA Edisi ke-5 (2024), which has no SYNTAX-tertile table: it prints Tabel Rekomendasi 17 (lesi multivesel, with Kelas/Level) verbatim plus revascularisation-choice principles with section numbers.
+
+- **NIHSS:** 15 items (1a–11) defined in `NIHSS_ITEMS` (motor items share `NIHSS_MOTOR`). The selects are generated at the top level of `js/nihss.js` into `#nihss-items` — this works because scripts sit at the end of `<body>` and run before `DOMContentLoaded`, so `common.js` can still attach listeners and restore values; their IDs (`nihss1a` … `nihss11`) are listed in both `CALC_FIELDS` and `inputs`. `''` = not yet assessed (a reminder shows until all 15 are filled); `UN` (untestable) scores 0. Severity: 0 no stroke symptoms, 1–4 minor, 5–15 moderate, 16–20 moderate to severe, 21–42 severe.
 
 ## Conventions
 

@@ -10,7 +10,7 @@ function showCalculator(mode) {
     document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`btn-${mode}`).classList.add('active');
 
-    const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi', 'grace', 'syntax'];
+    const allModes = ['psi', 'natrium', 'kalium', 'malnutrisi', 'timiua', 'timistemi', 'grace', 'syntax', 'nihss'];
     allModes.forEach(m => {
         document.getElementById(`calc-${m}-content`).style.display = 'none';
         document.getElementById(`${m}-output-box`).style.display = 'none';
@@ -26,6 +26,7 @@ function showCalculator(mode) {
     document.getElementById('input-timistemi-group').style.display = (mode === 'timistemi') ? 'contents' : 'none';
     document.getElementById('input-grace-group').style.display = (mode === 'grace') ? 'contents' : 'none';
     document.getElementById('input-syntax-group').style.display = (mode === 'syntax') ? 'contents' : 'none';
+    document.getElementById('input-nihss-group').style.display = (mode === 'nihss') ? 'contents' : 'none';
 
     updateStats();
 }
@@ -49,7 +50,8 @@ const CALC_FIELDS = ['nama', 'noMR', 'inputDPJP', 'tglAsesmen', 'tglLahir', 'jk'
                      'terapiParenteral', 'edukasiGizi', 'monevDetail', 'rujukBalik',
                      'timiTDsistolik', 'timiNadi', 'timiKillip',
                      'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
-                     'syntaxDominansi', 'syntaxDifus', 'syntaxNotes'];
+                     'syntaxDominansi', 'syntaxDifus', 'syntaxNotes',
+                     'nihss1a', 'nihss1b', 'nihss1c', 'nihss2', 'nihss3', 'nihss4', 'nihss5a', 'nihss5b', 'nihss6a', 'nihss6b', 'nihss7', 'nihss8', 'nihss9', 'nihss10', 'nihss11'];
 
 function saveCalcState() {
     const state = {};
@@ -99,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'densitasFormula', 'frekEnteral', 'pctEnteral', 'ibwFormula',
                     'timiTDsistolik', 'timiNadi', 'timiKillip',
                     'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
-                    'syntaxDominansi', 'syntaxDifus', 'syntaxNotes'];
+                    'syntaxDominansi', 'syntaxDifus', 'syntaxNotes',
+                    'nihss1a', 'nihss1b', 'nihss1c', 'nihss2', 'nihss3', 'nihss4', 'nihss5a', 'nihss5b', 'nihss6a', 'nihss6b', 'nihss7', 'nihss8', 'nihss9', 'nihss10', 'nihss11'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -175,6 +178,7 @@ function updateStats() {
     try { calculateTIMISTEMI(); } catch(e) {}
     try { calculateGRACE(); } catch(e) {}
     try { calculateSYNTAX(); } catch(e) {}
+    try { calculateNIHSS(); } catch(e) {}
 }
 
 function getValue(id) { return document.getElementById(id)?.value; }

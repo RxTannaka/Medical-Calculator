@@ -1,6 +1,6 @@
 # Kalkulator Medis – Murni Teguh Memorial Hospital
 
-Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasien. Delapan kalkulator dihimpun dalam satu halaman. Data diisi di layar, lalu hasilnya dicetak ke kertas A4 dengan kop rumah sakit sebagai lampiran rekam medis.
+Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasien. Sembilan kalkulator dihimpun dalam satu halaman. Data diisi di layar, lalu hasilnya dicetak ke kertas A4 dengan kop rumah sakit sebagai lampiran rekam medis.
 
 ## Daftar kalkulator
 
@@ -14,6 +14,7 @@ Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasi
 | **TIMI STEMI** | Skor TIMI dan mortalitas 30 hari |
 | **GRACE Score** | Stratifikasi risiko kematian di rumah sakit dan 6 bulan menurut PERKI |
 | **SYNTAX Score** | SYNTAX Score I (anatomis), dinilai per lesi |
+| **NIHSS** | *NIH Stroke Scale*: 15 item, total 0–42, dengan kategori keparahan stroke |
 
 ### Catatan SYNTAX Score
 - Segmen dipilih dengan mengklik diagram koroner atau mencentang daftar. Bobot segmen mengikuti dominansi kanan atau kiri.
@@ -47,6 +48,7 @@ js/malnutrisi.js    Tatalaksana Malnutrisi
 js/timi.js          TIMI STEMI dan TIMI UA/NSTEMI
 js/grace.js         GRACE Score
 js/syntax.js        SYNTAX Score
+js/nihss.js         NIHSS
 ```
 
 `js/common.js` harus dimuat lebih dulu, lalu berkas kalkulator lainnya. Panduan teknis untuk pengembangan ada di `CLAUDE.md`.
@@ -56,6 +58,7 @@ js/syntax.js        SYNTAX Score
 - Fine MJ, dkk. *A prediction rule to identify low-risk patients with community-acquired pneumonia.* N Engl J Med. 1997;336:243–50.
 - Antman EM, dkk. *The TIMI risk score for unstable angina/non-ST elevation MI.* JAMA. 2000;284:835–42.
 - Morrow DA, dkk. *TIMI risk score for ST-elevation myocardial infarction.* Circulation. 2000;102:2031–7.
+- Brott T, dkk. *Measurements of acute cerebral infarction: a clinical examination scale.* Stroke. 1989;20:864–70.
 - Sianos G, dkk. *The SYNTAX Score: an angiographic tool grading the complexity of coronary artery disease.* EuroIntervention. 2005;1:219–27.
 - Perhimpunan Dokter Spesialis Kardiovaskular Indonesia (PERKI). *Pedoman Tata Laksana Sindrom Koroner Akut.* Edisi ke-5. Jakarta: PERKI; 2024.
 

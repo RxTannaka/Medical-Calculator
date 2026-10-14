@@ -112,8 +112,8 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
     .footer-section { justify-content: flex-end; }
     .dpjp-section { margin-left: auto !important; }
 
-    #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content, #calc-syntax-content,
-    #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box, #syntax-output-box { display: none !important; }
+    #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content, #calc-syntax-content, #calc-nihss-content,
+    #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box, #syntax-output-box, #nihss-output-box { display: none !important; }
 
     body.mode-psi #calc-psi-content { display: block !important; }
     body.mode-psi #psi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -132,6 +132,10 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 
     body.mode-grace #calc-grace-content { display: block !important; }
     body.mode-grace #grace-output-box { display: flex !important; border: 2px solid #000 !important; }
+
+    body.mode-nihss #calc-nihss-content { display: block !important; }
+    body.mode-nihss #nihss-output-box { display: flex !important; border: 2px solid #000 !important; }
+    body.mode-nihss #calc-nihss-content .scoring-table td, body.mode-nihss #calc-nihss-content .scoring-table th { padding: 4px 6px; font-size: 11px; }
 
     body.mode-syntax #calc-syntax-content { display: block !important; }
     body.mode-syntax #syntax-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -213,6 +217,10 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 .syntax-opt { display: flex; align-items: center; gap: 6px; }
 .syntax-icon { width: 60px; height: 36px; flex-shrink: 0; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 4px; }
 @media (max-width: 600px) { .syntax-seg-wrap { flex-direction: column; } .syntax-tree { width: 100%; } .syntax-opt-grid { grid-template-columns: 1fr; } }
+/* NIHSS: 15 isian, dua kolom */
+.nihss-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 15px; }
+@media screen and (max-width: 600px) { .nihss-grid { grid-template-columns: 1fr; } }
+
 /* Berat badan hanya untuk kalkulator yang memakainya */
 .bb-group { display: none; }
 body.mode-natrium .bb-group, body.mode-kalium .bb-group, body.mode-malnutrisi .bb-group, body.mode-timistemi .bb-group { display: flex; }

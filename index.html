@@ -22,6 +22,7 @@
             <button onclick="showCalculator('timistemi')" id="btn-timistemi" class="btn-tab">TIMI STEMI</button>
             <button onclick="showCalculator('grace')" id="btn-grace" class="btn-tab">GRACE Score</button>
             <button onclick="showCalculator('syntax')" id="btn-syntax" class="btn-tab">SYNTAX Score</button>
+            <button onclick="showCalculator('nihss')" id="btn-nihss" class="btn-tab">NIHSS</button>
             <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
@@ -82,6 +83,13 @@
                 <div class="output-title" style="color:#c62828;">TIMI STEMI</div>
                 <div class="output-value"><span id="displayTimistemiScore">0</span> <small>/14</small></div>
                 <div class="output-label" style="font-size:11px;">Mortalitas 30 hari: <span id="displayTimistemiMort">-</span></div>
+            </div>
+
+            <div id="nihss-output-box" class="output-box" style="background:#ede7f6; border-color:#5e35b1;">
+                <div class="output-title" style="color:#4527a0;">NIHSS</div>
+                <div class="output-value"><span id="displayNihssScore">0</span> <small>/42</small></div>
+                <div class="output-label" id="displayNihssKategori">-</div>
+                <div class="output-label" style="font-size:11px;" id="displayNihssTerisi">0/15 item dinilai</div>
             </div>
 
             <div id="grace-output-box" class="output-box" style="background:#ffebee; border-color:#c62828;">
@@ -278,6 +286,12 @@
                 </div>
             </div>
 
+            <!-- NIHSS INPUT GROUP (isian dibuat oleh js/nihss.js) -->
+            <div id="input-nihss-group" style="display:none;">
+                <div class="form-section-title">NIH Stroke Scale (NIHSS)</div>
+                <div id="nihss-items" class="nihss-grid"></div>
+            </div>
+
             <!-- SYNTAX SCORE INPUT GROUP -->
             <div id="input-syntax-group" style="display:none;">
                 <div class="form-section-title">SYNTAX Score I &ndash; Coronary Angiography Assessment</div>
@@ -312,6 +326,7 @@
         <div id="calc-timiua-content" class="calc-content" style="display:none;"></div>
         <div id="calc-timistemi-content" class="calc-content" style="display:none;"></div>
         <div id="calc-grace-content" class="calc-content" style="display:none;"></div>
+        <div id="calc-nihss-content" class="calc-content" style="display:none;"></div>
         <div id="calc-syntax-content" class="calc-content" style="display:none;"></div>
 
         <!-- MALNUTRISI CONTENT -->
@@ -555,5 +570,6 @@
     <script src="js/timi.js"></script>
     <script src="js/grace.js"></script>
     <script src="js/syntax.js"></script>
+    <script src="js/nihss.js"></script>
 </body>
 </html>
