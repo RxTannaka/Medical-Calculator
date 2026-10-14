@@ -73,8 +73,8 @@ const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
                 ${nihssOpsi(item).map(([v]) => `<option value="${v}"></option>`).join('')}
             </select>
             <div class="nihss-opsi" role="radiogroup">
-                ${nihssOpsi(item).map(([v, t]) => `<button type="button" class="nihss-pil" role="radio" aria-checked="false" data-for="${id}" data-v="${v}">
-                    <span>${t}</span><span class="nihss-poin">${v === 'UN' ? 'UN' : (v === 0 ? '0' : '+' + v)}</span></button>`).join('')}
+                ${nihssOpsi(item).map(([v, t]) => `<button type="button" class="nihss-pil${v === 'UN' ? ' nihss-pil-un' : ''}" role="radio" aria-checked="false" data-for="${id}" data-v="${v}">
+                    <span class="nihss-poin">${v === 'UN' ? 'UN' : v}</span><span class="nihss-teks">${t}</span><span class="nihss-cek" aria-hidden="true">&#10003;</span></button>`).join('')}
             </div></div>`;
     box.innerHTML = `
         <div class="nihss-row nihss-head">
@@ -86,8 +86,8 @@ const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
             </label>
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => `<label class="nihss-${k}">${p.tglLabel}:<input type="date" id="${p.tgl}"></label>`).join('')}
         </div>` + `<div class="nihss-kartu-grid">` + NIHSS_ITEMS.map(item => `
-        <div class="nihss-kartu">
-            <div class="nihss-kartu-judul">${item.no}. ${item.nama}</div>
+        <div class="nihss-kartu" data-item="${item.no}">
+            <div class="nihss-kartu-judul"><span class="nihss-no">${item.no}</span><span class="nihss-nama">${item.nama}</span><span class="nihss-kartu-skor"></span></div>
             ${item.petunjuk ? `<div class="nihss-petunjuk">${item.petunjuk}</div>` : ''}
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
         </div>`).join('') + `</div>`;
@@ -108,6 +108,14 @@ function nihssSorot() {
         const aktif = getValue(btn.dataset.for) === btn.dataset.v;
         btn.classList.toggle('aktif', aktif);
         btn.setAttribute('aria-checked', aktif ? 'true' : 'false');
+    });
+    // Kartu yang sudah dijawab (pada assessment aktif): aksen biru + skor di judul
+    const pref = NIHSS_PENILAIAN[nihssJenis()].pref;
+    document.querySelectorAll('#nihss-items .nihss-kartu').forEach(kartu => {
+        const v = getValue(pref + kartu.dataset.item);
+        const ada = v !== undefined && v !== '';
+        kartu.classList.toggle('terisi', ada);
+        kartu.querySelector('.nihss-kartu-skor').textContent = ada ? (v === 'UN' ? 'UN' : 'Skor ' + v) : '';
     });
 }
 

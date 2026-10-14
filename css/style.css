@@ -228,23 +228,34 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 .nihss-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; font-size: 12px; }
 #nihss-items[data-jenis="awal"] .nihss-akhir, #nihss-items[data-jenis="akhir"] .nihss-awal, #nihss-items:not([data-jenis]) .nihss-akhir { display: none; }
 .nihss-head label { display: flex; flex-direction: column; gap: 3px; }
-.nihss-judul { font-weight: bold; font-size: 13px; margin-top: 10px; color: #4527a0; }
+.nihss-judul { font-weight: bold; font-size: 13px; margin-top: 10px; color: #0070b0; }
 .nihss-row label { font-weight: bold; font-size: 11px; }
 .nihss-hidden { display: none; }
 .nihss-kartu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 6px; }
-.nihss-kartu { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; }
-.nihss-kartu-judul { font-weight: bold; font-size: 13px; color: #263238; }
-.nihss-petunjuk { font-size: 11px; color: #78909c; margin-top: 2px; }
-.nihss-opsi { margin-top: 8px; border: 1px solid #cfd8dc; border-radius: 8px; overflow: hidden; }
-.nihss-pil { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border: none; border-top: 1px solid #e0e0e0;
-             background: #f5f5f5; font: inherit; font-size: 12px; font-weight: bold; color: #37474f; text-align: left; cursor: pointer; }
-.nihss-pil:first-child { border-top: none; }
-.nihss-pil:hover { background: #eceff1; }
-.nihss-pil.aktif { background: #37796a; color: #fff; }
-.nihss-poin { flex-shrink: 0; color: #607d8b; }
-.nihss-pil.aktif .nihss-poin { color: #e0f2f1; }
+/* Warna mengikuti kop surat: biru RS #0070b0, toska logo #50c0b0, merah aksen #c02020 */
+.nihss-kartu { background: #fff; border: 1px solid #d6e6f2; border-left: 4px solid #50c0b0; border-radius: 6px; padding: 10px 12px; }
+.nihss-kartu.terisi { border-left-color: #0070b0; }
+.nihss-kartu-judul { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; color: #0070b0; }
+.nihss-no { flex-shrink: 0; min-width: 26px; height: 26px; padding: 0 4px; border-radius: 13px; background: #0070b0; color: #fff; font-size: 11px;
+            display: inline-flex; align-items: center; justify-content: center; }
+.nihss-nama { flex: 1; }
+.nihss-kartu-skor { flex-shrink: 0; font-size: 11px; color: #fff; background: #50c0b0; border-radius: 10px; padding: 2px 8px; }
+.nihss-kartu-skor:empty { display: none; }
+.nihss-petunjuk { font-size: 11px; color: #607d8b; font-style: italic; margin: 4px 0 0 34px; }
+.nihss-opsi { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+.nihss-pil { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 10px 6px 6px; border: 1px solid #cfe3f1; border-radius: 6px;
+             background: #fff; font: inherit; font-size: 12px; color: #263238; text-align: left; cursor: pointer; }
+.nihss-pil:hover { background: #eef6fc; border-color: #90c0e0; }
+.nihss-poin { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: 2px solid #90c0e0; color: #0070b0; font-weight: bold;
+              display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+.nihss-teks { flex: 1; }
+.nihss-cek { visibility: hidden; font-weight: bold; }
+.nihss-pil-un .nihss-poin { font-size: 9px; border-color: #e6b0b0; color: #c02020; }
+.nihss-pil.aktif { background: #0070b0; border-color: #0070b0; color: #fff; }
+.nihss-pil.aktif .nihss-poin { background: #50c0b0; border-color: #50c0b0; color: #fff; }
+.nihss-pil.aktif .nihss-cek { visibility: visible; }
 .nihss-row select, .nihss-row input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%; min-width: 0; }
-.nihss-head { font-weight: bold; color: #4527a0; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+.nihss-head { font-weight: bold; color: #0070b0; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
 @media screen and (max-width: 600px) { #calc-nihss-content .scoring-table { display: block; overflow-x: auto; } .nihss-row, .nihss-kartu-grid { grid-template-columns: 1fr; } }
 
 /* Berat badan hanya untuk kalkulator yang memakainya */
