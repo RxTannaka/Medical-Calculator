@@ -61,6 +61,14 @@ const NIHSS_PENILAIAN = {
 
 const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
 
+// Warna tiap pilihan menurut tingkat keparahan (0 = toska, tengah = biru, maksimum = merah), dari kop surat RS
+function nihssWarna(v, maks) {
+    const stop = [[80, 192, 176], [0, 112, 176], [192, 32, 32]];
+    const t = maks ? v / maks : 0;
+    const [a, b, u] = t <= 0.5 ? [stop[0], stop[1], t / 0.5] : [stop[1], stop[2], (t - 0.5) / 0.5];
+    return 'rgb(' + a.map((x, i) => Math.round(x + (b[i] - x) * u)).join(',') + ')';
+}
+
 // Isian dibuat di sini (berkas dimuat di akhir <body>, sebelum DOMContentLoaded),
 // sehingga common.js bisa memasang listener dan memulihkan nilai seperti isian lain.
 (function renderNIHSSInputs() {
@@ -73,8 +81,13 @@ const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
                 ${nihssOpsi(item).map(([v]) => `<option value="${v}"></option>`).join('')}
             </select>
             <div class="nihss-opsi" role="radiogroup">
-                ${nihssOpsi(item).map(([v, t]) => `<button type="button" class="nihss-pil${v === 'UN' ? ' nihss-pil-un' : ''}" role="radio" aria-checked="false" data-for="${id}" data-v="${v}">
-                    <span class="nihss-poin">${v === 'UN' ? 'UN' : v}</span><span class="nihss-teks">${t}</span><span class="nihss-cek" aria-hidden="true">&#10003;</span></button>`).join('')}
+                ${nihssOpsi(item).map(([v, t]) => {
+                    const maks = Math.max(...nihssOpsi(item).map(([x]) => x).filter(x => x !== 'UN'));
+                    const meter = v === 'UN' ? '' : `<span class="nihss-meter">${Array.from({ length: maks }, (_, k) => `<i${k < v ? ' class="isi"' : ''}></i>`).join('')}</span>`;
+                    return `<button type="button" class="nihss-pil${v === 'UN' ? ' nihss-pil-un' : ''}" role="radio" aria-checked="false" data-for="${id}" data-v="${v}"
+                        style="--lvl: ${v === 'UN' ? '#90a4ae' : nihssWarna(v, maks)}">
+                        <span class="nihss-angka">${v === 'UN' ? 'UN' : v}</span>${meter}<span class="nihss-teks">${t}</span></button>`;
+                }).join('')}
             </div></div>`;
     box.innerHTML = `
         <div class="nihss-row nihss-head">
@@ -87,8 +100,10 @@ const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => `<label class="nihss-${k}">${p.tglLabel}:<input type="date" id="${p.tgl}"></label>`).join('')}
         </div>` + `<div class="nihss-kartu-grid">` + NIHSS_ITEMS.map(item => `
         <div class="nihss-kartu" data-item="${item.no}">
-            <div class="nihss-kartu-judul"><span class="nihss-no">${item.no}</span><span class="nihss-nama">${item.nama}</span><span class="nihss-kartu-skor"></span></div>
+            <span class="nihss-tab">${item.no}</span>
+            <div class="nihss-kartu-judul"><span class="nihss-nama">${item.nama}</span><span class="nihss-kartu-skor"></span></div>
             ${item.petunjuk ? `<div class="nihss-petunjuk">${item.petunjuk}</div>` : ''}
+            <div class="nihss-garis" aria-hidden="true"></div>
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
         </div>`).join('') + `</div>`;
 
