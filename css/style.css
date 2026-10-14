@@ -135,7 +135,12 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 
     body.mode-nihss #calc-nihss-content { display: block !important; }
     body.mode-nihss #nihss-output-box { display: flex !important; border: 2px solid #000 !important; }
-    body.mode-nihss #calc-nihss-content .scoring-table td, body.mode-nihss #calc-nihss-content .scoring-table th { padding: 4px 6px; font-size: 11px; }
+    body.mode-nihss #calc-nihss-content .scoring-table { margin-top: 8px; }
+    body.mode-nihss #calc-nihss-content .scoring-table td, body.mode-nihss #calc-nihss-content .scoring-table th { padding: 2px 5px; font-size: 9.5px; line-height: 1.25; }
+    body.mode-nihss #calc-nihss-content > div { font-size: 10px !important; padding: 4px 6px !important; line-height: 1.35 !important; }
+    body.mode-nihss .patient-total-wrapper { margin-bottom: 8px; padding: 8px 15px; }
+    body.mode-nihss .footer-section { margin-top: 6px; }
+    body.mode-nihss .dpjp-name { margin-top: 45px; }
 
     body.mode-syntax #calc-syntax-content { display: block !important; }
     body.mode-syntax #syntax-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -218,8 +223,12 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 .syntax-icon { width: 60px; height: 36px; flex-shrink: 0; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 4px; }
 @media (max-width: 600px) { .syntax-seg-wrap { flex-direction: column; } .syntax-tree { width: 100%; } .syntax-opt-grid { grid-template-columns: 1fr; } }
 /* NIHSS: 15 isian, dua kolom */
-.nihss-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 15px; }
-@media screen and (max-width: 600px) { .nihss-grid { grid-template-columns: 1fr; } }
+.nihss-grid { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
+.nihss-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; font-size: 12px; }
+.nihss-row label { font-weight: bold; font-size: 11px; }
+.nihss-row select, .nihss-row input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%; min-width: 0; }
+.nihss-head { font-weight: bold; color: #4527a0; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+@media screen and (max-width: 600px) { #calc-nihss-content .scoring-table { display: block; overflow-x: auto; } .nihss-row { grid-template-columns: 1fr 1fr; } .nihss-row > label, .nihss-head > span:first-child { grid-column: 1 / -1; } }
 
 /* Berat badan hanya untuk kalkulator yang memakainya */
 .bb-group { display: none; }
