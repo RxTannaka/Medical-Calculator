@@ -179,6 +179,8 @@ function calculateNIHSS() {
     // Baris tanggal di data pasien (tampil hanya di mode NIHSS, lewat CSS)
     setText('displayNihssTglLabel', jenis === 'akhir' ? 'Tgl Discharge' : 'Tgl Assessment Awal');
     setText('displayNihssTglHeader', tgl);
+    // Tanggal tanda tangan ikut tanggal assessment NIHSS (bila kosong, pakai Tgl Assessment umum)
+    setText('displayTanggalNihss', tgl !== '-' ? tgl : formatDateIndo(getValue('tglAsesmen')));
 
     let tabel = `<div class="nihss-judul">NIHSS &ndash; ${p.judul} &nbsp;|&nbsp; ${p.tglLabel}: ${tgl}</div>
         <table class="scoring-table"><thead><tr><th style="width:28px">No</th><th>Parameter yang dinilai</th><th>Skala</th><th style="width:40px">Skor</th></tr></thead><tbody>`;

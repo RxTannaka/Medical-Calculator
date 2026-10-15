@@ -22,6 +22,10 @@ body.mode-malnutrisi .info-line-malnutrisi { display: grid; }
 .info-line-nihss { display: none; }
 body.mode-nihss .info-line-nihss { display: grid; }
 body.mode-nihss .info-line-tglasesmen, body.mode-nihss .tglasesmen-group { display: none; }
+/* Tanggal tanda tangan di NIHSS = tanggal assessment NIHSS yang aktif */
+.tgl-ttd-nihss { display: none; }
+body.mode-nihss .tgl-ttd-nihss { display: inline; }
+body.mode-nihss .tgl-ttd-umum { display: none; }
 /* Isian tanggal di iPhone/Safari: jangan melebar keluar kolom */
 input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; max-width: 100%; min-height: 32px; display: block; background: #fff; }
 
