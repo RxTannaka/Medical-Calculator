@@ -22,7 +22,7 @@
             <button onclick="showCalculator('timistemi')" id="btn-timistemi" class="btn-tab">TIMI STEMI</button>
             <button onclick="showCalculator('grace')" id="btn-grace" class="btn-tab">GRACE Score</button>
             <button onclick="showCalculator('syntax')" id="btn-syntax" class="btn-tab">SYNTAX Score</button>
-            <button onclick="showCalculator('nihss')" id="btn-nihss" class="btn-tab">NIHSS</button>
+            <button onclick="showCalculator('nihss')" id="btn-nihss" class="btn-tab">NIHSS &amp; mRS</button>
             <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
@@ -88,10 +88,11 @@
             </div>
 
             <div id="nihss-output-box" class="output-box" style="background:#eef6fc; border-color:#0070b0;">
-                <div class="output-title" style="color:#0070b0;">NIHSS</div>
+                <div class="output-title" style="color:#0070b0;">NIHSS &amp; mRS</div>
                 <div class="output-label" style="font-size:11px;" id="displayNihssJudul">Assessment Awal</div>
                 <div class="output-value"><span id="displayNihssScore">0</span> <small>/42</small></div>
                 <div class="output-label" id="displayNihssKategori">-</div>
+                <div class="output-label" style="font-weight:bold; font-size:15px; margin-top:4px;" id="displayMrs">mRS -</div>
                 <div class="output-label" style="font-size:11px; margin-top:4px;" id="displayNihssTgl">-</div>
             </div>
 
@@ -291,7 +292,7 @@
 
             <!-- NIHSS INPUT GROUP (isian dibuat oleh js/nihss.js) -->
             <div id="input-nihss-group" style="display:none;">
-                <div class="form-section-title"><em>National Institutes of Health Stroke Scale</em> (NIHSS) &ndash; PNPK Tata Laksana Stroke 2026</div>
+                <div class="form-section-title"><em>National Institutes of Health Stroke Scale</em> (NIHSS) &amp; <em>Modified Rankin Scale</em> (mRS) &ndash; PNPK Tata Laksana Stroke 2026</div>
                 <div id="nihss-items" class="nihss-grid"></div>
             </div>
 

@@ -59,6 +59,18 @@ const NIHSS_PENILAIAN = {
     akhir: { judul: 'Assessment Akhir (Discharge)', pref: 'nihssK', tgl: 'nihssTglKeluar', tglLabel: 'Tanggal Discharge' }
 };
 
+// Modified Rankin Scale (van Swieten dkk., 1988), dinilai di setiap assessment bersama NIHSS (keperluan klaim).
+// Tidak dijumlahkan ke skor NIHSS. PNPK Stroke 2026 memakai mRS (mis. mRS 0–1) tetapi tidak memuat tabelnya.
+const MRS_ITEM = { no: 'mRS', nama: 'Modified Rankin Scale (mRS)', petunjuk: 'Nilai status fungsional pasien saat assessment ini.', opsi: [
+    [0, 'Tidak ada gejala sama sekali'],
+    [1, 'Tidak ada disabilitas bermakna; mampu melakukan semua tugas dan aktivitas sehari-hari meskipun ada gejala'],
+    [2, 'Disabilitas ringan; tidak mampu melakukan semua aktivitas sebelumnya, tetapi mampu mengurus diri sendiri tanpa bantuan'],
+    [3, 'Disabilitas sedang; memerlukan sedikit bantuan, tetapi mampu berjalan tanpa bantuan'],
+    [4, 'Disabilitas sedang-berat; tidak mampu berjalan dan mengurus kebutuhan tubuh sendiri tanpa bantuan'],
+    [5, 'Disabilitas berat; terbaring di tempat tidur, inkontinensia, memerlukan perawatan dan perhatian terus-menerus'],
+    [6, 'Meninggal']] };
+const MRS_ID = { awal: 'mrsAwal', akhir: 'mrsAkhir' };
+
 const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
 
 // Warna tiap pilihan menurut tingkat keparahan (0 = toska, tengah = biru, maksimum = merah), dari kop surat RS
@@ -105,7 +117,14 @@ function nihssWarna(v, maks) {
             ${item.petunjuk ? `<div class="nihss-petunjuk">${item.petunjuk}</div>` : ''}
             <div class="nihss-garis" aria-hidden="true"></div>
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
-        </div>`).join('') + `</div>`;
+        </div>`).join('') + `
+        <div class="nihss-kartu nihss-kartu-mrs" data-mrs="1">
+            <span class="nihss-tab">mRS</span>
+            <div class="nihss-kartu-judul"><span class="nihss-nama">${MRS_ITEM.nama}</span><span class="nihss-kartu-skor"></span></div>
+            <div class="nihss-petunjuk">${MRS_ITEM.petunjuk} Tidak dijumlahkan ke skor NIHSS.</div>
+            <div class="nihss-garis" aria-hidden="true"></div>
+            ${Object.keys(NIHSS_PENILAIAN).map(k => sel(MRS_ID[k], MRS_ITEM, k)).join('')}
+        </div>` + `</div>`;
 
     // Tanggal assessment awal bawaan = hari ini (ditimpa data tersimpan bila ada)
     document.getElementById('nihssTglMasuk').value = new Date().toISOString().split('T')[0];
@@ -130,7 +149,7 @@ function nihssSorot() {
     // Kartu yang sudah dijawab (pada assessment aktif): aksen biru + skor di judul
     const pref = NIHSS_PENILAIAN[nihssJenis()].pref;
     document.querySelectorAll('#nihss-items .nihss-kartu').forEach(kartu => {
-        const v = getValue(pref + kartu.dataset.item);
+        const v = kartu.dataset.mrs ? getValue(MRS_ID[nihssJenis()]) : getValue(pref + kartu.dataset.item);
         const ada = v !== undefined && v !== '';
         kartu.classList.toggle('terisi', ada);
         kartu.querySelector('.nihss-kartu-skor').textContent = ada ? (v === 'UN' ? 'UN' : 'Skor ' + v) : '';
@@ -171,31 +190,40 @@ function calculateNIHSS() {
     const h = nihssHitung(p.pref);
     const tgl = formatDateIndo(getValue(p.tgl));
     const kategori = nihssKategori(h);
+    const mrsV = getValue(MRS_ID[jenis]);
+    const mrsOpsi = MRS_ITEM.opsi.find(([x]) => String(x) === mrsV);
+    const mrsTeks = mrsOpsi ? `${mrsOpsi[0]} &mdash; ${mrsOpsi[1]}` : '<em>belum dinilai</em>';
 
     setText('displayNihssJudul', p.judul);
     setText('displayNihssScore', h.total);
     setText('displayNihssKategori', kategori);
     setText('displayNihssTgl', `${p.tglLabel}: ${tgl}`);
+    setText('displayMrs', mrsOpsi ? `mRS ${mrsOpsi[0]}` : 'mRS -');
     // Baris tanggal di data pasien (tampil hanya di mode NIHSS, lewat CSS)
     setText('displayNihssTglLabel', jenis === 'akhir' ? 'Tgl Discharge' : 'Tgl Assessment Awal');
     setText('displayNihssTglHeader', tgl);
     // Tanggal tanda tangan ikut tanggal assessment NIHSS (bila kosong, pakai Tgl Assessment umum)
     setText('displayTanggalNihss', tgl !== '-' ? tgl : formatDateIndo(getValue('tglAsesmen')));
 
-    let tabel = `<div class="nihss-judul">NIHSS &ndash; ${p.judul} &nbsp;|&nbsp; ${p.tglLabel}: ${tgl}</div>
+    let tabel = `<div class="nihss-judul">NIHSS &amp; mRS &ndash; ${p.judul} &nbsp;|&nbsp; ${p.tglLabel}: ${tgl}</div>
         <table class="scoring-table"><thead><tr><th style="width:28px">No</th><th>Parameter yang dinilai</th><th>Skala</th><th style="width:40px">Skor</th></tr></thead><tbody>`;
     NIHSS_ITEMS.forEach((item, k) => {
         tabel += `<tr><td>${item.no}</td><td>${item.nama}</td><td>${h.baris[k].temuan}</td><td>${h.baris[k].skor}</td></tr>`;
     });
-    tabel += `<tr><td colspan="3"><strong>TOTAL NIHSS</strong></td><td><strong>${h.total}</strong></td></tr></tbody></table>`;
+    tabel += `<tr><td colspan="3"><strong>TOTAL NIHSS</strong></td><td><strong>${h.total}</strong></td></tr></tbody></table>
+        <table class="scoring-table"><tbody><tr><td style="width:170px"><strong>Modified Rankin Scale (mRS)</strong></td><td>${mrsTeks}</td><td style="width:40px"><strong>${mrsOpsi ? mrsOpsi[0] : '-'}</strong></td></tr></tbody></table>`;
 
-    const peringatan = (h.terisi > 0 && h.terisi < n)
-        ? `<div class="screen-only" style="margin-top:8px; padding:8px; background:#fff8e1; border-left:3px solid #f9a825; font-size:12px;">&#9998; ${n - h.terisi} item belum dinilai; total belum final.</div>`
+    const ingat = [];
+    if (h.terisi > 0 && h.terisi < n) ingat.push(`${n - h.terisi} item NIHSS belum dinilai; total belum final.`);
+    if ((h.terisi > 0 || mrsV) && !mrsOpsi) ingat.push('mRS belum dinilai (diperlukan untuk klaim).');
+    if (mrsV && !h.terisi) ingat.push('NIHSS belum dinilai (diperlukan untuk klaim).');
+    const peringatan = ingat.length
+        ? `<div class="screen-only" style="margin-top:8px; padding:8px; background:#fff8e1; border-left:3px solid #f9a825; font-size:12px;">&#9998; ${ingat.join('<br>&#9998; ')}</div>`
         : '';
 
     const ringkas = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
-        <strong>NIHSS ${p.judul}: ${h.total} &mdash; ${kategori}</strong>
-        <br><span style="font-size:11px; color:#555;">Keterangan: skor &lt;5 defisit neurologis ringan; 5–14 sedang; 15–24 berat; 25–42 sangat berat. UN (tidak dapat dinilai) tidak menambah skor. Sumber: PNPK Tata Laksana Stroke, KMK HK.01.07/MENKES/304/2026.</span></div>`;
+        <strong>NIHSS ${p.judul}: ${h.total} &mdash; ${kategori} &nbsp;|&nbsp; mRS: ${mrsOpsi ? mrsOpsi[0] : '-'}</strong>
+        <br><span style="font-size:11px; color:#555;">Keterangan: skor &lt;5 defisit neurologis ringan; 5–14 sedang; 15–24 berat; 25–42 sangat berat. UN (tidak dapat dinilai) tidak menambah skor. mRS tidak dijumlahkan ke NIHSS. Sumber: PNPK Tata Laksana Stroke, KMK HK.01.07/MENKES/304/2026; mRS: van Swieten dkk., Stroke 1988.</span></div>`;
 
     document.getElementById('calc-nihss-content').innerHTML = tabel + peringatan + ringkas;
 }

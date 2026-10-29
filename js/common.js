@@ -52,7 +52,7 @@ const CALC_FIELDS = ['nama', 'noMR', 'inputDPJP', 'tglAsesmen', 'tglLahir', 'jk'
                      'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
                      'syntaxDominansi', 'syntaxDifus', 'syntaxNotes',
                      'nihss1a', 'nihss1b', 'nihss1c', 'nihss2', 'nihss3', 'nihss4', 'nihss5a', 'nihss5b', 'nihss6a', 'nihss6b', 'nihss7', 'nihss8', 'nihss9', 'nihss10', 'nihss11',
-                     'nihssJenis', 'nihssTglMasuk', 'nihssTglKeluar', 'nihssK1a', 'nihssK1b', 'nihssK1c', 'nihssK2', 'nihssK3', 'nihssK4', 'nihssK5a', 'nihssK5b', 'nihssK6a', 'nihssK6b', 'nihssK7', 'nihssK8', 'nihssK9', 'nihssK10', 'nihssK11'];
+                     'nihssJenis', 'nihssTglMasuk', 'nihssTglKeluar', 'mrsAwal', 'mrsAkhir', 'nihssK1a', 'nihssK1b', 'nihssK1c', 'nihssK2', 'nihssK3', 'nihssK4', 'nihssK5a', 'nihssK5b', 'nihssK6a', 'nihssK6b', 'nihssK7', 'nihssK8', 'nihssK9', 'nihssK10', 'nihssK11'];
 
 function saveCalcState() {
     const state = {};
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'graceNadi', 'graceTDsistolik', 'graceKreatinin', 'graceKreatininUnit', 'graceKillip',
                     'syntaxDominansi', 'syntaxDifus', 'syntaxNotes',
                     'nihss1a', 'nihss1b', 'nihss1c', 'nihss2', 'nihss3', 'nihss4', 'nihss5a', 'nihss5b', 'nihss6a', 'nihss6b', 'nihss7', 'nihss8', 'nihss9', 'nihss10', 'nihss11',
-                     'nihssJenis', 'nihssTglMasuk', 'nihssTglKeluar', 'nihssK1a', 'nihssK1b', 'nihssK1c', 'nihssK2', 'nihssK3', 'nihssK4', 'nihssK5a', 'nihssK5b', 'nihssK6a', 'nihssK6b', 'nihssK7', 'nihssK8', 'nihssK9', 'nihssK10', 'nihssK11'];
+                     'nihssJenis', 'nihssTglMasuk', 'nihssTglKeluar', 'mrsAwal', 'mrsAkhir', 'nihssK1a', 'nihssK1b', 'nihssK1c', 'nihssK2', 'nihssK3', 'nihssK4', 'nihssK5a', 'nihssK5b', 'nihssK6a', 'nihssK6b', 'nihssK7', 'nihssK8', 'nihssK9', 'nihssK10', 'nihssK11'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
