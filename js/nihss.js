@@ -71,6 +71,18 @@ const MRS_ITEM = { no: 'mRS', nama: 'Modified Rankin Scale (mRS)', petunjuk: 'Ni
     [6, 'Meninggal']] };
 const MRS_ID = { awal: 'mrsAwal', akhir: 'mrsAkhir' };
 
+// Pasien koma (1a = 3): item yang butuh instruksi/kerja sama dikunci ke nilai otomatis
+// (NIH Stroke Scale, rev. 10/1/2003). Item 2, 3, 4, 5, 6 tetap dinilai (refleks, ancaman visual, seringai, motorik).
+const NIHSS_KOMA = {
+    '1b': [2, 'pasien koma tidak dapat memahami pertanyaan'],
+    '1c': [2, 'pasien koma tidak dapat mengikuti perintah'],
+    '7':  [0, 'ataksia dianggap tidak ada pada pasien yang tidak dapat memahami atau lumpuh'],
+    '8':  [2, 'pasien koma otomatis diberi nilai 2'],
+    '9':  [3, 'pasien koma otomatis diberi nilai 3'],
+    '10': [2, 'tidak ada sampel bicara (mute/anartria)'],
+    '11': [2, 'konvensi pelatihan NIHSS untuk pasien koma']
+};
+
 const nihssJenis = () => getValue('nihssJenis') === 'akhir' ? 'akhir' : 'awal';
 
 // Warna tiap pilihan menurut tingkat keparahan (0 = toska, tengah = biru, maksimum = merah), dari kop surat RS
@@ -116,6 +128,7 @@ function nihssWarna(v, maks) {
             <div class="nihss-kartu-judul"><span class="nihss-nama">${item.nama}</span><span class="nihss-kartu-skor"></span></div>
             ${item.petunjuk ? `<div class="nihss-petunjuk">${item.petunjuk}</div>` : ''}
             <div class="nihss-garis" aria-hidden="true"></div>
+            <div class="nihss-kunci-note"></div>
             ${Object.entries(NIHSS_PENILAIAN).map(([k, p]) => sel(p.pref + item.no, item, k)).join('')}
         </div>`).join('') + `
         <div class="nihss-kartu nihss-kartu-mrs" data-mrs="1">
@@ -138,6 +151,42 @@ function nihssWarna(v, maks) {
         s.dispatchEvent(new Event('change', { bubbles: true }));
     });
 })();
+
+// Terapkan aturan koma untuk kedua assessment. Nilai yang diisi otomatis ditandai data-auto;
+// bila 1a tidak lagi koma, nilai otomatis dikosongkan agar dinilai ulang. Mengembalikan true bila ada perubahan.
+function nihssTerapkanKoma() {
+    let berubah = false;
+    Object.values(NIHSS_PENILAIAN).forEach(p => {
+        const koma = getValue(p.pref + '1a') === '3';
+        Object.entries(NIHSS_KOMA).forEach(([no, [nilai]]) => {
+            const el = document.getElementById(p.pref + no);
+            if (!el) return;
+            if (koma) {
+                if (el.value !== String(nilai)) { el.value = String(nilai); berubah = true; }
+                el.dataset.auto = '1';
+            } else if (el.dataset.auto) {
+                el.value = ''; delete el.dataset.auto; berubah = true;
+            }
+        });
+    });
+    return berubah;
+}
+
+// Kartu terkunci (abu-abu, tidak bisa dipilih) pada assessment aktif bila 1a = koma
+function nihssTampilKunci() {
+    const pref = NIHSS_PENILAIAN[nihssJenis()].pref;
+    const koma = getValue(pref + '1a') === '3';
+    document.querySelectorAll('#nihss-items .nihss-kartu[data-item]').forEach(kartu => {
+        const aturan = koma ? NIHSS_KOMA[kartu.dataset.item] : null;
+        kartu.classList.toggle('terkunci', !!aturan);
+        kartu.querySelector('.nihss-kunci-note').textContent = aturan
+            ? `Terkunci: 1a = koma → otomatis skor ${aturan[0]} (${aturan[1]}).` : '';
+        kartu.querySelectorAll('.nihss-pil').forEach(btn => {
+            const milikAktif = btn.dataset.for === pref + kartu.dataset.item;
+            btn.disabled = !!aturan && milikAktif;
+        });
+    });
+}
 
 // Sorot pilihan sesuai nilai <select> (dipanggil tiap hitung ulang, termasuk setelah pulih/hapus data)
 function nihssSorot() {
@@ -185,7 +234,9 @@ function calculateNIHSS() {
     const p = NIHSS_PENILAIAN[jenis];
     const box = document.getElementById('nihss-items');
     if (box) box.dataset.jenis = jenis; // CSS menyembunyikan isian assessment yang tidak aktif
+    if (nihssTerapkanKoma()) { try { saveCalcState(); } catch (e) {} }
     nihssSorot();
+    nihssTampilKunci();
 
     const h = nihssHitung(p.pref);
     const tgl = formatDateIndo(getValue(p.tgl));

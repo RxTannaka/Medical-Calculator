@@ -259,6 +259,12 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
              padding: 2px 12px; border-radius: 6px 6px 0 0; letter-spacing: 0.5px; }
 .nihss-kartu.terisi .nihss-tab { background: #50c0b0; }
 .nihss-kartu-mrs { border-color: #0070b0; border-width: 2px; }
+/* Item terkunci karena koma: abu-abu, tidak bisa dipilih; nilai otomatis tetap terlihat */
+.nihss-kunci-note { display: none; font-size: 11px; font-weight: bold; color: #6d4c00; background: #fff8e1; border-left: 3px solid #f9a825; padding: 4px 8px; margin: -4px 0 8px; }
+.nihss-kartu.terkunci .nihss-kunci-note { display: block; }
+.nihss-kartu.terkunci { background: #f4f6f8; }
+.nihss-kartu.terkunci .nihss-pil:disabled { cursor: not-allowed; filter: grayscale(1); opacity: .45; box-shadow: none; transform: none; }
+.nihss-kartu.terkunci .nihss-pil.aktif:disabled { opacity: .85; }
 .nihss-kartu-mrs .nihss-opsi { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
 .nihss-kartu-judul { display: flex; align-items: baseline; gap: 10px; font-weight: bold; font-size: 14px; color: #0070b0; }
 .nihss-nama { flex: 1; }
