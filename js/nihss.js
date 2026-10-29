@@ -274,7 +274,7 @@ function calculateNIHSS() {
 
     const ringkas = `<div style="margin-top:8px; padding:8px; background:#f5f5f5; font-size:12px; line-height:1.5;">
         <strong>NIHSS ${p.judul}: ${h.total} &mdash; ${kategori} &nbsp;|&nbsp; mRS: ${mrsOpsi ? mrsOpsi[0] : '-'}</strong>
-        <br><span style="font-size:11px; color:#555;">Keterangan: skor &lt;5 defisit neurologis ringan; 5–14 sedang; 15–24 berat; 25–42 sangat berat. UN (tidak dapat dinilai) tidak menambah skor. mRS tidak dijumlahkan ke NIHSS. Sumber: PNPK Tata Laksana Stroke, KMK HK.01.07/MENKES/304/2026; mRS: van Swieten dkk., Stroke 1988.</span></div>`;
+        <span class="screen-only" style="display:block; font-size:11px; color:#555;">Keterangan: skor &lt;5 defisit neurologis ringan; 5–14 sedang; 15–24 berat; 25–42 sangat berat. UN (tidak dapat dinilai) tidak menambah skor. mRS tidak dijumlahkan ke NIHSS. Sumber: PNPK Tata Laksana Stroke, KMK HK.01.07/MENKES/304/2026; mRS: van Swieten dkk., Stroke 1988.</span></div>`;
 
     document.getElementById('calc-nihss-content').innerHTML = tabel + peringatan + ringkas;
 }
