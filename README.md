@@ -1,6 +1,6 @@
 # Kalkulator Medis – Murni Teguh Memorial Hospital
 
-Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasien. Sembilan kalkulator dihimpun dalam satu halaman. Data diisi di layar, lalu hasilnya dicetak ke kertas A4 dengan kop rumah sakit sebagai lampiran rekam medis.
+Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasien. Sepuluh kalkulator dihimpun dalam satu halaman. Data diisi di layar, lalu hasilnya dicetak ke kertas A4 dengan kop rumah sakit sebagai lampiran rekam medis.
 
 ## Daftar kalkulator
 
@@ -15,6 +15,7 @@ Kalkulator klinis berbahasa Indonesia untuk dipakai di samping tempat tidur pasi
 | **GRACE Score** | Stratifikasi risiko kematian di rumah sakit dan 6 bulan menurut PERKI |
 | **SYNTAX Score** | SYNTAX Score I (anatomis), dinilai per lesi |
 | **NIHSS & mRS** | *National Institutes of Health Stroke Scale* sesuai PNPK Tata Laksana Stroke 2026 (15 item, total 0–42, kategori defisit neurologis) dan *Modified Rankin Scale* (0–6), keduanya dinilai di setiap assessment untuk keperluan klaim. Pilih *Assessment Awal* atau *Assessment Akhir (Discharge)*; masing-masing punya tanggal sendiri dan dicetak satu lembar per assessment |
+| **APACHE II** | Skor keparahan pasien ICU (0–71): 12 parameter fisiologis terburuk 24 jam pertama, poin usia, dan poin penyakit kronis; MAP dan A-a gradient dihitung otomatis; perkiraan mortalitas rumah sakit menurut rentang skor |
 
 ### Catatan SYNTAX Score
 - Segmen dipilih dengan mengklik diagram koroner atau mencentang daftar. Bobot segmen mengikuti dominansi kanan atau kiri.
@@ -49,6 +50,7 @@ js/timi.js          TIMI STEMI dan TIMI UA/NSTEMI
 js/grace.js         GRACE Score
 js/syntax.js        SYNTAX Score
 js/nihss.js         NIHSS & mRS
+js/apache.js        APACHE II
 ```
 
 `js/common.js` harus dimuat lebih dulu, lalu berkas kalkulator lainnya. Panduan teknis untuk pengembangan ada di `CLAUDE.md`.
@@ -59,6 +61,7 @@ js/nihss.js         NIHSS & mRS
 - Antman EM, dkk. *The TIMI risk score for unstable angina/non-ST elevation MI.* JAMA. 2000;284:835–42.
 - Morrow DA, dkk. *TIMI risk score for ST-elevation myocardial infarction.* Circulation. 2000;102:2031–7.
 - van Swieten JC, dkk. *Interobserver agreement for the assessment of handicap in stroke patients.* Stroke. 1988;19:604–7.
+- Knaus WA, dkk. *APACHE II: a severity of disease classification system.* Crit Care Med. 1985;13:818–29.
 - Brott T, dkk. *Measurements of acute cerebral infarction: a clinical examination scale.* Stroke. 1989;20:864–70.
 - Sianos G, dkk. *The SYNTAX Score: an angiographic tool grading the complexity of coronary artery disease.* EuroIntervention. 2005;1:219–27.
 - Kementerian Kesehatan RI. *Pedoman Nasional Pelayanan Klinis Tata Laksana Stroke.* KMK No. HK.01.07/MENKES/304/2026. Jakarta: Kemenkes RI; 2026.

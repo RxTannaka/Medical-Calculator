@@ -23,6 +23,7 @@
             <button onclick="showCalculator('grace')" id="btn-grace" class="btn-tab">GRACE Score</button>
             <button onclick="showCalculator('syntax')" id="btn-syntax" class="btn-tab">SYNTAX Score</button>
             <button onclick="showCalculator('nihss')" id="btn-nihss" class="btn-tab">NIHSS &amp; mRS</button>
+            <button onclick="showCalculator('apache')" id="btn-apache" class="btn-tab">APACHE II</button>
             <button onclick="clearCalcState()" class="btn-tab btn-tab-danger" title="Hapus semua data dan mulai pasien baru">🗑 Pasien Baru</button>
         </div>
 
@@ -85,6 +86,14 @@
                 <div class="output-title" style="color:#c62828;">TIMI STEMI</div>
                 <div class="output-value"><span id="displayTimistemiScore">0</span> <small>/14</small></div>
                 <div class="output-label" style="font-size:11px;">Mortalitas 30 hari: <span id="displayTimistemiMort">-</span></div>
+            </div>
+
+            <div id="apache-output-box" class="output-box" style="background:#eef6fc; border-color:#0070b0;">
+                <div class="output-title" style="color:#0070b0;">APACHE II</div>
+                <div class="output-value"><span id="displayApacheScore">0</span> <small>/71</small></div>
+                <div class="output-label" style="font-size:11px;">Perkiraan mortalitas:</div>
+                <div style="font-weight:bold;" id="displayApacheMort">-</div>
+                <div class="output-label" style="font-size:11px; margin-top:4px;" id="displayApacheIsi">0/12 parameter fisiologis</div>
             </div>
 
             <div id="nihss-output-box" class="output-box" style="background:#eef6fc; border-color:#0070b0;">
@@ -290,6 +299,42 @@
                 </div>
             </div>
 
+            <!-- APACHE II INPUT GROUP -->
+            <div id="input-apache-group" style="display:none;">
+                <div class="form-section-title">APACHE II &ndash; nilai terburuk dalam 24 jam pertama di ICU (usia otomatis dari Tgl Lahir)</div>
+                <div class="form-group"><label>Suhu rektal (&deg;C):</label><input type="number" id="apSuhu" step="any" placeholder="cth: 38,6"></div>
+                <div class="form-group"><label>TD sistolik (mmHg):</label><input type="number" id="apTDs" step="any" placeholder="cth: 90"></div>
+                <div class="form-group"><label>TD diastolik (mmHg):</label><input type="number" id="apTDd" step="any" placeholder="cth: 50"><div id="displayApMAP" style="font-size:11px; font-weight:bold; color:#1565C0; margin-top:2px;">-</div></div>
+                <div class="form-group"><label>Laju nadi (&times;/menit):</label><input type="number" id="apNadi" step="any" placeholder="cth: 120"></div>
+                <div class="form-group"><label>Laju napas (&times;/menit):</label><input type="number" id="apNapas" step="any" placeholder="cth: 28"></div>
+                <div class="form-section-title">Oksigenasi &amp; asam-basa</div>
+                <div class="form-group"><label>FiO&#8322; (%):</label><input type="number" id="apFiO2" step="any" placeholder="cth: 40"></div>
+                <div class="form-group"><label>PaO&#8322; (mmHg):</label><input type="number" id="apPaO2" step="any" placeholder="cth: 65"></div>
+                <div class="form-group"><label>PaCO&#8322; (mmHg):</label><input type="number" id="apPaCO2" step="any" placeholder="perlu bila FiO&#8322; &ge;50%"><div id="displayApAa" style="font-size:11px; font-weight:bold; color:#1565C0; margin-top:2px;">-</div></div>
+                <div class="form-group"><label>pH arteri:</label><input type="number" id="apPH" step="any" placeholder="cth: 7,30"></div>
+                <div class="form-group"><label>HCO&#8323; serum (mEq/L):</label><input type="number" id="apHCO3" step="any" placeholder="hanya bila tanpa AGD"></div>
+                <div class="form-section-title">Laboratorium &amp; neurologis</div>
+                <div class="form-group"><label>Natrium (mEq/L):</label><input type="number" id="apNa" step="any" placeholder="cth: 132"></div>
+                <div class="form-group"><label>Kalium (mEq/L):</label><input type="number" id="apK" step="any" placeholder="cth: 3,2"></div>
+                <div class="form-group"><label>Kreatinin:</label>
+                    <input type="number" id="apKreat" step="any" placeholder="cth: 1,8">
+                    <select id="apKreatUnit" style="margin-top:4px; font-size:12px;"><option value="mgdl">mg/dL</option><option value="umol">&micro;mol/L</option></select>
+                </div>
+                <div class="form-group"><label>Gagal ginjal akut:</label>
+                    <select id="apGGA"><option value="tidak">Tidak</option><option value="ya">Ya (poin kreatinin &times;2)</option></select>
+                </div>
+                <div class="form-group"><label>Hematokrit (%):</label><input type="number" id="apHct" step="any" placeholder="cth: 32"></div>
+                <div class="form-group"><label>Leukosit (&times;10&sup3;/mm&sup3;):</label><input type="number" id="apLeuko" step="any" placeholder="cth: 18,5"></div>
+                <div class="form-group"><label>GCS (3&ndash;15):</label><input type="number" id="apGCS" step="any" placeholder="cth: 11"></div>
+                <div class="form-section-title">Penyakit kronis &amp; status operasi</div>
+                <div class="form-group" style="grid-column: span 2;"><label>Riwayat insufisiensi organ berat / imunokompromais:</label>
+                    <select id="apKronis"><option value="tidak">Tidak</option><option value="ya">Ya</option></select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;"><label>Status operasi:</label>
+                    <select id="apOperasi"><option value="nonop">Non-operatif</option><option value="darurat">Pasca-bedah darurat</option><option value="elektif">Pasca-bedah elektif</option></select>
+                </div>
+            </div>
+
             <!-- NIHSS INPUT GROUP (isian dibuat oleh js/nihss.js) -->
             <div id="input-nihss-group" style="display:none;">
                 <div class="form-section-title"><em>National Institutes of Health Stroke Scale</em> (NIHSS) &amp; <em>Modified Rankin Scale</em> (mRS) &ndash; PNPK Tata Laksana Stroke 2026</div>
@@ -331,6 +376,7 @@
         <div id="calc-timistemi-content" class="calc-content" style="display:none;"></div>
         <div id="calc-grace-content" class="calc-content" style="display:none;"></div>
         <div id="calc-nihss-content" class="calc-content" style="display:none;"></div>
+        <div id="calc-apache-content" class="calc-content" style="display:none;"></div>
         <div id="calc-syntax-content" class="calc-content" style="display:none;"></div>
 
         <!-- MALNUTRISI CONTENT -->
@@ -575,5 +621,6 @@
     <script src="js/grace.js"></script>
     <script src="js/syntax.js"></script>
     <script src="js/nihss.js"></script>
+    <script src="js/apache.js"></script>
 </body>
 </html>

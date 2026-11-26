@@ -133,8 +133,8 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
     .footer-section { justify-content: flex-end; }
     .dpjp-section { margin-left: auto !important; }
 
-    #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content, #calc-syntax-content, #calc-nihss-content,
-    #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box, #syntax-output-box, #nihss-output-box { display: none !important; }
+    #calc-natrium-content, #calc-kalium-content, #calc-psi-content, #calc-malnutrisi-content, #calc-timiua-content, #calc-timistemi-content, #calc-grace-content, #calc-syntax-content, #calc-nihss-content, #calc-apache-content,
+    #natrium-output-box, #kalium-output-box, #psi-output-box, #malnutrisi-output-box, #timiua-output-box, #timistemi-output-box, #grace-output-box, #syntax-output-box, #nihss-output-box, #apache-output-box { display: none !important; }
 
     body.mode-psi #calc-psi-content { display: block !important; }
     body.mode-psi #psi-output-box { display: flex !important; border: 2px solid #000 !important; }
@@ -156,6 +156,10 @@ body.mode-malnutrisi .dpjp-title-malnutrisi { display: block; }
 
     body.mode-nihss #calc-nihss-content { display: block !important; }
     body.mode-nihss #nihss-output-box { display: flex !important; border: 2px solid #000 !important; }
+    body.mode-apache #calc-apache-content { display: block !important; }
+    body.mode-apache #apache-output-box { display: flex !important; border: 2px solid #000 !important; }
+    body.mode-apache #calc-apache-content .scoring-table { margin-top: 8px; }
+    body.mode-apache #calc-apache-content .scoring-table td, body.mode-apache #calc-apache-content .scoring-table th { padding: 3px 6px; font-size: 10.5px; line-height: 1.25; }
     body.mode-nihss #calc-nihss-content .scoring-table { margin-top: 8px; }
     body.mode-nihss #calc-nihss-content .scoring-table td, body.mode-nihss #calc-nihss-content .scoring-table th { padding: 3px 6px; font-size: 10.5px; line-height: 1.25; }
     body.mode-nihss #calc-nihss-content > div:not(.nihss-judul) { font-size: 10px !important; padding: 4px 6px !important; line-height: 1.35 !important; }
